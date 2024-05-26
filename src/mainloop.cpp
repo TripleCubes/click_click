@@ -1,0 +1,65 @@
+#include "mainloop.h"
+
+#include "game_time.h"
+#include "graphic_types/graphic_types.h"
+#include "graphic/graphic.h"
+
+#include "graphic_types/framebuffer.h"
+#include "graphic_types/texture.h"
+
+#include "graphic/basic_draw_op.h"
+#include "graphic/draw_rect.h"
+#include "graphic/draw_texture.h"
+
+#include "types/vec2.h"
+#include "types/color.h"
+
+#ifndef __EMSCRIPTEN__
+#include <glad/glad.h>
+#else
+#include <GLES2/gl2.h>
+#endif
+
+void update(const GameTime &game_time) {
+}
+
+void draw(const GraphicStuff &gs) {
+	bind_framebuffer(gs, FRAMEBUFFER_MAIN);
+	clear(color_new(1, 1, 1, 1));
+
+	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
+		vec2_new(0, 0),
+		vec2_new(10, 10),
+		color_new(159/255.0f, 222/255.0f, 146/255.0f, 1));
+	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
+		vec2_new(10, 10),
+		vec2_new(80, 80),
+		color_new(168/255.0f, 237/255.0f, 227/255.0f, 1));
+	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
+		vec2_new(80, 90),
+		vec2_new(30, 10),
+		color_new(244/255.0f, 133/255.0f, 124/255.0f, 1));
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
+	clear(color_new(0, 0, 0, 1));
+
+	draw_texture(gs, gs.current_window_sz, fb_get_sz(gs, FRAMEBUFFER_MAIN),
+		vec2_new(0, 0),
+		vec2_new(100, 100),
+		vec2_new(10, 10),
+		vec2_new(200, 200),
+		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
+		false
+	);
+
+	draw_texture(
+		gs, gs.current_window_sz, texture_get_sz(gs, TEXTURE_FONT),
+		vec2_new(0, 0),
+		vec2_new(50, 50),
+		vec2_new(220, 10),
+		vec2_new(100, 100),
+		texture_get_id(gs, TEXTURE_FONT),
+		true
+	);
+}

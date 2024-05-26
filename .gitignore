@@ -1,0 +1,5 @@
+build/
+makefilegen
+makefilegen.*
+!makefilegen.cpp
+makefile
