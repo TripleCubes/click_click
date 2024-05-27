@@ -62,3 +62,14 @@ Vec2i fb_get_sz(const GraphicStuff &gs, int index) {
 	const Framebuffer &framebuffer = gs.framebuffer_list[index];
 	return vec2i_new(framebuffer.w, framebuffer.h);
 }
+
+void fb_resize(GraphicStuff &gs, int index, Vec2i sz) {
+	Framebuffer &framebuffer = gs.framebuffer_list[index];
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fbo);
+	framebuffer.w = sz.x;
+	framebuffer.h = sz.y;
+	glBindTexture(GL_TEXTURE_2D, framebuffer.texture_id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sz.x, sz.y, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, NULL);
+}

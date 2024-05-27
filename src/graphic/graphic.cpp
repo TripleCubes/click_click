@@ -6,9 +6,28 @@
 #include "../graphic_types/framebuffer.h"
 #include "../graphic_types/texture.h"
 
+#include "../types/vec2i.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
+
+#ifndef __EMSCRIPTEN__
+#include <glad/glad.h>
+#else
+#include <GLES2/gl2.h>
+#endif
+
+namespace {
+
+Vec2i get_main_fb_sz(const GraphicStuff &graphic_stuff) {
+	return vec2i_div_div(
+		graphic_stuff.current_window_sz,
+		graphic_stuff.px_scale
+	);
+}
+
+}
 
 bool graphic_init(GraphicStuff &graphic_stuff) {
 	std::vector<float> verticies_color_rect = {
@@ -48,8 +67,9 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		return false;
 	}
 
-
-	if (!framebuffer_new(graphic_stuff, 100, 100)) {
+	
+	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
+	if (!framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y)) {
 		std::cout << "cant init main frambuffer" << std::endl;
 		return false;
 	}
@@ -62,4 +82,16 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 
 	return true;
+}
+
+void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz) {
+	if (vec2i_equals(graphic_stuff.current_window_sz, sz)) {
+		return;
+	}
+
+	graphic_stuff.current_window_sz.x = sz.x;
+	graphic_stuff.current_window_sz.y = sz.y;
+
+	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
+	fb_resize(graphic_stuff, FRAMEBUFFER_MAIN, main_fb_sz);
 }

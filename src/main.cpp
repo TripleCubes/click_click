@@ -12,11 +12,18 @@
 #include "types/vec2i.h"
 
 namespace {
+const int INIT_W = 1000;
+const int INIT_H = 600;
+
+int window_w = INIT_W;
+int window_h = INIT_H;
+
+void on_resize(GLFWwindow *glfw_window, int w, int h) {
+	window_w = w;
+	window_h = h;
+}
 
 GLFWwindow * init() {
-	const int INIT_W = 1000;
-	const int INIT_H = 600;
-
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -40,7 +47,7 @@ GLFWwindow * init() {
 
 	glViewport(0, 0, INIT_W, INIT_H);
 
-	// CALLBACKS
+	glfwSetFramebufferSizeCallback(glfw_window, on_resize);
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
@@ -64,8 +71,9 @@ int main () {
 	GameTime game_time;
 
 	GraphicStuff graphic_stuff;
-	graphic_stuff.current_window_sz.x = 1000;
-	graphic_stuff.current_window_sz.y = 600;
+	graphic_stuff.current_window_sz.x = window_w;
+	graphic_stuff.current_window_sz.y = window_h;
+	graphic_stuff.px_scale = 2;
 	if (!graphic_init(graphic_stuff)) {
 		std::cout << "cant init graphic" << std::endl;
 		return 0;
@@ -75,10 +83,15 @@ int main () {
 		game_time.delta = glfwGetTime() - frame_start_time;
 		frame_start_time = glfwGetTime();
 		game_time.time_since_start = frame_start_time - game_start_time;
+
+		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
+		
 		glfwPollEvents();
+
 		update(game_time);
 
 		draw(graphic_stuff, game_time);
+		
 		glfwSwapBuffers(glfw_window);
 	}
 

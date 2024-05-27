@@ -11,4 +11,8 @@ struct Vec2i {
 Vec2i vec2i_new(int x, int y);
 Vec2i to_vec2i(Vec2 vec);
 
+bool vec2i_equals(Vec2i vec_a, Vec2i vec_b);
+Vec2i vec2i_div_div(Vec2i vec, int num);
+Vec2i vec2i_mul(Vec2i vec, int num);
+
 #endif

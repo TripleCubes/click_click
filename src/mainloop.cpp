@@ -47,7 +47,7 @@ void draw(const GraphicStuff &gs, const GameTime &game_time) {
 		fb_get_sz(gs, FRAMEBUFFER_MAIN),
 		vec2_new(10, 10),
 		vec2_new(80, 80),
-		2,
+		1,
 		color_new(1, 1, 1, 1)
 	);
 
@@ -58,9 +58,9 @@ void draw(const GraphicStuff &gs, const GameTime &game_time) {
 
 	draw_texture(gs, gs.current_window_sz, fb_get_sz(gs, FRAMEBUFFER_MAIN),
 		vec2_new(0, 0),
-		vec2_new(100, 100),
-		vec2_new(10, 10),
-		vec2_new(200, 200),
+		to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)),
+		vec2_new(0, 0),
+		vec2_mul(to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)), gs.px_scale),
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
 	);
