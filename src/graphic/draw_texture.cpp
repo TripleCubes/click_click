@@ -37,8 +37,11 @@ bool flip) {
 		from_sz.y / texture_sz_f.y
 	);
 
-	from_pos_normalized.y = 1 - from_pos_normalized.y - from_sz_normalized.y;
-	
+	if (!flip) {
+		from_pos_normalized.y
+			= 1 - from_pos_normalized.y - from_sz_normalized.y;
+	}
+
 	Vec2 pos_normalized = vec2_new(pos.x / fb_sz_f.x, pos.y / fb_sz_f.y);
 	pos_normalized = vec2_mul(pos_normalized, 2);
 	pos_normalized = vec2_add(pos_normalized, vec2_new(-1, -1));

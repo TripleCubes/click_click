@@ -11,10 +11,6 @@
 
 #include "types/vec2i.h"
 
-#include <cmath>
-#include <chrono>
-#include <thread>
-
 namespace {
 
 GLFWwindow * init() {
@@ -35,6 +31,7 @@ GLFWwindow * init() {
 	}
 
 	glfwMakeContextCurrent(glfw_window);
+	glfwSwapInterval(1);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "failed to initialize glad" << std::endl;
@@ -54,18 +51,9 @@ GLFWwindow * init() {
 	return glfw_window;
 }
 
-void sleep_for_sec(float time_sec) {
-	using namespace std::chrono;
-	using namespace std::this_thread;
-
-	sleep_for(milliseconds((int)std::round(time_sec * 1000)));
-}
-
 }
 
 int main () {
-	const int FPS_CAP = 60;
-
 	GLFWwindow *glfw_window = init();
 	if (glfw_window == NULL) {
 		return 0;
@@ -90,11 +78,8 @@ int main () {
 		glfwPollEvents();
 		update(game_time);
 
-		draw(graphic_stuff);
+		draw(graphic_stuff, game_time);
 		glfwSwapBuffers(glfw_window);
-
-		float frame_time = glfwGetTime() - frame_start_time;
-		sleep_for_sec(1/(float)FPS_CAP - frame_time);
 	}
 
 	glfwTerminate();

@@ -44,7 +44,7 @@ void main_loop() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
-	draw(graphic_stuff);
+	draw(graphic_stuff, game_time);
 	glfwSwapBuffers();
 }
 

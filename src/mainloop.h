@@ -5,6 +5,6 @@ struct GraphicStuff;
 struct GameTime;
 
 void update(const GameTime &game_time);
-void draw(const GraphicStuff &gs);
+void draw(const GraphicStuff &gs, const GameTime &game_time);
 
 #endif

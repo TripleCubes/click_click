@@ -10,6 +10,7 @@
 #include "graphic/basic_draw_op.h"
 #include "graphic/draw_rect.h"
 #include "graphic/draw_texture.h"
+#include "graphic/draw_text.h"
 
 #include "types/vec2.h"
 #include "types/color.h"
@@ -23,7 +24,7 @@
 void update(const GameTime &game_time) {
 }
 
-void draw(const GraphicStuff &gs) {
+void draw(const GraphicStuff &gs, const GameTime &game_time) {
 	bind_framebuffer(gs, FRAMEBUFFER_MAIN);
 	clear(color_new(1, 1, 1, 1));
 
@@ -40,6 +41,17 @@ void draw(const GraphicStuff &gs) {
 		vec2_new(30, 10),
 		color_new(244/255.0f, 133/255.0f, 124/255.0f, 1));
 
+	draw_text(
+		gs,
+		std::to_string(1/game_time.delta),
+		fb_get_sz(gs, FRAMEBUFFER_MAIN),
+		vec2_new(10, 10),
+		vec2_new(80, 80),
+		2,
+		color_new(1, 1, 1, 1)
+	);
+
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
 	clear(color_new(0, 0, 0, 1));
@@ -51,15 +63,5 @@ void draw(const GraphicStuff &gs) {
 		vec2_new(200, 200),
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
-	);
-
-	draw_texture(
-		gs, gs.current_window_sz, texture_get_sz(gs, TEXTURE_FONT),
-		vec2_new(0, 0),
-		vec2_new(50, 50),
-		vec2_new(220, 10),
-		vec2_new(100, 100),
-		texture_get_id(gs, TEXTURE_FONT),
-		true
 	);
 }
