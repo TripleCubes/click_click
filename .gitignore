@@ -1,5 +1,8 @@
 build/
+
 makefilegen
 makefilegen.*
 !makefilegen.cpp
 makefile
+
+texture/*.png~
