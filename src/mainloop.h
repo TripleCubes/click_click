@@ -3,8 +3,10 @@
 
 struct GraphicStuff;
 struct GameTime;
+struct Input;
 
-void update(const GameTime &game_time);
+void update(const GraphicStuff &gs, const GameTime &game_time,
+	const Input &input);
 void draw(const GraphicStuff &gs, const GameTime &game_time);
 
 #endif

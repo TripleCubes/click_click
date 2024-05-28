@@ -8,6 +8,7 @@
 
 #include "graphic_types/graphic_types.h"
 #include "game_time.h"
+#include "input.h"
 #include "graphic/graphic.h"
 #include "mainloop.h"
 
@@ -15,6 +16,7 @@ namespace {
 
 GraphicStuff graphic_stuff;
 GameTime game_time;
+Input input;
 float game_start_time = 0;
 float frame_start_time = 0;
 
@@ -47,8 +49,14 @@ void main_loop() {
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	
 	glfwPollEvents();
+
+	int mouse_x = 0;
+	int mouse_y = 0;
+	glfwGetMousePos(&mouse_x, &mouse_y);
+	input.mouse_pos.x = mouse_x;
+	input.mouse_pos.y = mouse_y;
 	
-	update(game_time);
+	update(graphic_stuff, game_time, input);
 
 	draw(graphic_stuff, game_time);
 	

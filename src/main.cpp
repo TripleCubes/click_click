@@ -7,6 +7,7 @@
 #include "graphic_types/graphic_types.h"
 #include "graphic/graphic.h"
 #include "game_time.h"
+#include "input.h"
 #include "mainloop.h"
 
 #include "types/vec2i.h"
@@ -69,6 +70,7 @@ int main () {
 	float game_start_time = glfwGetTime();
 	float frame_start_time = game_start_time;
 	GameTime game_time;
+	Input input;
 
 	GraphicStuff graphic_stuff;
 	graphic_stuff.current_window_sz.x = window_w;
@@ -88,7 +90,13 @@ int main () {
 		
 		glfwPollEvents();
 
-		update(game_time);
+		double mouse_x;
+		double mouse_y;
+		glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
+		input.mouse_pos.x = mouse_x;
+		input.mouse_pos.y = mouse_y;
+
+		update(graphic_stuff, game_time, input);
 
 		draw(graphic_stuff, game_time);
 		

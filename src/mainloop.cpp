@@ -1,6 +1,7 @@
 #include "mainloop.h"
 
 #include "game_time.h"
+#include "input.h"
 #include "graphic_types/graphic_types.h"
 #include "graphic/graphic.h"
 
@@ -21,7 +22,8 @@
 #include <GLES2/gl2.h>
 #endif
 
-void update(const GameTime &game_time) {
+void update(const GraphicStuff &gs, const GameTime &game_time,
+const Input &input) {
 }
 
 void draw(const GraphicStuff &gs, const GameTime &game_time) {
