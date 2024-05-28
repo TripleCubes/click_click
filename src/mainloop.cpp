@@ -58,10 +58,14 @@ void draw(const GraphicStuff &gs, const GameTime &game_time) {
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
 	clear(color_new(0, 0, 0, 1));
 
+	Vec2i offset = vec2i_mul(fb_get_sz(gs, FRAMEBUFFER_MAIN), gs.px_scale);
+	offset = vec2i_sub(gs.current_window_sz, offset);
+	offset = vec2i_div_div(offset, 2);
+
 	draw_texture(gs, gs.current_window_sz, fb_get_sz(gs, FRAMEBUFFER_MAIN),
 		vec2_new(0, 0),
 		to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)),
-		vec2_new(0, 0),
+		to_vec2(offset),
 		vec2_mul(to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)), gs.px_scale),
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
