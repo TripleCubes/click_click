@@ -4,6 +4,7 @@
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
 #include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 
 #include "graphic_types/graphic_types.h"
 #include "game_time.h"
@@ -18,12 +19,13 @@ float game_start_time = 0;
 float frame_start_time = 0;
 
 bool init() {
-	const int INIT_W = 1000;
-	const int INIT_H = 600;
-
 	glfwInit();
 
-	if (glfwOpenWindow(INIT_W,INIT_H,8, 8, 8, 8, 0, 0,GLFW_WINDOW) != GL_TRUE){
+	double window_w = 0;
+	double window_h = 0;
+	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
+	if (glfwOpenWindow(window_w, window_h, 8, 8, 8, 8, 0, 0, GLFW_WINDOW)
+	                                                              != GL_TRUE) {
 		std::cout << "cant create window" << std::endl;
 		return false;
 	}
@@ -38,13 +40,18 @@ void main_loop() {
 	game_time.delta = glfwGetTime() - frame_start_time;
 	frame_start_time = glfwGetTime();
 	game_time.time_since_start = frame_start_time - game_start_time;
+
+	double window_w = 0;
+	double window_h = 0;
+	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
+	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
+	
 	glfwPollEvents();
+	
 	update(game_time);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDisable(GL_DEPTH_TEST);
 	draw(graphic_stuff, game_time);
+	
 	glfwSwapBuffers();
 }
 
@@ -58,8 +65,13 @@ int main() {
 	game_start_time = glfwGetTime();
 	frame_start_time = game_start_time;
 
-	graphic_stuff.current_window_sz.x = 1000;
-	graphic_stuff.current_window_sz.y = 600;
+	double window_w = 0;
+	double window_h = 0;
+	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
+
+	graphic_stuff.current_window_sz.x = window_w;
+	graphic_stuff.current_window_sz.y = window_h;
+	graphic_stuff.px_scale = 2;
 	if (!graphic_init(graphic_stuff)) {
 		std::cout << "cant init graphic" << std::endl;
 		return 0;
