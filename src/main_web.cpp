@@ -67,6 +67,7 @@ void main_loop() {
 
 int main() {
 	if (!init()) {
+		std::cout << "program exited" << std::endl;
 		return 0;
 	}
 
@@ -82,12 +83,15 @@ int main() {
 	graphic_stuff.px_scale = 2;
 	if (!graphic_init(graphic_stuff)) {
 		std::cout << "cant init graphic" << std::endl;
+		std::cout << "program exited" << std::endl;
 		return 0;
 	}
 
 	emscripten_set_main_loop(main_loop, 0, true);
 
 	glfwTerminate();
+	std::cout << "reached end of main" << std::endl;
+
 	return 0;
 }
 

@@ -64,6 +64,7 @@ GLFWwindow * init() {
 int main () {
 	GLFWwindow *glfw_window = init();
 	if (glfw_window == NULL) {
+		std::cout << "program exited" << std::endl;
 		return 0;
 	}
 
@@ -78,6 +79,7 @@ int main () {
 	graphic_stuff.px_scale = 2;
 	if (!graphic_init(graphic_stuff)) {
 		std::cout << "cant init graphic" << std::endl;
+		std::cout << "program exited" << std::endl;
 		return 0;
 	}
 
