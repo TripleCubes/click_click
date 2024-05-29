@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <stb_image.h>
 #include "../types/vec2i.h"
 #include "graphic_types.h"
@@ -50,4 +51,15 @@ unsigned int texture_get_id(const GraphicStuff &gs, int index) {
 Vec2i texture_get_sz(const GraphicStuff &gs, int index) {
 	const Texture &texture = gs.texture_list[index];
 	return vec2i_new(texture.w, texture.h);
+}
+
+void texture_data(GraphicStuff &gs, int index, Vec2i sz,
+const std::vector<unsigned char> &data) {
+	Texture &texture = gs.texture_list[index];
+
+	texture.w = sz.x;
+	texture.h = sz.y;
+	glBindTexture(GL_TEXTURE_2D, texture.id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sz.x, sz.y, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 }

@@ -1,6 +1,7 @@
 #ifndef __EMSCRIPTEN__
 
 #include <iostream>
+#include <vector>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -8,6 +9,7 @@
 #include "graphic/graphic.h"
 #include "game_time.h"
 #include "input.h"
+#include "tab/tab.h"
 #include "mainloop.h"
 
 #include "types/vec2i.h"
@@ -83,6 +85,8 @@ int main () {
 		return 0;
 	}
 
+	std::vector<Tab> tab_list;
+
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;
 		frame_start_time = glfwGetTime();
@@ -92,15 +96,11 @@ int main () {
 		
 		glfwPollEvents();
 
-		double mouse_x;
-		double mouse_y;
-		glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
-		input.mouse_pos.x = mouse_x;
-		input.mouse_pos.y = mouse_y;
+		input_update(input, glfw_window);
 
-		update(graphic_stuff, game_time, input);
+		update(graphic_stuff, tab_list, game_time, input);
 
-		draw(graphic_stuff, game_time);
+		draw(graphic_stuff, tab_list, game_time);
 		
 		glfwSwapBuffers(glfw_window);
 	}

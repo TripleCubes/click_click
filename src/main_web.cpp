@@ -1,6 +1,7 @@
 #ifdef __EMSCRIPTEN__
 
 #include <iostream>
+#include <vector>
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
 #include <emscripten/emscripten.h>
@@ -9,6 +10,7 @@
 #include "graphic_types/graphic_types.h"
 #include "game_time.h"
 #include "input.h"
+#include "tab/tab.h"
 #include "graphic/graphic.h"
 #include "mainloop.h"
 
@@ -17,6 +19,7 @@ namespace {
 GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
+std::vector<Tab> tab_list;
 float game_start_time = 0;
 float frame_start_time = 0;
 
@@ -50,15 +53,10 @@ void main_loop() {
 	
 	glfwPollEvents();
 
-	int mouse_x = 0;
-	int mouse_y = 0;
-	glfwGetMousePos(&mouse_x, &mouse_y);
-	input.mouse_pos.x = mouse_x;
-	input.mouse_pos.y = mouse_y;
-	
-	update(graphic_stuff, game_time, input);
+	input_update(input);
+	update(graphic_stuff, tab_list, game_time, input);
 
-	draw(graphic_stuff, game_time);
+	draw(graphic_stuff, tab_list, game_time);
 	
 	glfwSwapBuffers();
 }

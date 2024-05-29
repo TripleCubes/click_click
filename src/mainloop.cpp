@@ -1,8 +1,17 @@
 #include "mainloop.h"
 
+#ifndef __EMSCRIPTEN__
+#include <glad/glad.h>
+#else
+#include <GLES2/gl2.h>
+#endif
+
+#include <vector>
+
 #include "game_time.h"
 #include "input.h"
 #include "graphic_types/graphic_types.h"
+#include "tab/tab.h"
 #include "graphic/graphic.h"
 
 #include "graphic_types/framebuffer.h"
@@ -16,17 +25,15 @@
 #include "types/vec2.h"
 #include "types/color.h"
 
-#ifndef __EMSCRIPTEN__
-#include <glad/glad.h>
-#else
-#include <GLES2/gl2.h>
-#endif
+// TEST
+#include <iostream>
 
-void update(const GraphicStuff &gs, const GameTime &game_time,
-const Input &input) {
+void update(const GraphicStuff &gs, std::vector<Tab> &tab_list,
+const GameTime &game_time, const Input &input) {
 }
 
-void draw(const GraphicStuff &gs, const GameTime &game_time) {
+void draw(const GraphicStuff &gs, const std::vector<Tab> &tab_list,
+const GameTime &game_time) {
 	bind_framebuffer(gs, FRAMEBUFFER_MAIN);
 	clear(color_new(1, 1, 1, 1));
 
@@ -56,7 +63,7 @@ void draw(const GraphicStuff &gs, const GameTime &game_time) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
-	clear(color_new(0, 0, 0, 1));
+	clear(color_new(1, 1, 1, 1));
 
 	Vec2i offset = vec2i_mul(fb_get_sz(gs, FRAMEBUFFER_MAIN), gs.px_scale);
 	offset = vec2i_sub(gs.current_window_sz, offset);
