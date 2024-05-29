@@ -14,6 +14,10 @@
 #include "graphic/graphic.h"
 #include "mainloop.h"
 
+//TEST
+#include "types/vec2.h"
+#include "types/vec2i.h"
+
 namespace {
 
 GraphicStuff graphic_stuff;
@@ -56,7 +60,7 @@ void main_loop() {
 	input_update(input);
 	update(graphic_stuff, tab_list, game_time, input);
 
-	draw(graphic_stuff, tab_list, game_time);
+	draw(graphic_stuff, tab_list, game_time, input);
 	
 	glfwSwapBuffers();
 }
@@ -75,6 +79,13 @@ int main() {
 	double window_w = 0;
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
+
+	Tab tab;
+	tab.pos = vec2_new(10, 10);
+	tab.sz = vec2i_new(64, 64);
+	tab.px_scale = 2;
+	tab.data.resize(tab.sz.x * tab.sz.y * 4);
+	tab_list.push_back(tab);
 
 	graphic_stuff.current_window_sz.x = window_w;
 	graphic_stuff.current_window_sz.y = window_h;

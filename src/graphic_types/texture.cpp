@@ -44,6 +44,29 @@ bool texture_new(GraphicStuff &gs, const std::string &path) {
 	return true;
 }
 
+bool texture_blank_new(GraphicStuff &gs, int w, int h) {
+	Texture new_texture;
+	gs.texture_list.push_back(new_texture);
+
+	int texture_list_sz = (int)gs.texture_list.size();
+	Texture &texture = gs.texture_list[texture_list_sz - 1];
+
+	glGenTextures(1, &texture.id);
+	glBindTexture(GL_TEXTURE_2D, texture.id);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.w, texture.h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return true;
+}
+
 unsigned int texture_get_id(const GraphicStuff &gs, int index) {
 	return gs.texture_list[index].id;
 }

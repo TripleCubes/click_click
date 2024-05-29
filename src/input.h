@@ -19,6 +19,8 @@ struct Input {
 	bool right_click = false;
 	bool right_down = false;
 	bool right_release = false;
+
+	bool mouse_move = false;
 };
 
 #ifndef __EMSCRIPTEN__

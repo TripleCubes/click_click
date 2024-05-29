@@ -8,11 +8,17 @@
 
 #ifndef __EMSCRIPTEN__
 void input_update(Input &input, GLFWwindow *glfw_window) {
+	input.mouse_move = false;
+
 	double mouse_x;
 	double mouse_y;
 	glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
-	input.mouse_pos.x = mouse_x;
-	input.mouse_pos.y = mouse_y;
+	if (mouse_x != input.mouse_pos.x || mouse_y != input.mouse_pos.y) {
+		input.mouse_pos.x = mouse_x;
+		input.mouse_pos.y = mouse_y;
+		input.mouse_move = true;
+	}
+
 
 	input.left_click = false;
 	input.left_release = false;
@@ -47,11 +53,17 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 
 #else
 void input_update(Input &input) {
+	input.mouse_move = false;
+
 	int mouse_x = 0;
 	int mouse_y = 0;
 	glfwGetMousePos(&mouse_x, &mouse_y);
-	input.mouse_pos.x = mouse_x;
-	input.mouse_pos.y = mouse_y;
+	if (mouse_x != input.mouse_pos.x || mouse_y != input.mouse_pos.y) {
+		input.mouse_pos.x = mouse_x;
+		input.mouse_pos.y = mouse_y;
+		input.mouse_move = true;
+	}
+
 
 	input.left_click = false;
 	input.left_release = false;

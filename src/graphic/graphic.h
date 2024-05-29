@@ -13,6 +13,7 @@ const int SHADER_TEXTURE_RECT = 1;
 const int FRAMEBUFFER_MAIN = 0;
 
 const int TEXTURE_FONT = 0;
+const int TEXTURE_DRAW = 1;
 
 bool graphic_init(GraphicStuff &graphic_stuff);
 void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz);

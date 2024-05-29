@@ -23,57 +23,113 @@
 #include "graphic/draw_text.h"
 
 #include "types/vec2.h"
+#include "types/vec2i.h"
 #include "types/color.h"
+
+#include "basic_math.h"
 
 // TEST
 #include <iostream>
 
-void update(const GraphicStuff &gs, std::vector<Tab> &tab_list,
+namespace {
+
+Vec2i get_main_fb_sz(const GraphicStuff &gs) {
+	return vec2i_div_div(gs.current_window_sz, gs.px_scale);
+}
+
+Vec2 get_main_fb_offset(const GraphicStuff &gs) {
+	Vec2i main_fb_sz = get_main_fb_sz(gs);
+	Vec2i offset = vec2i_mul(main_fb_sz, gs.px_scale);
+	offset = vec2i_sub(gs.current_window_sz, offset);
+	offset = vec2i_div_div(offset, 2);
+	return to_vec2(offset);
+}
+
+Vec2 get_main_fb_mouse_pos(const GraphicStuff &gs, Vec2 mouse_pos) {
+	Vec2 result = vec2_div(mouse_pos, gs.px_scale);
+	result = vec2_add(result, get_main_fb_offset(gs));
+	return result;
+}
+
+Vec2i get_tex_draw_mouse_pos(const Tab &tab, Vec2 main_fb_mouse_pos) {
+	Vec2 result = vec2_sub(main_fb_mouse_pos, tab.pos);
+	result = vec2_div(result, tab.px_scale);
+	return to_vec2i(result);
+}
+
+}
+
+void update(GraphicStuff &gs, std::vector<Tab> &tab_list,
 const GameTime &game_time, const Input &input) {
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2i tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab_list[0], main_fb_mouse_pos);
+
+	if (tex_draw_mouse_pos.x >= 0 && tex_draw_mouse_pos.y >= 0
+	&& tex_draw_mouse_pos.x < tab_list[0].sz.x
+	&& tex_draw_mouse_pos.y < tab_list[0].sz.y) {
+		if ((input.left_down && input.mouse_move) || input.left_click) {
+			px(tab_list[0], tex_draw_mouse_pos, color_new(1, 0, 0, 1));
+			texture_data(gs, TEXTURE_DRAW, tab_list[0].sz, tab_list[0].data);
+		}
+	}
 }
 
 void draw(const GraphicStuff &gs, const std::vector<Tab> &tab_list,
-const GameTime &game_time) {
+const GameTime &game_time, const Input &input) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2i tex_draw_sz = texture_get_sz(gs, TEXTURE_DRAW);
+
 	bind_framebuffer(gs, FRAMEBUFFER_MAIN);
 	clear(color_new(1, 1, 1, 1));
 
-	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
-		vec2_new(0, 0),
-		vec2_new(10, 10),
-		color_new(159/255.0f, 222/255.0f, 146/255.0f, 1));
-	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
-		vec2_new(10, 10),
-		vec2_new(80, 80),
-		color_new(168/255.0f, 237/255.0f, 227/255.0f, 1));
-	draw_rect_sz(gs, fb_get_sz(gs, FRAMEBUFFER_MAIN),
-		vec2_new(80, 90),
-		vec2_new(30, 10),
-		color_new(244/255.0f, 133/255.0f, 124/255.0f, 1));
-
-	draw_text(
+	draw_texture(
 		gs,
-		std::to_string(1/game_time.delta),
-		fb_get_sz(gs, FRAMEBUFFER_MAIN),
-		vec2_new(10, 10),
-		vec2_new(80, 80),
-		1,
-		color_new(1, 1, 1, 1)
+		main_fb_sz,
+		tex_draw_sz,
+		
+		vec2_new(0, 0),
+		to_vec2(tex_draw_sz),
+		tab_list[0].pos,
+		vec2_mul(
+			to_vec2(tex_draw_sz), tab_list[0].px_scale
+		),
+		
+		texture_get_id(gs, TEXTURE_DRAW),
+		true
 	);
+
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2i tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab_list[0], main_fb_mouse_pos);
+
+	if (tex_draw_mouse_pos.x >= 0 && tex_draw_mouse_pos.y >= 0
+	&& tex_draw_mouse_pos.x < tab_list[0].sz.x
+	&& tex_draw_mouse_pos.y < tab_list[0].sz.y) {
+		draw_rect_sz(
+			gs,
+			main_fb_sz,
+			vec2_new(
+				floor2(main_fb_mouse_pos.x, tab_list[0].px_scale),
+				floor2(main_fb_mouse_pos.y, tab_list[0].px_scale)
+			),
+			vec2_new(tab_list[0].px_scale, tab_list[0].px_scale),
+			color_new(0, 0, 0, 1)
+		);
+	}
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
 	clear(color_new(1, 1, 1, 1));
 
-	Vec2i offset = vec2i_mul(fb_get_sz(gs, FRAMEBUFFER_MAIN), gs.px_scale);
-	offset = vec2i_sub(gs.current_window_sz, offset);
-	offset = vec2i_div_div(offset, 2);
-
-	draw_texture(gs, gs.current_window_sz, fb_get_sz(gs, FRAMEBUFFER_MAIN),
+	Vec2 offset = get_main_fb_offset(gs);
+	
+	draw_texture(gs, gs.current_window_sz, main_fb_sz,
 		vec2_new(0, 0),
-		to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)),
-		to_vec2(offset),
-		vec2_mul(to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN)), gs.px_scale),
+		to_vec2(main_fb_sz),
+		offset,
+		vec2_mul(to_vec2(main_fb_sz), gs.px_scale),
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
 	);

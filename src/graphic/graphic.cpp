@@ -75,14 +75,14 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	}
 
 
-	if (!framebuffer_new(graphic_stuff, 100, 100)) {
-		std::cout << "cant init draw framebuffer" << std::endl;
+	if (!texture_new(graphic_stuff, "./texture/font.png")) {
+		std::cout << "cant init texture font.png" << std::endl;
 		return false;
 	}
 
 
-	if (!texture_new(graphic_stuff, "./texture/font.png")) {
-		std::cout << "cant init texture font.png" << std::endl;
+	if (!texture_blank_new(graphic_stuff, 32, 32)) {
+		std::cout << "cant init draw texture" << std::endl;
 		return false;
 	}
 

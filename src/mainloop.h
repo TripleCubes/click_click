@@ -8,12 +8,13 @@ struct GameTime;
 struct Input;
 struct Tab;
 
-void update(const GraphicStuff &gs,
+void update(GraphicStuff &gs,
 	std::vector<Tab> &tab_list,
 	const GameTime &game_time,
 	const Input &input);
 void draw(const GraphicStuff &gs,
 	const std::vector<Tab> &tab_list,
-	const GameTime &game_time);
+	const GameTime &game_time,
+	const Input &input);
 
 #endif

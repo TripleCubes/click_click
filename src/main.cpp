@@ -86,6 +86,12 @@ int main () {
 	}
 
 	std::vector<Tab> tab_list;
+	Tab tab;
+	tab.pos = vec2_new(10, 10);
+	tab.sz = vec2i_new(64, 64);
+	tab.px_scale = 2;
+	tab.data.resize(tab.sz.x * tab.sz.y * 4);
+	tab_list.push_back(tab);
 
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;
@@ -100,7 +106,7 @@ int main () {
 
 		update(graphic_stuff, tab_list, game_time, input);
 
-		draw(graphic_stuff, tab_list, game_time);
+		draw(graphic_stuff, tab_list, game_time, input);
 		
 		glfwSwapBuffers(glfw_window);
 	}
