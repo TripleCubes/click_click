@@ -2,18 +2,37 @@
 
 #include "graphic_types.h"
 
+#include <vector>
+
 #ifndef __EMSCRIPTEN__
 #include <glad/glad.h>
 #else
 #include <GLES2/gl2.h>
 #endif
 
-bool mesh_new(GraphicStuff &graphic_stuff,const std::vector<float> &verticies){
-	Mesh new_mesh;
-	graphic_stuff.mesh_list.push_back(new_mesh);
+namespace {
 
-	int mesh_list_sz = (int)graphic_stuff.mesh_list.size();
-	Mesh &mesh = graphic_stuff.mesh_list[mesh_list_sz - 1];
+int get_blank_index(const std::vector<Mesh> &list) {
+	for (int i = 0; i < (int)list.size(); i++) {
+		if (!list[i].running) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+}
+
+int mesh_new(GraphicStuff &graphic_stuff,const std::vector<float> &verticies){
+	int index = get_blank_index(graphic_stuff.mesh_list);
+	if (index == -1) {
+		Mesh new_mesh;
+		graphic_stuff.mesh_list.push_back(new_mesh);
+
+		index = (int)graphic_stuff.mesh_list.size() - 1;
+	}
+	Mesh &mesh = graphic_stuff.mesh_list[index];
 
 	#ifndef __EMSCRIPTEN__
 	glGenVertexArrays(1, &mesh.vao);
@@ -35,7 +54,7 @@ bool mesh_new(GraphicStuff &graphic_stuff,const std::vector<float> &verticies){
 	
 	#endif
 
-	return true;
+	return index;
 }
 
 void draw_mesh(const GraphicStuff &graphic_stuff, int index) {

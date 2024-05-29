@@ -13,18 +13,35 @@
 #include <GLES2/gl2.h>
 #endif
 
-bool texture_new(GraphicStuff &gs, const std::string &path) {
-	Texture new_texture;
-	gs.texture_list.push_back(new_texture);
+namespace {
 
-	int texture_list_sz = (int)gs.texture_list.size();
-	Texture &texture = gs.texture_list[texture_list_sz - 1];
+int get_blank_index(const std::vector<Texture> &list) {
+	for (int i = 0; i < (int)list.size(); i++) {
+		if (!list[i].running) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+}
+
+int texture_new(GraphicStuff &gs, const std::string &path) {
+	int index = get_blank_index(gs.texture_list);
+	if (index == -1) {
+		Texture new_texture;
+		gs.texture_list.push_back(new_texture);
+
+		index = (int)gs.texture_list.size() - 1;
+	}
+	Texture &texture = gs.texture_list[index];
 
 	unsigned char *img_data = stbi_load(path.c_str(), &texture.w, &texture.h,
 		&texture.num_of_color_channels, 0);
 	if (!img_data) {
 		std::cout << "cant load img " << path << std::endl;
-		return false;
+		return -1;
 	}
 
 	glGenTextures(1, &texture.id);
@@ -41,15 +58,18 @@ bool texture_new(GraphicStuff &gs, const std::string &path) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(img_data);
 
-	return true;
+	return index;
 }
 
-bool texture_blank_new(GraphicStuff &gs, int w, int h) {
-	Texture new_texture;
-	gs.texture_list.push_back(new_texture);
+int texture_blank_new(GraphicStuff &gs, int w, int h) {
+	int index = get_blank_index(gs.texture_list);
+	if (index == -1) {
+		Texture new_texture;
+		gs.texture_list.push_back(new_texture);
 
-	int texture_list_sz = (int)gs.texture_list.size();
-	Texture &texture = gs.texture_list[texture_list_sz - 1];
+		index = (int)gs.texture_list.size() - 1;
+	}
+	Texture &texture = gs.texture_list[index];
 
 	glGenTextures(1, &texture.id);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
@@ -64,7 +84,7 @@ bool texture_blank_new(GraphicStuff &gs, int w, int h) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	return true;
+	return index;
 }
 
 unsigned int texture_get_id(const GraphicStuff &gs, int index) {

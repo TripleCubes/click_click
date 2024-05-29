@@ -1,6 +1,7 @@
 #include "framebuffer.h"
 
 #include <iostream>
+#include <vector>
 #include "graphic_types.h"
 #include "../types/vec2i.h"
 
@@ -10,12 +11,29 @@
 #include <GLES2/gl2.h>
 #endif
 
-bool framebuffer_new(GraphicStuff &gs, int w, int h) {
-	Framebuffer new_framebuffer;
-	gs.framebuffer_list.push_back(new_framebuffer);
+namespace {
 
-	int framebuffer_list_sz = (int)gs.framebuffer_list.size();
-	Framebuffer &framebuffer = gs.framebuffer_list[framebuffer_list_sz - 1];
+int get_blank_index(const std::vector<Framebuffer> &list) {
+	for (int i = 0; i < (int)list.size(); i++) {
+		if (!list[i].running) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+}
+
+int framebuffer_new(GraphicStuff &gs, int w, int h) {
+	int index = get_blank_index(gs.framebuffer_list);
+	if (index == -1) {
+		Framebuffer new_framebuffer;
+		gs.framebuffer_list.push_back(new_framebuffer);
+
+		index = (int)gs.framebuffer_list.size() - 1;
+	}
+	Framebuffer &framebuffer = gs.framebuffer_list[index];
 
 	framebuffer.w = w;
 	framebuffer.h = h;
@@ -38,12 +56,12 @@ bool framebuffer_new(GraphicStuff &gs, int w, int h) {
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		std::cout << "cant init framebuffer" << std::endl;
-		return false;
+		return -1;
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	return true;
+	return index;
 }
 
 void bind_framebuffer(const GraphicStuff &gs, int index) {

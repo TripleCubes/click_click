@@ -6,6 +6,7 @@
 #include "../types/vec2.h"
 
 #include <iostream>
+#include <vector>
 
 #ifndef __EMSCRIPTEN__
 #include <glad/glad.h>
@@ -76,20 +77,34 @@ const std::string &vertex_path, const std::string &fragment_path) {
 	return true;
 }
 
-}
-
-bool shader_new(GraphicStuff &graphic_stuff, const std::string &path) {
-	Shader new_shader;
-	graphic_stuff.shader_list.push_back(new_shader);
-	int shader_list_sz = (int)graphic_stuff.shader_list.size();
-
-	Shader &shader = graphic_stuff.shader_list[shader_list_sz - 1];
-	shader.id = glCreateProgram();
-	if (!link_shader_program(shader.id, path + "_v.glsl", path + "_f.glsl")) {
-		return false;
+int get_blank_index(const std::vector<Shader> &list) {
+	for (int i = 0; i < (int)list.size(); i++) {
+		if (!list[i].running) {
+			return i;
+		}
 	}
 
-	return true;
+	return -1;
+}
+
+}
+
+int shader_new(GraphicStuff &graphic_stuff, const std::string &path) {
+	int index = get_blank_index(graphic_stuff.shader_list);
+	if (index == -1) {
+		Shader new_shader;
+		graphic_stuff.shader_list.push_back(new_shader);
+		
+		index = (int)graphic_stuff.shader_list.size() - 1;
+	}
+	Shader &shader = graphic_stuff.shader_list[index];
+	
+	shader.id = glCreateProgram();
+	if (!link_shader_program(shader.id, path + "_v.glsl", path + "_f.glsl")) {
+		return -1;
+	}
+
+	return index;
 }
 
 void use_shader(const GraphicStuff &graphic_stuff, int index) {

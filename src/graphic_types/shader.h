@@ -7,7 +7,7 @@ struct GraphicStuff;
 struct Color;
 struct Vec2;
 
-bool shader_new(GraphicStuff &graphic_stuff, const std::string &path);
+int shader_new(GraphicStuff &graphic_stuff, const std::string &path);
 void use_shader(const GraphicStuff &graphic_stuff, int index);
 
 bool set_uniform_color(const GraphicStuff &graphic_stuff, int index,

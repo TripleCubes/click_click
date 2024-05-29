@@ -40,7 +40,7 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		0, 0,
 	};
 
-	if (!mesh_new(graphic_stuff, verticies_color_rect)) {
+	if (mesh_new(graphic_stuff, verticies_color_rect) == -1) {
 		std::cout << "cant init color_rect mesh" << std::endl;
 		return false;
 	}
@@ -51,7 +51,7 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	#else
 	std::string shader_color_rect_path = "./shader/color_rect_web";
 	#endif
-	if (!shader_new(graphic_stuff, shader_color_rect_path)) {
+	if (shader_new(graphic_stuff, shader_color_rect_path) == -1) {
 		std::cout << "cant init color_rect shader" << std::endl;
 		return false;
 	}
@@ -62,26 +62,26 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	#else
 	std::string shader_texture_rect_path = "./shader/texture_rect_web";
 	#endif
-	if (!shader_new(graphic_stuff, shader_texture_rect_path)) {
+	if (shader_new(graphic_stuff, shader_texture_rect_path) == -1) {
 		std::cout << "cant init texture_rect shader" << std::endl;
 		return false;
 	}
 
 	
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
-	if (!framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y)) {
+	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {
 		std::cout << "cant init main frambuffer" << std::endl;
 		return false;
 	}
 
 
-	if (!texture_new(graphic_stuff, "./texture/font.png")) {
+	if (texture_new(graphic_stuff, "./texture/font.png") == -1) {
 		std::cout << "cant init texture font.png" << std::endl;
 		return false;
 	}
 
 
-	if (!texture_blank_new(graphic_stuff, 32, 32)) {
+	if (texture_blank_new(graphic_stuff, 32, 32) == -1) {
 		std::cout << "cant init draw texture" << std::endl;
 		return false;
 	}

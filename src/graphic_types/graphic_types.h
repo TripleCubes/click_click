@@ -5,6 +5,7 @@
 #include "../types/vec2i.h"
 
 struct Mesh {
+	bool running = true;
 	unsigned int vbo = 0;
 	unsigned int vao = 0;
 	std::vector<float> verticies;
@@ -12,10 +13,12 @@ struct Mesh {
 };
 
 struct Shader {
+	bool running = true;
 	unsigned int id = 0;
 };
 
 struct Texture {
+	bool running = true;
 	unsigned int id = 0;
 	int w = 0;
 	int h = 0;
@@ -23,6 +26,7 @@ struct Texture {
 };
 
 struct Framebuffer {
+	bool running = true;
 	unsigned int fbo = 0;
 	unsigned int texture_id = 0;
 	int w = 0;
