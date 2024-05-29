@@ -62,3 +62,52 @@ Color color){
 
 	draw_rect_sz(gs, fb_sz, pos_a, vec2_sub(pos_b, pos_a), color);
 }
+
+void draw_rect_border_sz(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos,
+Vec2 sz, float border_w, Color color) {
+	if (sz.x == 0 || sz.y == 0) {
+		return;
+	}
+
+	if (sz.x < 0) {
+		sz.x = -sz.x;
+		pos.x = pos.x - sz.x + 1;
+	}
+
+	if (sz.y < 0) {
+		sz.y = -sz.y;
+		pos.y = pos.y - sz.y + 1;
+	}
+
+	Vec2 top_left = vec2_new(pos.x, pos.y);
+	Vec2 top_right = vec2_new(pos.x + sz.x - 1, pos.y);
+	Vec2 bottom_right = vec2_new(pos.x + sz.x - 1, pos.y + sz.y - 1);
+	Vec2 bottom_left = vec2_new(pos.x, pos.y + sz.y - 1);
+
+	draw_rect_sz(
+		gs,
+		fb_sz,
+		top_left,
+		vec2_new(sz.x, border_w),
+		color
+	);
+	draw_rect_sz(
+		gs,
+		fb_sz,
+		top_right,
+		vec2_new(- border_w, sz.y),
+		color
+	);
+	draw_rect_sz(
+		gs,
+		fb_sz,
+		bottom_right,
+		vec2_new(- sz.x, - border_w),
+		color);
+	draw_rect_sz(
+		gs,
+		fb_sz,
+		bottom_left,
+		vec2_new(border_w, - sz.y),
+		color);
+}
