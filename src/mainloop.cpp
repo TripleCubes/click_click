@@ -12,6 +12,8 @@
 #include "input.h"
 #include "graphic_types/graphic_types.h"
 #include "tab/tab.h"
+#include "ui/btn.h"
+#include "ui/ui_init.h"
 #include "graphic/graphic.h"
 
 #include "graphic_types/framebuffer.h"
@@ -27,40 +29,22 @@
 #include "types/color.h"
 
 #include "basic_math.h"
+#include "pos_convert.h"
 
 // TEST
 #include <iostream>
 
-namespace {
+void update(GraphicStuff &gs,
+std::vector<Tab> &tab_list,
+std::vector<Btn> &btn_list,
+const GameTime &game_time,
+const Input &input) {
+	btn_list_update(btn_list, gs, input);
 
-Vec2i get_main_fb_sz(const GraphicStuff &gs) {
-	return vec2i_div_div(gs.current_window_sz, gs.px_scale);
-}
+	if (btn_clicked(btn_list, BTN_TEST)) {
+		std::cout << "btn clicked" << std::endl;
+	}
 
-Vec2 get_main_fb_offset(const GraphicStuff &gs) {
-	Vec2i main_fb_sz = get_main_fb_sz(gs);
-	Vec2i offset = vec2i_mul(main_fb_sz, gs.px_scale);
-	offset = vec2i_sub(gs.current_window_sz, offset);
-	offset = vec2i_div_div(offset, 2);
-	return to_vec2(offset);
-}
-
-Vec2 get_main_fb_mouse_pos(const GraphicStuff &gs, Vec2 mouse_pos) {
-	Vec2 result = vec2_div(mouse_pos, gs.px_scale);
-	result = vec2_add(result, get_main_fb_offset(gs));
-	return result;
-}
-
-Vec2i get_tex_draw_mouse_pos(const Tab &tab, Vec2 main_fb_mouse_pos) {
-	Vec2 result = vec2_sub(main_fb_mouse_pos, tab.pos);
-	result = vec2_div(result, tab.px_scale);
-	return to_vec2i(result);
-}
-
-}
-
-void update(GraphicStuff &gs, std::vector<Tab> &tab_list,
-const GameTime &game_time, const Input &input) {
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2i tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab_list[0], main_fb_mouse_pos);
@@ -75,8 +59,11 @@ const GameTime &game_time, const Input &input) {
 	}
 }
 
-void draw(const GraphicStuff &gs, const std::vector<Tab> &tab_list,
-const GameTime &game_time, const Input &input) {
+void draw(const GraphicStuff &gs,
+const std::vector<Tab> &tab_list,
+const std::vector<Btn> &btn_list,
+const GameTime &game_time,
+const Input &input) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2i tex_draw_sz = texture_get_sz(gs, TEXTURE_DRAW);
 
@@ -117,6 +104,8 @@ const GameTime &game_time, const Input &input) {
 			color_new(0, 0, 0, 1)
 		);
 	}
+
+	btn_list_draw(btn_list, gs, input);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

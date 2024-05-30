@@ -9,5 +9,7 @@ struct Color {
 };
 
 Color color_new(float r, float g, float b, float a);
+Color color_add(Color color_a, Color color_b);
+Color color_sub(Color color_a, Color color_b);
 
 #endif

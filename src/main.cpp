@@ -10,6 +10,8 @@
 #include "game_time.h"
 #include "input.h"
 #include "tab/tab.h"
+#include "ui/btn.h"
+#include "ui/ui_init.h"
 #include "mainloop.h"
 
 #include "types/vec2i.h"
@@ -93,6 +95,9 @@ int main () {
 	tab.data.resize(tab.sz.x * tab.sz.y * 4);
 	tab_list.push_back(tab);
 
+	std::vector<Btn> btn_list;
+	ui_init(btn_list);
+
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;
 		frame_start_time = glfwGetTime();
@@ -104,9 +109,9 @@ int main () {
 
 		input_update(input, glfw_window);
 
-		update(graphic_stuff, tab_list, game_time, input);
+		update(graphic_stuff, tab_list, btn_list, game_time, input);
 
-		draw(graphic_stuff, tab_list, game_time, input);
+		draw(graphic_stuff, tab_list, btn_list, game_time, input);
 		
 		glfwSwapBuffers(glfw_window);
 	}
