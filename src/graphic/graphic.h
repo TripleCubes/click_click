@@ -8,7 +8,8 @@ const int MESH_RECT = 0;
 
 const int SHADER_COLOR_RECT = 0;
 const int SHADER_TEXTURE_RECT = 1;
-const int SHADER_COLOR_PICKER = 2;
+const int SHADER_COLOR_PICKER_POS_SELECT = 2;
+const int SHADER_COLOR_PICKER_HUE_SLIDER = 3;
 
 const int FRAMEBUFFER_MAIN = 0;
 

@@ -122,7 +122,7 @@ Color hue_to_rgb(float hue) {
 	else if (hue >= 3/6.0f && hue < 4/6.0f) {
 		color.r = 0;
 		color.g = 1 - ((hue - 3/6.0f) * 6);
-		color.b = 255;
+		color.b = 1;
 	}
 	else if (hue >= 4/6.0f && hue < 5/6.0f) {
 		color.r = (hue - 4/6.0f) * 6;

@@ -69,16 +69,31 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 
 	#ifndef __EMSCRIPTEN__
-	std::string shader_color_picker_path = "./shader/color_picker";
+	std::string shader_color_picker_pos_select_path
+		= "./shader/color_picker_pos_select";
 	#else
-	std::string shader_color_picker_path = "./shader/color_picker_web";
+	std::string shader_color_picker_pos_select_path
+		= "./shader/color_picker_pos_select_web";
 	#endif
-	if (shader_new(graphic_stuff, shader_color_picker_path) == -1) {
-		std::cout << "cant init color_picker shader" << std::endl;
+	if (shader_new(graphic_stuff, shader_color_picker_pos_select_path) == -1) {
+		std::cout << "cant init color_picker_pos_select shader" << std::endl;
 		return false;
 	}
 
-	
+
+	#ifndef __EMSCRIPTEN__
+	std::string shader_color_picker_hue_slider_path
+		= "./shader/color_picker_hue_slider";
+	#else
+	std::string shader_color_picker_hue_slider_path
+		= "./shader/color_picker_hue_slider_web";
+	#endif
+	if (shader_new(graphic_stuff, shader_color_picker_hue_slider_path) == -1) {
+		std::cout << "cant init color_picker_hue_slider shader" << std::endl;
+		return false;
+	}
+
+
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
 	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {
 		std::cout << "cant init main frambuffer" << std::endl;

@@ -2,6 +2,7 @@
 #define UI__COLOR_PICKER_H
 
 #include "pos_select.h"
+#include "hue_slider.h"
 #include "../types/color.h"
 
 struct Vec2;
@@ -11,6 +12,7 @@ struct ColorPicker {
 	bool show = false;
 	Vec2 pos;
 	PosSelect pos_select;
+	HueSlider hue_slider;
 };
 
 ColorPicker color_picker_new(Vec2 pos);
