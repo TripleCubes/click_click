@@ -26,6 +26,7 @@ int tab_new(std::vector<Tab> &tab_list, Vec2 pos, Vec2i sz, int px_scale) {
 
 		Tab &tab = tab_list[index];
 		tab.color_picker = color_picker_new(vec2_new(50, 10));
+		tab.color_pallete = color_pallete_new(vec2_new(300, 10));
 	}
 	Tab &tab = tab_list[index];
 

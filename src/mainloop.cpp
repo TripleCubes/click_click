@@ -13,6 +13,7 @@
 #include "graphic_types/graphic_types.h"
 #include "tab/tab.h"
 #include "ui/color_picker.h"
+#include "ui/color_pallete.h"
 #include "ui/btn.h"
 #include "ui/ui_init.h"
 #include "graphic/graphic.h"
@@ -42,6 +43,9 @@ const GameTime &game_time,
 const Input &input) {
 	btn_list_update(btn_list, gs, input);
 	color_picker_update(tab_list[0].color_picker, gs, input);
+	color_pallete_update(tab_list[0].color_pallete, gs, input);
+	
+	Color rgb = color_picker_get_rgb(tab_list[0].color_picker);
 
 	if (btn_holding(btn_list, BTN_TEST)) {
 		std::cout << "btn holding" << std::endl;
@@ -55,7 +59,7 @@ const Input &input) {
 	&& tex_draw_mouse_pos.x < tab_list[0].sz.x
 	&& tex_draw_mouse_pos.y < tab_list[0].sz.y) {
 		if ((input.left_down && input.mouse_move) || input.left_click) {
-			px(tab_list[0], tex_draw_mouse_pos, color_new(1, 0, 0, 1));
+			px(tab_list[0], tex_draw_mouse_pos, rgb);
 			texture_data(gs, TEXTURE_DRAW, tab_list[0].sz, tab_list[0].data);
 		}
 	}
@@ -109,6 +113,7 @@ const Input &input) {
 
 	btn_list_draw(btn_list, gs);
 	color_picker_draw(tab_list[0].color_picker, gs);
+	color_pallete_draw(tab_list[0].color_pallete, gs);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

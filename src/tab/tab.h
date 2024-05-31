@@ -5,6 +5,7 @@
 #include "../types/vec2i.h"
 #include "../types/vec2.h"
 #include "../ui/color_picker.h"
+#include "../ui/color_pallete.h"
 
 struct Color;
 
@@ -16,6 +17,7 @@ struct Tab {
 	int px_scale;
 
 	ColorPicker color_picker;
+	ColorPallete color_pallete;
 };
 
 int tab_new(std::vector<Tab> &tab_list, Vec2 pos, Vec2i sz, int px_scale);
