@@ -43,8 +43,8 @@ const Input &input) {
 	btn_list_update(btn_list, gs, input);
 	color_picker_update(tab_list[0].color_picker, gs, input);
 
-	if (btn_clicked(btn_list, BTN_TEST)) {
-		std::cout << "btn clicked" << std::endl;
+	if (btn_holding(btn_list, BTN_TEST)) {
+		std::cout << "btn holding" << std::endl;
 	}
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);

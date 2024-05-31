@@ -49,11 +49,17 @@ const std::string &text, bool show) {
 void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 	btn.hovered = false;
 	btn.clicked = false;
-	btn.holding = false;
 	btn.released = false;
 
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+
+	if (input.left_release) {
+		if (btn.holding) {
+			btn.released = true;
+		}
+		btn.holding = false;
+	}
 
 	if (!btn.show) {
 		return;
@@ -70,13 +76,8 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 	btn.hovered = true;
 
 	if (input.left_click) {
-		btn.clicked = true;
-	}
-	if (input.left_down) {
 		btn.holding = true;
-	}
-	if (input.left_release) {
-		btn.released = true;
+		btn.clicked = true;
 	}
 }
 
