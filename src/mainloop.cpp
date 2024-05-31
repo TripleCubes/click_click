@@ -12,6 +12,7 @@
 #include "input.h"
 #include "graphic_types/graphic_types.h"
 #include "tab/tab.h"
+#include "ui/color_picker.h"
 #include "ui/btn.h"
 #include "ui/ui_init.h"
 #include "graphic/graphic.h"
@@ -40,6 +41,7 @@ std::vector<Btn> &btn_list,
 const GameTime &game_time,
 const Input &input) {
 	btn_list_update(btn_list, gs, input);
+	color_picker_update(tab_list[0].color_picker, gs, input);
 
 	if (btn_clicked(btn_list, BTN_TEST)) {
 		std::cout << "btn clicked" << std::endl;
@@ -105,7 +107,8 @@ const Input &input) {
 		);
 	}
 
-	btn_list_draw(btn_list, gs, input);
+	btn_list_draw(btn_list, gs);
+	color_picker_draw(tab_list[0].color_picker, gs);
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

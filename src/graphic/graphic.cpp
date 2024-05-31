@@ -67,6 +67,17 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		return false;
 	}
 
+
+	#ifndef __EMSCRIPTEN__
+	std::string shader_color_picker_path = "./shader/color_picker";
+	#else
+	std::string shader_color_picker_path = "./shader/color_picker_web";
+	#endif
+	if (shader_new(graphic_stuff, shader_color_picker_path) == -1) {
+		std::cout << "cant init color_picker shader" << std::endl;
+		return false;
+	}
+
 	
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
 	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {

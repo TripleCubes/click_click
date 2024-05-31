@@ -27,13 +27,13 @@ int btn_new(std::vector<Btn> &btn_list, Vec2 pos, Vec2 sz, Color color,
 
 void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input);
 
-void btn_draw(const Btn &btn, const GraphicStuff &gs, const Input &input);
+void btn_draw(const Btn &btn, const GraphicStuff &gs);
 
 void btn_list_update(std::vector<Btn> &btn_list,
 	const GraphicStuff &gs, const Input &input);
 
 void btn_list_draw(const std::vector<Btn> &btn_list,
-	const GraphicStuff &gs, const Input &input);
+	const GraphicStuff &gs);
 
 bool btn_hovered(const std::vector<Btn> &btn_list, int index);
 bool btn_clicked(const std::vector<Btn> &btn_list, int index);

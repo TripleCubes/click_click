@@ -26,3 +26,17 @@ bool in_rect(Vec2 pos, Vec2 rect_pos, Vec2 rect_sz) {
 
 	return true;
 }
+
+float clampf(float f, float min, float max) {
+	if (f < min) { f = min; }
+	else if (f > max) { f = max; }
+
+	return f;
+}
+
+float clampi(float n, float min, float max) {
+	if (n < min) { n = min; }
+	else if (n > max) { n = max; }
+
+	return n;
+}

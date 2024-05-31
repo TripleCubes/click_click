@@ -39,7 +39,7 @@ Color color) {
 	set_uniform_vec2(gs, SHADER_COLOR_RECT, "u_pos", pos_normalized);
 	set_uniform_vec2(gs, SHADER_COLOR_RECT, "u_sz", sz_normalized);
 	set_uniform_color(gs, SHADER_COLOR_RECT, "u_color", color);
-	draw_mesh(gs, MESH_COLOR_RECT);
+	draw_mesh(gs, MESH_RECT);
 }
 
 void draw_rect_pos(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos_a, Vec2 pos_b,

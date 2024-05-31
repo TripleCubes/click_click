@@ -11,6 +11,8 @@
 #include "game_time.h"
 #include "input.h"
 #include "tab/tab.h"
+#include "ui/btn.h"
+#include "ui/ui_init.h"
 #include "graphic/graphic.h"
 #include "mainloop.h"
 
@@ -24,6 +26,7 @@ GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
 std::vector<Tab> tab_list;
+std::vector<Btn> btn_list;
 float game_start_time = 0;
 float frame_start_time = 0;
 
@@ -58,9 +61,9 @@ void main_loop() {
 	glfwPollEvents();
 
 	input_update(input);
-	update(graphic_stuff, tab_list, game_time, input);
+	update(graphic_stuff, tab_list, btn_list, game_time, input);
 
-	draw(graphic_stuff, tab_list, game_time, input);
+	draw(graphic_stuff, tab_list, btn_list, game_time, input);
 	
 	glfwSwapBuffers();
 }
@@ -80,12 +83,9 @@ int main() {
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 
-	Tab tab;
-	tab.pos = vec2_new(10, 10);
-	tab.sz = vec2i_new(64, 64);
-	tab.px_scale = 2;
-	tab.data.resize(tab.sz.x * tab.sz.y * 4);
-	tab_list.push_back(tab);
+	tab_new(tab_list, vec2_new(10, 200), vec2i_new(64, 64), 2);
+	
+	ui_init(btn_list);
 
 	graphic_stuff.current_window_sz.x = window_w;
 	graphic_stuff.current_window_sz.y = window_h;

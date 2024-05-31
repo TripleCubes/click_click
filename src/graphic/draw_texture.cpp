@@ -58,5 +58,5 @@ bool flip) {
 	set_uniform_vec2(gs, SHADER_TEXTURE_RECT, "u_pos", pos_normalized);
 	set_uniform_vec2(gs, SHADER_TEXTURE_RECT, "u_sz", sz_normalized);
 	set_uniform_texture(gs, SHADER_TEXTURE_RECT, "u_texture", 0, texture_id);
-	draw_mesh(gs, MESH_TEXTURE_RECT);
+	draw_mesh(gs, MESH_RECT);
 }

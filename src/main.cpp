@@ -88,12 +88,7 @@ int main () {
 	}
 
 	std::vector<Tab> tab_list;
-	Tab tab;
-	tab.pos = vec2_new(10, 10);
-	tab.sz = vec2i_new(64, 64);
-	tab.px_scale = 2;
-	tab.data.resize(tab.sz.x * tab.sz.y * 4);
-	tab_list.push_back(tab);
+	tab_new(tab_list, vec2_new(10, 200), vec2i_new(64, 64), 2);
 
 	std::vector<Btn> btn_list;
 	ui_init(btn_list);

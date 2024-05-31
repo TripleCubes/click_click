@@ -80,7 +80,7 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 	}
 }
 
-void btn_draw(const Btn &btn, const GraphicStuff &gs, const Input &input) {
+void btn_draw(const Btn &btn, const GraphicStuff &gs) {
 	if (!btn.show) {
 		return;
 	}
@@ -114,12 +114,12 @@ const GraphicStuff &gs, const Input &input) {
 }
 
 void btn_list_draw(const std::vector<Btn> &btn_list,
-const GraphicStuff &gs, const Input &input) {
+const GraphicStuff &gs) {
 	for (int i = 0; i < (int)btn_list.size(); i++) {
 		if (!btn_list[i].running) {
 			continue;
 		}
-		btn_draw(btn_list[i], gs, input);
+		btn_draw(btn_list[i], gs);
 	}
 }
 

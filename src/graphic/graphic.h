@@ -4,11 +4,11 @@
 struct GraphicStuff;
 struct Vec2i;
 
-const int MESH_COLOR_RECT = 0;
-const int MESH_TEXTURE_RECT = 0;
+const int MESH_RECT = 0;
 
 const int SHADER_COLOR_RECT = 0;
 const int SHADER_TEXTURE_RECT = 1;
+const int SHADER_COLOR_PICKER = 2;
 
 const int FRAMEBUFFER_MAIN = 0;
 
