@@ -34,9 +34,19 @@ float clampf(float f, float min, float max) {
 	return f;
 }
 
-float clampi(float n, float min, float max) {
+float clampi(int n, int min, int max) {
 	if (n < min) { n = min; }
 	else if (n > max) { n = max; }
 
 	return n;
+}
+
+float max3f(float a, float b, float c) {
+	if (a >= b && a >= c) {
+		return a;
+	}
+	if (b >= c && b >= a) {
+		return b;
+	}
+	return c;
 }

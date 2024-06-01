@@ -2,8 +2,6 @@
 
 #include "../basic_math.h"
 
-#include <iostream>
-
 namespace {
 
 Color cap(Color color) {
@@ -37,8 +35,31 @@ Color cap(Color color) {
 	return color;
 }
 
-//float rgb_to_hue(float r, float g, float b) {
-//}
+float hue_rgb_to_hue(Color hue_rgb) {
+	float result = 0;
+
+	if (hue_rgb.r == 1 && hue_rgb.b == 0) {
+		result = hue_rgb.g / 6;
+	}
+	if (hue_rgb.g == 1 && hue_rgb.b == 0) {
+		result = (1 - hue_rgb.r) / 6 + 1/6.0f;
+	}
+	if (hue_rgb.r == 0 && hue_rgb.g == 1) {
+		result = hue_rgb.b / 6 + 2/6.0f;
+	}
+	if (hue_rgb.r == 0 && hue_rgb.b == 1) {
+		result = (1 - hue_rgb.g) / 6 + 3/6.0f;
+	}
+	if (hue_rgb.g == 0 && hue_rgb.b == 1) {
+		result = hue_rgb.r / 6 + 4/6.0f;
+	}
+	if (hue_rgb.r == 1 && hue_rgb.g == 0) {
+		result = (1 - hue_rgb.b) / 6 + 5/6.0f;
+	}
+	
+	result = clampf(result, 0, 1);
+	return result;
+}
 
 Color saturation_scale(Color hue_rgb, float sat) {
 	Color color = hue_rgb;
@@ -153,5 +174,31 @@ Color hsv_to_rgb(Color hsv) {
 	return result;
 }
 
-//Color rgb_to_hsv() {
-//}
+Color rgb_to_hsv(Color rgb) {
+	Color hue_sat_rgb;
+
+	float value = max3f(rgb.r, rgb.g, rgb.b);
+	hue_sat_rgb.r = rgb.r / value;
+	hue_sat_rgb.g = rgb.g / value;
+	hue_sat_rgb.b = rgb.b / value;
+
+
+	Color hue_rgb;
+	float saturation = max3f(
+		1 - hue_sat_rgb.r,
+		1 - hue_sat_rgb.g,
+		1 - hue_sat_rgb.b
+	);
+	hue_rgb.r = 1 - ((1 - hue_sat_rgb.r) / saturation);
+	hue_rgb.g = 1 - ((1 - hue_sat_rgb.g) / saturation);
+	hue_rgb.b = 1 - ((1 - hue_sat_rgb.b) / saturation);
+
+
+	float hue = hue_rgb_to_hue(hue_rgb);
+
+	Color result = color_new(hue, saturation, value, 1);
+	result.a = 1;
+	result = cap(result);
+
+	return result;
+}

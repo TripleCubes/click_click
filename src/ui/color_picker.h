@@ -10,6 +10,7 @@ struct GraphicStuff;
 
 struct ColorPicker {
 	bool show = false;
+	bool color_changed = false;
 	Vec2 pos;
 	PosSelect pos_select;
 	HueSlider hue_slider;
@@ -25,5 +26,6 @@ const GraphicStuff &gs);
 
 Color color_picker_get_hsv(const ColorPicker &color_picker);
 Color color_picker_get_rgb(const ColorPicker &color_picker);
+void color_picker_set_rgb(ColorPicker &color_picker, Color rgb);
 
 #endif

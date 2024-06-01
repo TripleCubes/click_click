@@ -13,5 +13,6 @@ Color color_add(Color color_a, Color color_b);
 Color color_sub(Color color_a, Color color_b);
 Color hue_to_rgb(float hue);
 Color hsv_to_rgb(Color hsv);
+Color rgb_to_hsv(Color rgb);
 
 #endif

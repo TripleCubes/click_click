@@ -28,6 +28,8 @@ ColorPallete color_pallete_new(Vec2 pos) {
 
 void color_pallete_update(ColorPallete &color_pallete,
 const GraphicStuff &gs, const Input &input) {
+	color_pallete.selection_changed = false;
+
 	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 cp_pos = color_pallete.pos;
@@ -53,6 +55,7 @@ const GraphicStuff &gs, const Input &input) {
 			vec2_new(click_sz, click_sz)
 		)) {
 			color_pallete.selected_index = index;
+			color_pallete.selection_changed = true;
 			return;
 		}
 	}
@@ -67,7 +70,7 @@ const GraphicStuff &gs) {
 
 	for (int row = 0; row < COLOR_PALLETE_NUM_ROW; row++) {
 	for (int column = 0; column < COLOR_PALLETE_NUM_COLUMN; column++) {
-		//int index = get_index(color_pallete.at_page, row, column);
+		int index = get_index(color_pallete.at_page, row, column);
 
 		draw_rect_sz(
 			gs,
@@ -80,7 +83,7 @@ const GraphicStuff &gs) {
 				click_sz - 2 * COLOR_PALLETE_SPACING,
 				click_sz - 2 * COLOR_PALLETE_SPACING
 			),
-			color_new(1, 0, 0, 1)
+			color_pallete.color_list[index]
 		);
 	}
 	}

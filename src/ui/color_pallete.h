@@ -20,6 +20,7 @@ struct ColorPallete {
 	                  COLOR_PALLETE_NUM_ROW *
 	                  COLOR_PALLETE_NUM_PAGE> color_list;
 	int selected_index = 0;
+	bool selection_changed = false;
 	int at_page = 0;
 };
 

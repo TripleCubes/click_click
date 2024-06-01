@@ -43,6 +43,17 @@ const Input &input) {
 	
 	Color rgb = color_picker_get_rgb(tab_list[0].color_picker);
 
+	if (tab_list[0].color_picker.color_changed) {
+		int index = tab_list[0].color_pallete.selected_index;
+		tab_list[0].color_pallete.color_list[index] = rgb;
+	}
+	if (tab_list[0].color_pallete.selection_changed) {
+		int index = tab_list[0].color_pallete.selected_index;
+		Color color = tab_list[0].color_pallete.color_list[index];
+		color_picker_set_rgb(tab_list[0].color_picker, color);
+	}
+
+
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2i tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab_list[0], main_fb_mouse_pos);

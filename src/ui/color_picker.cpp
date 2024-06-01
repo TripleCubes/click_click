@@ -107,6 +107,15 @@ void color_picker_update(ColorPicker &color_picker,
 const GraphicStuff &gs, const Input &input) {
 	pos_select_update(color_picker.pos_select, gs, input);
 	hue_slider_update(color_picker.hue_slider, gs, input);
+
+	color_picker.color_changed = false;
+
+	if (color_picker.pos_select.selected) {
+		color_picker.color_changed = true;
+	}
+	if (color_picker.hue_slider.sliding) {
+		color_picker.color_changed = true;
+	}
 }
 
 void color_picker_draw(const ColorPicker &color_picker,
@@ -133,4 +142,14 @@ Color color_picker_get_hsv(const ColorPicker &color_picker) {
 Color color_picker_get_rgb(const ColorPicker &color_picker) {
 	Color hsv = color_picker_get_hsv(color_picker);
 	return hsv_to_rgb(hsv);
+}
+
+void color_picker_set_rgb(ColorPicker &color_picker, Color rgb) {
+	Color hsv = rgb_to_hsv(rgb);
+
+	color_picker.hue_slider.slide_percentage = hsv.r;
+	color_picker.pos_select.selected_pos.x
+		= hsv.g * color_picker.pos_select.sz.x;
+	color_picker.pos_select.selected_pos.y
+		= (1 - hsv.b) * color_picker.pos_select.sz.y;
 }
