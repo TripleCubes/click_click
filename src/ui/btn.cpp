@@ -12,38 +12,14 @@
 #include "../basic_math.h"
 #include "../pos_convert.h"
 
-namespace {
-
-int get_blank_index(const std::vector<Btn> &list) {
-	for (int i = 0; i < (int)list.size(); i++) {
-		if (!list[i].running) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-}
-
-int btn_new(std::vector<Btn> &btn_list, Vec2 pos, Vec2 sz, Color color,
-const std::string &text, bool show) {
-	int index = get_blank_index(btn_list);
-	if (index == -1) {
-		Btn new_btn;
-		btn_list.push_back(new_btn);
-
-		index = (int)btn_list.size() - 1;
-	}
-	Btn &btn = btn_list[index];
-
+Btn btn_new(Vec2 pos, Vec2 sz, Color color, const std::string &text) {
+	Btn btn;
 	btn.pos = pos;
 	btn.sz = sz;
 	btn.color = color;
 	btn.text = text;
-	btn.show = show;
 
-	return index;
+	return btn;
 }
 
 void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
@@ -59,10 +35,6 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 			btn.released = true;
 		}
 		btn.holding = false;
-	}
-
-	if (!btn.show) {
-		return;
 	}
 
 	if (!in_rect(mouse_pos, vec2_new(0, 0), to_vec2(main_fb_sz))) {
@@ -82,10 +54,6 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 }
 
 void btn_draw(const Btn &btn, const GraphicStuff &gs) {
-	if (!btn.show) {
-		return;
-	}
-
 	Color color = btn.color;
 	if (btn.holding) {
 		color = color_sub(color, color_new(0.1, 0.1, 0.1, 0));
@@ -102,40 +70,4 @@ void btn_draw(const Btn &btn, const GraphicStuff &gs) {
 		btn.sz,
 		color
 	);
-}
-
-void btn_list_update(std::vector<Btn> &btn_list,
-const GraphicStuff &gs, const Input &input) {
-	for (int i = 0; i < (int)btn_list.size(); i++) {
-		if (!btn_list[i].running) {
-			continue;
-		}
-		btn_update(btn_list[i], gs, input);
-	}
-}
-
-void btn_list_draw(const std::vector<Btn> &btn_list,
-const GraphicStuff &gs) {
-	for (int i = 0; i < (int)btn_list.size(); i++) {
-		if (!btn_list[i].running) {
-			continue;
-		}
-		btn_draw(btn_list[i], gs);
-	}
-}
-
-bool btn_hovered(const std::vector<Btn> &btn_list, int index) {
-	return btn_list[index].hovered;
-}
-
-bool btn_clicked(const std::vector<Btn> &btn_list, int index) {
-	return btn_list[index].clicked;
-}
-
-bool btn_holding(const std::vector<Btn> &btn_list, int index) {
-	return btn_list[index].holding;
-}
-
-bool btn_released(const std::vector<Btn> &btn_list, int index) {
-	return btn_list[index].released;
 }

@@ -14,8 +14,6 @@
 #include "tab/tab.h"
 #include "ui/color_picker.h"
 #include "ui/color_pallete.h"
-#include "ui/btn.h"
-#include "ui/ui_init.h"
 #include "graphic/graphic.h"
 
 #include "graphic_types/framebuffer.h"
@@ -38,18 +36,12 @@
 
 void update(GraphicStuff &gs,
 std::vector<Tab> &tab_list,
-std::vector<Btn> &btn_list,
 const GameTime &game_time,
 const Input &input) {
-	btn_list_update(btn_list, gs, input);
 	color_picker_update(tab_list[0].color_picker, gs, input);
 	color_pallete_update(tab_list[0].color_pallete, gs, input);
 	
 	Color rgb = color_picker_get_rgb(tab_list[0].color_picker);
-
-	if (btn_holding(btn_list, BTN_TEST)) {
-		std::cout << "btn holding" << std::endl;
-	}
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2i tex_draw_mouse_pos
@@ -67,7 +59,6 @@ const Input &input) {
 
 void draw(const GraphicStuff &gs,
 const std::vector<Tab> &tab_list,
-const std::vector<Btn> &btn_list,
 const GameTime &game_time,
 const Input &input) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
@@ -111,7 +102,6 @@ const Input &input) {
 		);
 	}
 
-	btn_list_draw(btn_list, gs);
 	color_picker_draw(tab_list[0].color_picker, gs);
 	color_pallete_draw(tab_list[0].color_pallete, gs);
 
