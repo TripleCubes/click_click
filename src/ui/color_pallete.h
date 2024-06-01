@@ -8,7 +8,7 @@
 const int COLOR_PALLETE_NUM_COLUMN = 8;
 const int COLOR_PALLETE_NUM_ROW = 2;
 const int COLOR_PALLETE_NUM_PAGE = 4;
-const float COLOR_PALLETE_SPACING = 2;
+const float COLOR_PALLETE_SPACING = 1;
 const float COLOR_PALLETE_COLOR_CLICK_SZ = 10;
 
 struct GraphicStuff;

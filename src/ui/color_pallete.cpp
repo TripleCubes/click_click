@@ -99,11 +99,14 @@ const GraphicStuff &gs) {
 		gs,
 		main_fb_sz,
 		vec2_new(
-			cp_pos.x + row * click_sz,
-			cp_pos.y + column * click_sz
+			cp_pos.x + row * click_sz - COLOR_PALLETE_SPACING,
+			cp_pos.y + column * click_sz - COLOR_PALLETE_SPACING
 		),
-		vec2_new(click_sz, click_sz),
-		COLOR_PALLETE_SPACING,
+		vec2_new(
+			click_sz + COLOR_PALLETE_SPACING * 2,
+			click_sz + COLOR_PALLETE_SPACING * 2
+		),
+		COLOR_PALLETE_SPACING * 2,
 		color_new(0, 0, 0, 1)
 	);
 }
