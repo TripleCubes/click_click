@@ -197,3 +197,11 @@ unsigned int texture_id) {
 
 	return true;
 }
+
+void shader_release(GraphicStuff &gs, int index) {
+	Shader &shader = gs.shader_list[index];
+
+	glDeleteProgram(shader.id);
+	shader.id = 0;
+	shader.running = false;
+}

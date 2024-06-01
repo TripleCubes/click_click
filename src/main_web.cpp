@@ -80,7 +80,7 @@ int main() {
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 
-	tab_new(tab_list, vec2_new(10, 200), vec2i_new(64, 64), 2);
+	tab_new(tab_list, graphic_stuff, vec2_new(10, 200), vec2i_new(64, 64), 2);
 
 	graphic_stuff.current_window_sz.x = window_w;
 	graphic_stuff.current_window_sz.y = window_h;
@@ -93,6 +93,7 @@ int main() {
 
 	emscripten_set_main_loop(main_loop, 0, true);
 
+	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;
 

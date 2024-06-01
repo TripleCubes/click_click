@@ -7,5 +7,6 @@ struct GraphicStuff;
 
 int mesh_new(GraphicStuff &graphic_stuff,const std::vector<float> &verticies);
 void draw_mesh(const GraphicStuff &graphic_stuff, int index);
+void mesh_release(GraphicStuff &gs, int index);
 
 #endif

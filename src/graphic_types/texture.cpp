@@ -106,3 +106,11 @@ const std::vector<unsigned char> &data) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sz.x, sz.y, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 }
+
+void texture_release(GraphicStuff &gs, int index) {
+	Texture &texture = gs.texture_list[index];
+
+	glDeleteTextures(1, &texture.id);
+	texture.id = 0;
+	texture.running = false;
+}

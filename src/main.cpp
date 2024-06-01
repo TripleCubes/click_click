@@ -86,7 +86,7 @@ int main () {
 	}
 
 	std::vector<Tab> tab_list;
-	tab_new(tab_list, vec2_new(10, 200), vec2i_new(64, 64), 2);
+	tab_new(tab_list, graphic_stuff, vec2_new(10, 200), vec2i_new(64, 64), 2);
 
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;
@@ -106,6 +106,7 @@ int main () {
 		glfwSwapBuffers(glfw_window);
 	}
 
+	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;
 

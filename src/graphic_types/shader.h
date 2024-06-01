@@ -24,4 +24,6 @@ bool set_uniform_texture(const GraphicStuff &graphic_stuff, int index,
 	const std::string &uniform_name, int texture_uniform_index,
 	unsigned int texture_id);
 
+void shader_release(GraphicStuff &gs, int index);
+
 #endif

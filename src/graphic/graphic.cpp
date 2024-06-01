@@ -107,12 +107,6 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	}
 
 
-	if (texture_blank_new(graphic_stuff, 32, 32) == -1) {
-		std::cout << "cant init draw texture" << std::endl;
-		return false;
-	}
-
-
 	return true;
 }
 

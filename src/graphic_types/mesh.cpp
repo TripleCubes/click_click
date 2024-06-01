@@ -76,3 +76,19 @@ void draw_mesh(const GraphicStuff &graphic_stuff, int index) {
 
 	#endif
 }
+
+void mesh_release(GraphicStuff &gs, int index) {
+	Mesh &mesh = gs.mesh_list[index];
+
+	#ifndef __EMSCRIPTEN__
+		glDeleteVertexArrays(1, &mesh.vao);
+		glDeleteBuffers(1, &mesh.vbo);
+	#else
+		glDeleteBuffers(1, &mesh.vbo);
+	#endif
+
+	mesh.vao = 0;
+	mesh.vbo = 0;
+
+	mesh.running = false;
+}

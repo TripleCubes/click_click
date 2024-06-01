@@ -91,3 +91,14 @@ void fb_resize(GraphicStuff &gs, int index, Vec2i sz) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sz.x, sz.y, 0,
 		GL_RGB, GL_UNSIGNED_BYTE, NULL);
 }
+
+void fb_release(GraphicStuff &gs, int index) {
+	Framebuffer fb = gs.framebuffer_list[index];
+
+	glDeleteTextures(1, &fb.texture_id);
+	glDeleteFramebuffers(1, &fb.fbo);
+
+	fb.texture_id = 0;
+	fb.fbo = 0;
+	fb.running = false;
+}

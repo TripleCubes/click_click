@@ -9,5 +9,6 @@ void bind_framebuffer(const GraphicStuff &gs, int index);
 unsigned int fb_get_texture_id(const GraphicStuff &gs, int index);
 Vec2i fb_get_sz(const GraphicStuff &gs, int index);
 void fb_resize(GraphicStuff &gs, int index, Vec2i sz);
+void fb_release(GraphicStuff &gs, int index);
 
 #endif

@@ -13,5 +13,6 @@ unsigned int texture_get_id(const GraphicStuff &gs, int index);
 Vec2i texture_get_sz(const GraphicStuff &gs, int index);
 void texture_data(GraphicStuff &gs, int index, Vec2i sz,
 	const std::vector<unsigned char> &data);
+void texture_release(GraphicStuff &gs, int index);
 
 #endif
