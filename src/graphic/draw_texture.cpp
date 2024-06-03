@@ -7,7 +7,7 @@
 #include "../graphic_types/mesh.h"
 #include "../graphic_types/shader.h"
 
-void draw_texture(const GraphicStuff &gs, Vec2i fb_sz, Vec2i texture_sz,
+void draw_texture(const GraphicStuff &gs, Vec2i texture_sz, Vec2i fb_sz,
 Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz, unsigned int texture_id,
 bool flip) {
 	if (sz.x == 0 || sz.y == 0) {

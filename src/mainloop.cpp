@@ -57,11 +57,16 @@ const Input &input) {
 
 	Vec2 offset = get_main_fb_offset(gs);
 	
-	draw_texture(gs, gs.current_window_sz, main_fb_sz,
+	draw_texture(
+		gs,
+		main_fb_sz,
+		gs.current_window_sz,
+
 		vec2_new(0, 0),
 		to_vec2(main_fb_sz),
 		offset,
 		vec2_mul(to_vec2(main_fb_sz), gs.px_scale),
+		
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
 	);

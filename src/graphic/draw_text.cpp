@@ -63,8 +63,8 @@ Vec2i fb_sz, Vec2 pos, Vec2 box_sz, int scale, Color color) {
 		draw_texture(
 			gs,
 
-			fb_sz,
 			texture_get_sz(gs, TEXTURE_FONT),
+			fb_sz,
 
 			char_pos,
 			vec2_new(4, 6),

@@ -92,8 +92,8 @@ void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input) {
 
 	draw_texture(
 		gs,
-		main_fb_sz,
 		tex_draw_sz,
+		main_fb_sz,
 		
 		vec2_new(0, 0),
 		to_vec2(tex_draw_sz),
