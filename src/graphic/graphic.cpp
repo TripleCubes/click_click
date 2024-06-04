@@ -94,6 +94,19 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	}
 
 
+	#ifndef __EMSCRIPTEN__
+	std::string shader_tab_draw_path
+		= "./shader/tab_draw";
+	#else
+	std::string shader_tab_draw_path
+		= "./shader/tab_draw_web";
+	#endif
+	if (shader_new(graphic_stuff, shader_tab_draw_path) == -1) {
+		std::cout << "cant init tab_draw shader" << std::endl;
+		return false;
+	}
+
+
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
 	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {
 		std::cout << "cant init main frambuffer" << std::endl;

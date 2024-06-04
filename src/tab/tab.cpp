@@ -4,6 +4,8 @@
 
 #include "../graphic_types/texture.h"
 #include "../graphic_types/framebuffer.h"
+#include "../graphic_types/shader.h"
+#include "../graphic_types/mesh.h"
 #include "../graphic/graphic.h"
 #include "../graphic/draw_rect.h"
 #include "../graphic/draw_texture.h"
@@ -25,6 +27,45 @@ int get_blank_index(const std::vector<Tab> &list) {
 	return -1;
 }
 
+void px(Tab &tab, Vec2i pos, float pallete_index) {
+	int index = tab.sz.y * pos.y + pos.x;
+	tab.draw_data[index] = pallete_index;
+}
+
+void pallete_data_color(Tab &tab, int pallete_index, Color color) {
+	int index = pallete_index * 4;
+	tab.pallete_data[index    ] = color.r * 255;
+	tab.pallete_data[index + 1] = color.g * 255;
+	tab.pallete_data[index + 2] = color.b * 255;
+	tab.pallete_data[index + 3] = color.a * 255;
+}
+
+void draw_draw_texture(const Tab &tab, const GraphicStuff &gs) {
+	Vec2 main_fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
+	Vec2 sz_f = to_vec2(tab.sz);
+	Vec2 pos_normalized = vec2_new(
+		tab.pos.x / main_fb_sz_f.x,
+		tab.pos.y / main_fb_sz_f.y
+	);
+	pos_normalized = vec2_mul(pos_normalized, 2);
+	pos_normalized = vec2_add(pos_normalized, vec2_new(-1, -1));
+	Vec2 sz_normalized = vec2_new(
+		sz_f.x / main_fb_sz_f.x * 2 * tab.px_scale,
+		sz_f.y / main_fb_sz_f.y * 2 * tab.px_scale
+	);
+	pos_normalized.y = - pos_normalized.y - sz_normalized.y;
+
+	use_shader(gs, SHADER_TAB_DRAW);
+	set_uniform_vec2(gs, SHADER_TAB_DRAW, "u_pos", pos_normalized);
+	set_uniform_vec2(gs, SHADER_TAB_DRAW, "u_sz", sz_normalized);
+	set_uniform_texture(gs, SHADER_TAB_DRAW,
+		"u_draw_texture", 0, texture_get_id(gs, tab.draw_texture_index));
+	set_uniform_texture(gs, SHADER_TAB_DRAW,
+		"u_pallete_texture", 1, texture_get_id(gs, tab.pallete_texture_index));
+
+	draw_mesh(gs, MESH_RECT);
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -41,35 +82,37 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
-	tab.data.resize(sz.x * sz.y * 4);
+	tab.draw_data.resize(sz.x * sz.y);
+	tab.pallete_data.resize(16 * 16, 1);
 	tab.color_picker = color_picker_new(vec2_new(50, 10));
 	tab.color_pallete = color_pallete_new(vec2_new(300, 10));
-	tab.texture_index = texture_blank_new(gs, sz.x, sz.y);
+
+	tab.draw_texture_index = texture_blank_new_red(gs, sz.x, sz.y);
+	tab.pallete_texture_index = texture_blank_new(gs, 16, 16);
+
+	texture_data(gs, tab.pallete_texture_index,
+		vec2i_new(16, 16), tab.pallete_data);
 
 	return index;
-}
-
-void px(Tab &tab, Vec2i pos, Color color) {
-	int index = tab.sz.y * pos.y * 4 + pos.x * 4;
-	tab.data[index    ] = color.r * 255;
-	tab.data[index + 1] = color.g * 255;
-	tab.data[index + 2] = color.b * 255;
-	tab.data[index + 3] = color.a * 255;
 }
 
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input) {
 	color_picker_update(tab.color_picker, gs, input);
 	color_pallete_update(tab.color_pallete, gs, input);
 	
-	Color rgb = color_picker_get_rgb(tab.color_picker);
+	int pallete_index = tab.color_pallete.selected_index;
 
 	if (tab.color_picker.color_changed) {
-		int index = tab.color_pallete.selected_index;
-		tab.color_pallete.color_list[index] = rgb;
+		Color color = color_picker_get_rgb(tab.color_picker);
+		tab.color_pallete.color_list[pallete_index] = color;
+
+		pallete_data_color(tab, pallete_index, color);
+		texture_data(gs, tab.pallete_texture_index,
+			vec2i_new(16, 16), tab.pallete_data);
 	}
+
 	if (tab.color_pallete.selection_changed) {
-		int index = tab.color_pallete.selected_index;
-		Color color = tab.color_pallete.color_list[index];
+		Color color = tab.color_pallete.color_list[pallete_index];
 		color_picker_set_rgb(tab.color_picker, color);
 	}
 
@@ -80,31 +123,16 @@ void tab_update(Tab &tab, GraphicStuff &gs, const Input &input) {
 
 	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
 		if ((input.left_down && input.mouse_move) || input.left_click) {
-			px(tab, tex_draw_mouse_pos, rgb);
-			texture_data(gs, tab.texture_index, tab.sz, tab.data);
+			px(tab, tex_draw_mouse_pos, pallete_index);
+			texture_data_red(gs, tab.draw_texture_index, tab.sz,tab.draw_data);
 		}
 	}
 }
 
 void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	Vec2i tex_draw_sz = texture_get_sz(gs, tab.texture_index);
 
-	draw_texture(
-		gs,
-		tex_draw_sz,
-		main_fb_sz,
-		
-		vec2_new(0, 0),
-		to_vec2(tex_draw_sz),
-		tab.pos,
-		vec2_mul(
-			to_vec2(tex_draw_sz), tab.px_scale
-		),
-		
-		texture_get_id(gs, tab.texture_index),
-		true
-	);
+	draw_draw_texture(tab, gs);
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2i tex_draw_mouse_pos = get_tex_draw_mouse_pos(tab, main_fb_mouse_pos);
@@ -128,7 +156,9 @@ void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input) {
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	Tab &tab = tab_list[index];
-	tab.data.clear();
-	texture_release(gs, tab.texture_index);
+	tab.draw_data.clear();
+	tab.pallete_data.clear();
+	texture_release(gs, tab.draw_texture_index);
+	texture_release(gs, tab.pallete_texture_index);
 	tab.running = false;
 }
