@@ -15,8 +15,8 @@ struct HueSlider {
 
 HueSlider hue_slider_new(Vec2 pos, Vec2 sz);
 void hue_slider_update(HueSlider &hue_slider,
-	const GraphicStuff &gs, const Input &input);
+	const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show);
 void hue_slider_draw(const HueSlider &hue_slider,
-	const GraphicStuff &gs);
+	const GraphicStuff &gs, Vec2 parent_pos);
 
 #endif

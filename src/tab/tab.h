@@ -28,8 +28,10 @@ struct Tab {
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 	Vec2 pos, Vec2i sz, int px_scale);
-void tab_update(Tab &tab, GraphicStuff &gs, const Input &input);
-void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input);
+void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
+	Vec2 parent_pos, bool show);
+void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input,
+	Vec2 parent_pos);
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
 #endif

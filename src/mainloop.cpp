@@ -36,7 +36,7 @@ void update(GraphicStuff &gs,
 std::vector<Tab> &tab_list,
 const GameTime &game_time,
 const Input &input) {
-	tab_update(tab_list[0], gs, input);
+	tab_update(tab_list[0], gs, input, vec2_new(0, 0), true);
 }
 
 void draw(const GraphicStuff &gs,
@@ -48,7 +48,7 @@ const Input &input) {
 	bind_framebuffer(gs, FRAMEBUFFER_MAIN);
 	clear(color_new(1, 1, 1, 1));
 
-	tab_draw(tab_list[0], gs, input);
+	tab_draw(tab_list[0], gs, input, vec2_new(0, 0));
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -19,10 +19,10 @@ struct ColorPicker {
 ColorPicker color_picker_new(Vec2 pos);
 
 void color_picker_update(ColorPicker &color_picker,
-const GraphicStuff &gs, const Input &input);
+	const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show);
 
 void color_picker_draw(const ColorPicker &color_picker,
-const GraphicStuff &gs);
+	const GraphicStuff &gs, Vec2 parent_pos);
 
 Color color_picker_get_hsv(const ColorPicker &color_picker);
 Color color_picker_get_rgb(const ColorPicker &color_picker);

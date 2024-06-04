@@ -40,12 +40,13 @@ void pallete_data_color(Tab &tab, int pallete_index, Color color) {
 	tab.pallete_data[index + 3] = color.a * 255;
 }
 
-void draw_draw_texture(const Tab &tab, const GraphicStuff &gs) {
+void draw_draw_texture(const Tab &tab, const GraphicStuff &gs,
+Vec2 pos) {
 	Vec2 main_fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
 	Vec2 sz_f = to_vec2(tab.sz);
 	Vec2 pos_normalized = vec2_new(
-		tab.pos.x / main_fb_sz_f.x,
-		tab.pos.y / main_fb_sz_f.y
+		pos.x / main_fb_sz_f.x,
+		pos.y / main_fb_sz_f.y
 	);
 	pos_normalized = vec2_mul(pos_normalized, 2);
 	pos_normalized = vec2_add(pos_normalized, vec2_new(-1, -1));
@@ -96,9 +97,16 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	return index;
 }
 
-void tab_update(Tab &tab, GraphicStuff &gs, const Input &input) {
-	color_picker_update(tab.color_picker, gs, input);
-	color_pallete_update(tab.color_pallete, gs, input);
+void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
+Vec2 parent_pos, bool show) {
+	color_picker_update(tab.color_picker, gs, input, parent_pos, show);
+	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
+
+	if (!show) {
+		return;
+	}
+
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
 	int pallete_index = tab.color_pallete.selected_index;
 
@@ -118,24 +126,34 @@ void tab_update(Tab &tab, GraphicStuff &gs, const Input &input) {
 
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2i tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, main_fb_mouse_pos);
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
-	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
-		if ((input.left_down && input.mouse_move) || input.left_click) {
-			px(tab, tex_draw_mouse_pos, pallete_index);
-			texture_data_red(gs, tab.draw_texture_index, tab.sz,tab.draw_data);
-		}
+	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
+		return;
+	}
+
+	if (!in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
+		return;
+	}
+
+	if ((input.left_down && input.mouse_move) || input.left_click) {
+		px(tab, tex_draw_mouse_pos, pallete_index);
+		texture_data_red(gs, tab.draw_texture_index, tab.sz,tab.draw_data);
 	}
 }
 
-void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input) {
+void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input,
+Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
-	draw_draw_texture(tab, gs);
+	draw_draw_texture(tab, gs, pos);
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2i tex_draw_mouse_pos = get_tex_draw_mouse_pos(tab, main_fb_mouse_pos);
+	Vec2i tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
 	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
 		draw_rect_sz(
@@ -150,8 +168,8 @@ void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input) {
 		);
 	}
 
-	color_picker_draw(tab.color_picker, gs);
-	color_pallete_draw(tab.color_pallete, gs);
+	color_picker_draw(tab.color_picker, gs, parent_pos);
+	color_pallete_draw(tab.color_pallete, gs, parent_pos);
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

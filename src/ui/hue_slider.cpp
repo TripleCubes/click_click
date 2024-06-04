@@ -18,17 +18,23 @@ HueSlider hue_slider_new(Vec2 pos, Vec2 sz) {
 }
 
 void hue_slider_update(HueSlider &hue_slider,
-const GraphicStuff &gs, const Input &input) {
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 pos = vec2_add(parent_pos, hue_slider.pos);
 
 	if (input.left_release) {
 		hue_slider.sliding = false;
 	}
 
+	if (!show) {
+		hue_slider.sliding = false;
+		return;
+	}
+
 	if (hue_slider.sliding) {
 		hue_slider.slide_percentage
-			= (mouse_pos.x - hue_slider.pos.x) / hue_slider.sz.x;
+			= (mouse_pos.x - pos.x) / hue_slider.sz.x;
 		hue_slider.slide_percentage = clampf(hue_slider.slide_percentage, 0,1);
 	}
 
@@ -36,7 +42,7 @@ const GraphicStuff &gs, const Input &input) {
 		return;
 	}
 
-	if (!in_rect(mouse_pos, hue_slider.pos, hue_slider.sz)) {
+	if (!in_rect(mouse_pos, pos, hue_slider.sz)) {
 		return;
 	}
 
@@ -46,15 +52,16 @@ const GraphicStuff &gs, const Input &input) {
 }
 
 void hue_slider_draw(const HueSlider &hue_slider,
-const GraphicStuff &gs) {
+const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2 pos = vec2_add(parent_pos, hue_slider.pos);
 
 	draw_rect_sz(
 		gs,
 		main_fb_sz,
 		vec2_new(
-			hue_slider.pos.x + hue_slider.slide_percentage * hue_slider.sz.x,
-			hue_slider.pos.y
+			pos.x + hue_slider.slide_percentage * hue_slider.sz.x,
+			pos.y
 		),
 		vec2_new(1, hue_slider.sz.y),
 		color_new(0, 0, 0, 1)

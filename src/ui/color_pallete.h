@@ -26,8 +26,8 @@ struct ColorPallete {
 
 ColorPallete color_pallete_new(Vec2 pos);
 void color_pallete_update(ColorPallete &color_pallete,
-	const GraphicStuff &gs, const Input &input);
+	const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show);
 void color_pallete_draw(const ColorPallete &color_pallete,
-	const GraphicStuff &gs);
+	const GraphicStuff &gs, Vec2 parent_pos);
 
 #endif

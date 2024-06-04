@@ -12,9 +12,9 @@
 namespace {
 
 void draw_pos_select_bkg(const ColorPicker &color_picker,
-const GraphicStuff &gs) {
+const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
-	Vec2 pos = color_picker.pos_select.pos;
+	Vec2 pos = vec2_add(color_picker.pos_select.pos, parent_pos);
 	Vec2 sz = color_picker.pos_select.sz;
 	
 	Vec2 pos_normalized = vec2_new(pos.x / fb_sz_f.x, pos.y / fb_sz_f.y);
@@ -53,9 +53,9 @@ const GraphicStuff &gs) {
 }
 
 void draw_hue_slider_bkg(const ColorPicker &color_picker,
-const GraphicStuff &gs) {
+const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
-	Vec2 pos = color_picker.hue_slider.pos;
+	Vec2 pos = vec2_add(color_picker.hue_slider.pos, parent_pos);
 	Vec2 sz = color_picker.hue_slider.sz;
 	
 	Vec2 pos_normalized = vec2_new(pos.x / fb_sz_f.x, pos.y / fb_sz_f.y);
@@ -104,11 +104,16 @@ ColorPicker color_picker_new(Vec2 pos) {
 }
 
 void color_picker_update(ColorPicker &color_picker,
-const GraphicStuff &gs, const Input &input) {
-	pos_select_update(color_picker.pos_select, gs, input);
-	hue_slider_update(color_picker.hue_slider, gs, input);
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
+	Vec2 pos = vec2_add(color_picker.pos, parent_pos);
+	pos_select_update(color_picker.pos_select, gs, input, pos, show);
+	hue_slider_update(color_picker.hue_slider, gs, input, pos, show);
 
 	color_picker.color_changed = false;
+
+	if (!show) {
+		return;
+	}
 
 	if (color_picker.pos_select.selected) {
 		color_picker.color_changed = true;
@@ -119,12 +124,13 @@ const GraphicStuff &gs, const Input &input) {
 }
 
 void color_picker_draw(const ColorPicker &color_picker,
-const GraphicStuff &gs) {
-	draw_pos_select_bkg(color_picker, gs);
-	draw_hue_slider_bkg(color_picker, gs);
+const GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 pos = vec2_add(color_picker.pos, parent_pos);
+	draw_pos_select_bkg(color_picker, gs, pos);
+	draw_hue_slider_bkg(color_picker, gs, pos);
 
-	pos_select_draw(color_picker.pos_select, gs);
-	hue_slider_draw(color_picker.hue_slider, gs);
+	pos_select_draw(color_picker.pos_select, gs, pos);
+	hue_slider_draw(color_picker.hue_slider, gs, pos);
 }
 
 Color color_picker_get_hsv(const ColorPicker &color_picker) {

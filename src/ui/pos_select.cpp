@@ -20,16 +20,22 @@ PosSelect pos_select_new(Vec2 pos, Vec2 sz) {
 }
 
 void pos_select_update(PosSelect &pos_select,
-const GraphicStuff &gs, const Input &input) {
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 pos = vec2_add(parent_pos, pos_select.pos);
 
 	if (input.left_release) {
 		pos_select.selected = false;
 	}
 
+	if (!show) {
+		pos_select.selected = false;
+		return;
+	}
+
 	if (pos_select.selected) {
-		pos_select.selected_pos = vec2_sub(mouse_pos, pos_select.pos);
+		pos_select.selected_pos = vec2_sub(mouse_pos, pos);
 		pos_select.selected_pos.x = clampf(
 			pos_select.selected_pos.x,
 			0,
@@ -46,7 +52,7 @@ const GraphicStuff &gs, const Input &input) {
 		return;
 	}
 
-	if (!in_rect(mouse_pos, pos_select.pos, pos_select.sz)) {
+	if (!in_rect(mouse_pos, pos, pos_select.sz)) {
 		return;
 	}
 
@@ -56,9 +62,10 @@ const GraphicStuff &gs, const Input &input) {
 }
 
 void pos_select_draw(const PosSelect &pos_select,
-const GraphicStuff &gs) {
+const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	Vec2 pspos = vec2_add(pos_select.pos, pos_select.selected_pos);
+	Vec2 pspos = vec2_add(pos_select.pos, parent_pos);
+	pspos = vec2_add(pspos, pos_select.selected_pos);
 	Color color = color_new(0, 0, 0, 1);
 
 	draw_rect_sz(
