@@ -22,18 +22,21 @@ Btn btn_new(Vec2 pos, Vec2 sz, Color color, const std::string &text) {
 	return btn;
 }
 
-void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
+void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input,
+Vec2 parent_pos, bool show) {
 	btn.hovered = false;
 	btn.clicked = false;
-	btn.released = false;
+
+	if (!show) {
+		btn.holding = false;
+		return;
+	}
 
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 pos = vec2_add(parent_pos, btn.pos);
 
 	if (input.left_release) {
-		if (btn.holding) {
-			btn.released = true;
-		}
 		btn.holding = false;
 	}
 
@@ -41,7 +44,7 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 		return;
 	}
 
-	if (!in_rect(mouse_pos, btn.pos, btn.sz)) {
+	if (!in_rect(mouse_pos, pos, btn.sz)) {
 		return;
 	}
 
@@ -53,8 +56,10 @@ void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input) {
 	}
 }
 
-void btn_draw(const Btn &btn, const GraphicStuff &gs) {
+void btn_draw(const Btn &btn, const GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, btn.pos);
 	Color color = btn.color;
+	
 	if (btn.holding) {
 		color = color_sub(color, color_new(0.1, 0.1, 0.1, 0));
 	}
@@ -66,7 +71,7 @@ void btn_draw(const Btn &btn, const GraphicStuff &gs) {
 	draw_rect_sz(
 		gs,
 		main_fb_sz,
-		btn.pos,
+		pos,
 		btn.sz,
 		color
 	);
