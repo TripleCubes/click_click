@@ -1,5 +1,7 @@
 #include "color_pallete.h"
 
+#include <string>
+
 #include "../graphic_types/graphic_types.h"
 #include "../graphic/draw_rect.h"
 #include "../input.h"
@@ -23,6 +25,20 @@ int get_index(int page, int row, int column) {
 ColorPallete color_pallete_new(Vec2 pos) {
 	ColorPallete color_pallete;
 	color_pallete.pos = pos;
+
+	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
+		color_pallete.page_btn_list[i] = btn_new(
+			vec2_new(
+				(COLOR_PALLETE_COLOR_CLICK_SZ + COLOR_PALLETE_SPACING * 2) *
+					COLOR_PALLETE_NUM_ROW,
+				i * COLOR_PALLETE_PAGE_BTN_SZ.y
+			),
+			COLOR_PALLETE_PAGE_BTN_SZ,
+			color_new(1, 87/255.0f, 95/255.0f, 1),
+			std::to_string(i)
+		);
+	}
+
 	return color_pallete;
 }
 
@@ -30,14 +46,33 @@ void color_pallete_update(ColorPallete &color_pallete,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	color_pallete.selection_changed = false;
 
+	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
+
+	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
+		btn_update(color_pallete.page_btn_list[i], gs, input, cp_pos, show);
+	}
+
 	if (!show) {
 		return;
 	}
 
 	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
-	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
+
+	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
+		const Btn &btn = color_pallete.page_btn_list[i];
+		if (btn.clicked) {
+			color_pallete.at_page = i;
+
+			int row = color_pallete.selected_index / COLOR_PALLETE_NUM_COLUMN %
+				COLOR_PALLETE_NUM_ROW;
+			int column = color_pallete.selected_index %
+				COLOR_PALLETE_NUM_COLUMN;
+			color_pallete.selected_index = get_index(i, row, column);
+			color_pallete.selection_changed = true;
+		}
+	}
+
 
 	if (!in_rect(mouse_pos, vec2_new(0, 0), main_fb_sz)) {
 		return;
@@ -50,14 +85,14 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	for (int row = 0; row < COLOR_PALLETE_NUM_ROW; row++) {
 	for (int column = 0; column < COLOR_PALLETE_NUM_COLUMN; column++) {
 		int index = get_index(color_pallete.at_page, row, column);
-
+		
 		if (in_rect(
 			mouse_pos,
 			vec2_new(
-				cp_pos.x + click_sz * row,
-				cp_pos.y + click_sz * column
+				cp_pos.x + COLOR_PALLETE_COLOR_CLICK_SZ * row,
+				cp_pos.y + COLOR_PALLETE_COLOR_CLICK_SZ * column
 			),
-			vec2_new(click_sz, click_sz)
+			vec2_new(COLOR_PALLETE_COLOR_CLICK_SZ,COLOR_PALLETE_COLOR_CLICK_SZ)
 		)) {
 			color_pallete.selected_index = index;
 			color_pallete.selection_changed = true;
@@ -72,6 +107,10 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2i main_fb_sz = get_main_fb_sz(gs);
 	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
 	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
+
+	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
+		btn_draw(color_pallete.page_btn_list[i], gs, cp_pos);
+	}
 
 	for (int row = 0; row < COLOR_PALLETE_NUM_ROW; row++) {
 	for (int column = 0; column < COLOR_PALLETE_NUM_COLUMN; column++) {

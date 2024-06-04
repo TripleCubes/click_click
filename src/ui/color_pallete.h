@@ -4,12 +4,14 @@
 #include <array>
 #include "../types/vec2.h"
 #include "../types/color.h"
+#include "btn.h"
 
 const int COLOR_PALLETE_NUM_COLUMN = 8;
 const int COLOR_PALLETE_NUM_ROW = 2;
 const int COLOR_PALLETE_NUM_PAGE = 4;
 const float COLOR_PALLETE_SPACING = 1;
 const float COLOR_PALLETE_COLOR_CLICK_SZ = 10;
+const Vec2 COLOR_PALLETE_PAGE_BTN_SZ = vec2_new(10, 15);
 
 struct GraphicStuff;
 struct Input;
@@ -22,6 +24,8 @@ struct ColorPallete {
 	int selected_index = 0;
 	bool selection_changed = false;
 	int at_page = 0;
+
+	std::array<Btn, COLOR_PALLETE_NUM_PAGE> page_btn_list;
 };
 
 ColorPallete color_pallete_new(Vec2 pos);
