@@ -70,10 +70,10 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 	#ifndef __EMSCRIPTEN__
 	std::string shader_color_picker_pos_select_path
-		= "./shader/color_picker_pos_select";
+		= "./shader/color_picker/pos_select";
 	#else
 	std::string shader_color_picker_pos_select_path
-		= "./shader/color_picker_pos_select_web";
+		= "./shader/color_picker/pos_select_web";
 	#endif
 	if (shader_new(graphic_stuff, shader_color_picker_pos_select_path) == -1) {
 		std::cout << "cant init color_picker_pos_select shader" << std::endl;
@@ -83,10 +83,10 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 	#ifndef __EMSCRIPTEN__
 	std::string shader_color_picker_hue_slider_path
-		= "./shader/color_picker_hue_slider";
+		= "./shader/color_picker/hue_slider";
 	#else
 	std::string shader_color_picker_hue_slider_path
-		= "./shader/color_picker_hue_slider_web";
+		= "./shader/color_picker/hue_slider_web";
 	#endif
 	if (shader_new(graphic_stuff, shader_color_picker_hue_slider_path) == -1) {
 		std::cout << "cant init color_picker_hue_slider shader" << std::endl;
@@ -96,10 +96,10 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 	#ifndef __EMSCRIPTEN__
 	std::string shader_tab_draw_path
-		= "./shader/tab_draw";
+		= "./shader/tab/tab_draw";
 	#else
 	std::string shader_tab_draw_path
-		= "./shader/tab_draw_web";
+		= "./shader/tab/tab_draw_web";
 	#endif
 	if (shader_new(graphic_stuff, shader_tab_draw_path) == -1) {
 		std::cout << "cant init tab_draw shader" << std::endl;

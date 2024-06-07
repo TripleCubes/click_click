@@ -21,6 +21,7 @@
 
 #include "graphic/basic_draw_op.h"
 #include "graphic/draw_texture.h"
+#include "graphic/draw_text.h"
 
 #include "types/vec2.h"
 #include "types/vec2i.h"

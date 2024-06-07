@@ -35,6 +35,9 @@ int texture_blank_new_format(GraphicStuff &gs, int w, int h, bool red) {
 	}
 	Texture &texture = gs.texture_list[index];
 
+	texture.w = w;
+	texture.h = h;
+
 	glGenTextures(1, &texture.id);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	
@@ -45,10 +48,21 @@ int texture_blank_new_format(GraphicStuff &gs, int w, int h, bool red) {
 
 	GLint format = GL_RGBA;
 	if (red) {
+		#ifndef __EMSCRIPTEN__
 		format = GL_RED;
+		#else
+		format = GL_ALPHA;
+		#endif
+	}
+	std::vector<unsigned char> blank_data;
+	if (red) {
+		blank_data.resize(w * h, 0);
+	}
+	else {
+		blank_data.resize(w * h * 4, 0);
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, texture.w, texture.h, 0,
-		format, GL_UNSIGNED_BYTE, NULL);
+		format, GL_UNSIGNED_BYTE, blank_data.data());
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -123,11 +137,17 @@ void texture_data_red(GraphicStuff &gs, int index, Vec2i sz,
 const std::vector<unsigned char> &data) {
 	Texture &texture = gs.texture_list[index];
 
+	#ifndef __EMSCRIPTEN__
+	GLint format = GL_RED;
+	#else
+	GLint format = GL_ALPHA;
+	#endif
+
 	texture.w = sz.x;
 	texture.h = sz.y;
 	glBindTexture(GL_TEXTURE_2D, texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, sz.x, sz.y, 0,
-		GL_RED, GL_UNSIGNED_BYTE, data.data());
+	glTexImage2D(GL_TEXTURE_2D, 0, format, sz.x, sz.y, 0,
+		format, GL_UNSIGNED_BYTE, data.data());
 }
 
 void texture_release(GraphicStuff &gs, int index) {

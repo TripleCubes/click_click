@@ -83,7 +83,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
-	tab.draw_data.resize(sz.x * sz.y);
+	tab.draw_data.resize(sz.x * sz.y, 0);
 	tab.pallete_data.resize(16 * 16, 1);
 	tab.color_picker = color_picker_new(vec2_new(50, 10));
 	tab.color_pallete = color_pallete_new(vec2_new(300, 10));
@@ -140,7 +140,7 @@ Vec2 parent_pos, bool show) {
 
 	if ((input.left_down && input.mouse_move) || input.left_click) {
 		px(tab, tex_draw_mouse_pos, pallete_index);
-		texture_data_red(gs, tab.draw_texture_index, tab.sz,tab.draw_data);
+		texture_data_red(gs, tab.draw_texture_index, tab.sz, tab.draw_data);
 	}
 }
 

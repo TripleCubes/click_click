@@ -52,8 +52,8 @@ Vec2 get_char_pos(char c) {
 	
 }
 
-void draw_text(const GraphicStuff &gs, const std::string &text,
-Vec2i fb_sz, Vec2 pos, Vec2 box_sz, int scale, Color color) {
+void draw_text(const GraphicStuff &gs, Vec2i fb_sz, const std::string &text,
+Vec2 pos, Vec2 box_sz, int scale, Color color) {
 	Vec2 cursor = pos;
 
 	for (int i = 0; i < (int)text.length(); i++) {
