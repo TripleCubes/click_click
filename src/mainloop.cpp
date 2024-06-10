@@ -51,15 +51,15 @@ const Input &input) {
 
 	tab_draw(tab_list[0], gs, input, vec2_new(0, 0));
 
-	draw_text_with_bkg(
+	draw_text(
 		gs,
 		main_fb_sz,
-		"This is a test",
+		"This is a test thsi is a test this is a tes",
 		vec2_new(10, 10),
-		55,
+		60,
 		1,
 		color_new(0, 0, 0, 1),
-		vec2_new(4, 2),
+		vec2_new(4, 3),
 		true
 	);
 
