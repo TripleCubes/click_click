@@ -9,6 +9,8 @@
 
 #include "draw_texture.h"
 #include "../graphic_types/texture.h"
+#include "../graphic_types/mesh.h"
+#include "../graphic_types/shader.h"
 #include "graphic.h"
 
 #include "draw_rect.h"
@@ -68,7 +70,7 @@ float box_w, int scale) {
 	for (int i = 0; i < (int)result.length(); i++) {
 		char c = result[i];
 		
-		float w = (i - last_line_break) * CHAR_W * scale;
+		float w = (i - last_line_break + 1) * CHAR_W * scale;
 	
 		if (c == ' ') {
 			current_word_start = i + 1;
@@ -113,9 +115,8 @@ Color color, bool flip_color, bool fill_bottom) {
 		char c = text[i];
 		Vec2 char_pos = get_char_pos(c);
 
-		draw_texture_one_color(
+		draw_texture_one_color_prepare(
 			gs,
-			texture_get_id(gs, TEXTURE_FONT),
 
 			texture_get_sz(gs, TEXTURE_FONT),
 			fb_sz,
@@ -130,6 +131,7 @@ Color color, bool flip_color, bool fill_bottom) {
 			color,
 			flip_color
 		);
+		draw_mesh(gs, MESH_RECT);
 
 		cursor.x += CHAR_W * scale;
 	}
@@ -177,6 +179,9 @@ bool flip_color) {
 
 	Vec2 cursor = pos;
 
+	use_shader(gs, SHADER_TEXTURE_ONE_COLOR);
+	set_uniform_texture(gs, SHADER_TEXTURE_ONE_COLOR, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_FONT));
 	for (int i = 0; i < (int)line_list.size(); i++) {
 		bool fill_bottom = true;
 		if (i == (int)line_list.size() - 1) {

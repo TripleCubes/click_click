@@ -62,6 +62,8 @@ void main_loop() {
 
 	draw(graphic_stuff, tab_list, game_time, input);
 	
+	game_time.frame_time = glfwGetTime() - frame_start_time;
+
 	glfwSwapBuffers();
 }
 

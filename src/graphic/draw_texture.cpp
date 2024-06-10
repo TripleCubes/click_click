@@ -63,7 +63,8 @@ bool flip) {
 	draw_mesh(gs, MESH_RECT);
 }
 
-void draw_texture_one_color(const GraphicStuff &gs, unsigned int texture_id,
+void draw_texture_one_color_prepare(
+const GraphicStuff &gs,
 Vec2i texture_sz, Vec2i fb_sz,
 Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz,
 bool flip, Color color, bool flip_color) {
@@ -108,7 +109,6 @@ bool flip, Color color, bool flip_color) {
 
 	pos_normalized.y = -pos_normalized.y - sz_normalized.y;
 
-	use_shader(gs, SHADER_TEXTURE_ONE_COLOR);
 	set_uniform_bool(gs, SHADER_TEXTURE_ONE_COLOR, "u_flip", flip);
 	set_uniform_vec2(gs, SHADER_TEXTURE_ONE_COLOR, "u_from_pos",
 		from_pos_normalized);
@@ -117,9 +117,32 @@ bool flip, Color color, bool flip_color) {
 	set_uniform_vec2(gs, SHADER_TEXTURE_ONE_COLOR, "u_pos",
 		pos_normalized);
 	set_uniform_vec2(gs, SHADER_TEXTURE_ONE_COLOR, "u_sz", sz_normalized);
-	set_uniform_texture(gs, SHADER_TEXTURE_ONE_COLOR, "u_texture", 0,
-		texture_id);
 	set_uniform_color(gs, SHADER_TEXTURE_ONE_COLOR, "u_color", color);
 	set_uniform_bool(gs, SHADER_TEXTURE_ONE_COLOR, "u_flip_color", flip_color);
+}
+
+void draw_texture_one_color(const GraphicStuff &gs, unsigned int texture_id,
+Vec2i texture_sz, Vec2i fb_sz,
+Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz,
+bool flip, Color color, bool flip_color) {
+	use_shader(gs, SHADER_TEXTURE_ONE_COLOR);
+	set_uniform_texture(gs, SHADER_TEXTURE_ONE_COLOR, "u_texture", 0,
+		texture_id);
+	draw_texture_one_color_prepare(
+		gs,
+
+		texture_sz,
+		fb_sz,
+
+		from_pos,
+		from_sz,
+
+		pos,
+		sz,
+
+		flip,
+		color,
+		flip_color
+	);
 	draw_mesh(gs, MESH_RECT);
 }

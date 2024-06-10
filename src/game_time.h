@@ -3,6 +3,7 @@
 
 struct GameTime {
 	float delta = 0;
+	float frame_time = 0;
 	float time_since_start = 0;
 };
 

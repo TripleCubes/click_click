@@ -102,7 +102,9 @@ int main () {
 		update(graphic_stuff, tab_list, game_time, input);
 
 		draw(graphic_stuff, tab_list, game_time, input);
-		
+
+		game_time.frame_time = glfwGetTime() - frame_start_time;
+
 		glfwSwapBuffers(glfw_window);
 	}
 

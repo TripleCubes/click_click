@@ -54,13 +54,25 @@ const Input &input) {
 	draw_text(
 		gs,
 		main_fb_sz,
-		"This is a test thsi is a test this is a tes",
+		"This is a test this is a test this is a test this is a test",
+		//std::to_string(1 / game_time.delta),
 		vec2_new(10, 10),
-		60,
+		600,
 		1,
 		color_new(0, 0, 0, 1),
 		vec2_new(4, 3),
 		true
+	);
+	draw_text(
+		gs,
+		main_fb_sz,
+		std::to_string(1 / game_time.delta),
+		vec2_new(10, 200),
+		50,
+		1,
+		color_new(0, 0, 0, 1),
+		vec2_new(4, 3),
+		false
 	);
 
 
