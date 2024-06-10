@@ -51,6 +51,18 @@ const Input &input) {
 
 	tab_draw(tab_list[0], gs, input, vec2_new(0, 0));
 
+	draw_text_with_bkg(
+		gs,
+		main_fb_sz,
+		"This is a test",
+		vec2_new(10, 10),
+		55,
+		1,
+		color_new(0, 0, 0, 1),
+		vec2_new(4, 2),
+		true
+	);
+
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
@@ -60,6 +72,8 @@ const Input &input) {
 	
 	draw_texture(
 		gs,
+		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
+
 		main_fb_sz,
 		gs.current_window_sz,
 
@@ -68,7 +82,6 @@ const Input &input) {
 		offset,
 		vec2_mul(to_vec2(main_fb_sz), gs.px_scale),
 		
-		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 		false
 	);
 }

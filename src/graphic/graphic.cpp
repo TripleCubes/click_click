@@ -69,6 +69,17 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 
 
 	#ifndef __EMSCRIPTEN__
+	std::string shader_texture_one_color_path="./shader/texture_one_color";
+	#else
+	std::string shader_texture_one_color_path="./shader/texture_one_color_web";
+	#endif
+	if (shader_new(graphic_stuff, shader_texture_one_color_path) == -1) {
+		std::cout << "cant init texture_one_color shader" << std::endl;
+		return false;
+	}
+
+
+	#ifndef __EMSCRIPTEN__
 	std::string shader_color_picker_pos_select_path
 		= "./shader/color_picker/pos_select";
 	#else
