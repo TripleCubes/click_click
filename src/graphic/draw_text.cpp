@@ -115,8 +115,9 @@ Color color, bool flip_color, bool fill_bottom) {
 		char c = text[i];
 		Vec2 char_pos = get_char_pos(c);
 
-		draw_texture_one_color_prepare(
+		draw_texture_one_color(
 			gs,
+			texture_get_id(gs, TEXTURE_FONT),
 
 			texture_get_sz(gs, TEXTURE_FONT),
 			fb_sz,
@@ -131,7 +132,6 @@ Color color, bool flip_color, bool fill_bottom) {
 			color,
 			flip_color
 		);
-		draw_mesh(gs, MESH_RECT);
 
 		cursor.x += CHAR_W * scale;
 	}
@@ -179,9 +179,6 @@ bool flip_color) {
 
 	Vec2 cursor = pos;
 
-	use_shader(gs, SHADER_TEXTURE_ONE_COLOR);
-	set_uniform_texture(gs, SHADER_TEXTURE_ONE_COLOR, "u_texture", 0,
-		texture_get_id(gs, TEXTURE_FONT));
 	for (int i = 0; i < (int)line_list.size(); i++) {
 		bool fill_bottom = true;
 		if (i == (int)line_list.size() - 1) {

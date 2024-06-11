@@ -54,10 +54,9 @@ const Input &input) {
 	draw_text(
 		gs,
 		main_fb_sz,
-		"This is a test this is a test this is a test this is a test",
-		//std::to_string(1 / game_time.delta),
+		std::to_string(1 / game_time.delta),
 		vec2_new(10, 10),
-		600,
+		50,
 		1,
 		color_new(0, 0, 0, 1),
 		vec2_new(4, 3),
@@ -66,14 +65,15 @@ const Input &input) {
 	draw_text(
 		gs,
 		main_fb_sz,
-		std::to_string(1 / game_time.delta),
-		vec2_new(10, 200),
+		std::to_string(1 / game_time.frame_time),
+		vec2_new(10, 20),
 		50,
 		1,
 		color_new(0, 0, 0, 1),
 		vec2_new(4, 3),
 		false
 	);
+	std::cout << 1/game_time.delta << std::endl;
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
