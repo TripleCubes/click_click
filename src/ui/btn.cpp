@@ -8,6 +8,7 @@
 #include "../graphic_types/framebuffer.h"
 #include "../graphic/graphic.h"
 #include "../graphic/draw_rect.h"
+#include "../graphic/draw_text.h"
 
 #include "../basic_math.h"
 #include "../pos_convert.h"
@@ -60,19 +61,22 @@ void btn_draw(const Btn &btn, const GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 	Color color = btn.color;
 	
-	if (btn.holding) {
-		color = color_sub(color, color_new(0.1, 0.1, 0.1, 0));
-	}
-	else if (btn.hovered) {
-		color = color_add(color, color_new(0.1, 0.1, 0.1, 0));
+	bool flip_color = false;
+
+	if (btn.holding || btn.hovered) {
+		flip_color = true;
 	}
 
 	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_rect_sz(
+	draw_text(
 		gs,
 		main_fb_sz,
-		pos,
-		btn.sz,
-		color
+		btn.text,
+		vec2_add(pos, vec2_new(4, 3)),
+		btn.sz.x - 8,
+		1,
+		color,
+		vec2_new(4, 3),
+		flip_color
 	);
 }

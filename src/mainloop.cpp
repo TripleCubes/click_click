@@ -73,7 +73,6 @@ const Input &input) {
 		vec2_new(4, 3),
 		false
 	);
-	std::cout << 1/game_time.delta << std::endl;
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

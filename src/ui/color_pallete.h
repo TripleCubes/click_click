@@ -11,7 +11,7 @@ const int COLOR_PALLETE_NUM_ROW = 2;
 const int COLOR_PALLETE_NUM_PAGE = 4;
 const float COLOR_PALLETE_SPACING = 1;
 const float COLOR_PALLETE_COLOR_CLICK_SZ = 10;
-const Vec2 COLOR_PALLETE_PAGE_BTN_SZ = vec2_new(10, 15);
+const Vec2 COLOR_PALLETE_PAGE_BTN_SZ = vec2_new(11, 12);
 
 struct GraphicStuff;
 struct Input;
