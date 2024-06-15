@@ -66,17 +66,4 @@ void btn_draw(const Btn &btn, const GraphicStuff &gs, Vec2 parent_pos) {
 	if (btn.holding || btn.hovered) {
 		flip_color = true;
 	}
-
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_text(
-		gs,
-		main_fb_sz,
-		btn.text,
-		vec2_add(pos, vec2_new(4, 3)),
-		btn.sz.x - 8,
-		1,
-		color,
-		vec2_new(4, 3),
-		flip_color
-	);
 }

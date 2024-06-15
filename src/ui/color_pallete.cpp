@@ -104,7 +104,6 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 
 void color_pallete_draw(const ColorPallete &color_pallete,
 const GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2i main_fb_sz = get_main_fb_sz(gs);
 	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
 	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
 
@@ -118,7 +117,6 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 
 		draw_rect_sz(
 			gs,
-			main_fb_sz,
 			vec2_new(
 				cp_pos.x + row * click_sz + COLOR_PALLETE_SPACING,
 				cp_pos.y + column * click_sz + COLOR_PALLETE_SPACING
@@ -141,7 +139,6 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 
 	draw_rect_border_sz(
 		gs,
-		main_fb_sz,
 		vec2_new(
 			cp_pos.x + row * click_sz - COLOR_PALLETE_SPACING,
 			cp_pos.y + column * click_sz - COLOR_PALLETE_SPACING

@@ -146,7 +146,6 @@ Vec2 parent_pos, bool show) {
 
 void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
 	draw_draw_texture(tab, gs, pos);
@@ -158,7 +157,6 @@ Vec2 parent_pos) {
 	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
 		draw_rect_sz(
 			gs,
-			main_fb_sz,
 			vec2_new(
 				floor2(main_fb_mouse_pos.x, tab.px_scale),
 				floor2(main_fb_mouse_pos.y, tab.px_scale)

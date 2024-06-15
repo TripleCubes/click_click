@@ -7,8 +7,10 @@
 #include "../graphic/graphic.h"
 #include "../graphic_types/mesh.h"
 #include "../graphic_types/shader.h"
+#include "../graphic_types/framebuffer.h"
 
-void draw_rect_sz(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos, Vec2 sz,
+void draw_rect_sz_any_fb(const GraphicStuff &gs, Vec2i fb_sz,
+Vec2 pos, Vec2 sz,
 Color color) {
 	if (sz.x == 0 || sz.y == 0) {
 		return;
@@ -42,7 +44,8 @@ Color color) {
 	draw_mesh(gs, MESH_RECT);
 }
 
-void draw_rect_pos(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos_a, Vec2 pos_b,
+void draw_rect_pos_any_fb(const GraphicStuff &gs, Vec2i fb_sz,
+Vec2 pos_a, Vec2 pos_b,
 Color color){
 	if (pos_a.x == pos_b.x || pos_a.y == pos_b.y) {
 		return;
@@ -60,10 +63,10 @@ Color color){
 		pos_b.y = swap;
 	}
 
-	draw_rect_sz(gs, fb_sz, pos_a, vec2_sub(pos_b, pos_a), color);
+	draw_rect_sz_any_fb(gs, fb_sz, pos_a, vec2_sub(pos_b, pos_a), color);
 }
 
-void draw_rect_border_sz(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos,
+void draw_rect_border_sz_any_fb(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos,
 Vec2 sz, float border_w, Color color) {
 	if (sz.x == 0 || sz.y == 0) {
 		return;
@@ -84,30 +87,46 @@ Vec2 sz, float border_w, Color color) {
 	Vec2 bottom_right = vec2_new(pos.x + sz.x - 1, pos.y + sz.y - 1);
 	Vec2 bottom_left = vec2_new(pos.x, pos.y + sz.y - 1);
 
-	draw_rect_sz(
+	draw_rect_sz_any_fb(
 		gs,
 		fb_sz,
 		top_left,
 		vec2_new(sz.x, border_w),
 		color
 	);
-	draw_rect_sz(
+	draw_rect_sz_any_fb(
 		gs,
 		fb_sz,
 		top_right,
 		vec2_new(- border_w, sz.y),
 		color
 	);
-	draw_rect_sz(
+	draw_rect_sz_any_fb(
 		gs,
 		fb_sz,
 		bottom_right,
 		vec2_new(- sz.x, - border_w),
 		color);
-	draw_rect_sz(
+	draw_rect_sz_any_fb(
 		gs,
 		fb_sz,
 		bottom_left,
 		vec2_new(border_w, - sz.y),
 		color);
+}
+
+void draw_rect_sz(const GraphicStuff &gs, Vec2 pos, Vec2 sz, Color color) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	draw_rect_sz_any_fb(gs, main_fb_sz, pos, sz, color);
+}
+
+void draw_rect_pos(const GraphicStuff &gs, Vec2 pos_a, Vec2 pos_b,Color color){
+	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	draw_rect_pos_any_fb(gs, main_fb_sz, pos_a, pos_b, color);
+}
+
+void draw_rect_border_sz(const GraphicStuff &gs, Vec2 pos, Vec2 sz,
+float border_w, Color color) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	draw_rect_border_sz_any_fb(gs, main_fb_sz, pos, sz, border_w, color);
 }

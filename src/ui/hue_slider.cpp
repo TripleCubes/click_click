@@ -53,12 +53,10 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 
 void hue_slider_draw(const HueSlider &hue_slider,
 const GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
 	Vec2 pos = vec2_add(parent_pos, hue_slider.pos);
 
 	draw_rect_sz(
 		gs,
-		main_fb_sz,
 		vec2_new(
 			pos.x + hue_slider.slide_percentage * hue_slider.sz.x,
 			pos.y

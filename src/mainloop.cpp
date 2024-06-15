@@ -51,29 +51,6 @@ const Input &input) {
 
 	tab_draw(tab_list[0], gs, input, vec2_new(0, 0));
 
-	draw_text(
-		gs,
-		main_fb_sz,
-		std::to_string(1 / game_time.delta),
-		vec2_new(10, 10),
-		50,
-		1,
-		color_new(0, 0, 0, 1),
-		vec2_new(4, 3),
-		true
-	);
-	draw_text(
-		gs,
-		main_fb_sz,
-		std::to_string(1 / game_time.frame_time),
-		vec2_new(10, 20),
-		50,
-		1,
-		color_new(0, 0, 0, 1),
-		vec2_new(4, 3),
-		false
-	);
-
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, gs.current_window_sz.x, gs.current_window_sz.y);
@@ -81,7 +58,7 @@ const Input &input) {
 
 	Vec2 offset = get_main_fb_offset(gs);
 	
-	draw_texture(
+	draw_texture_any_fb(
 		gs,
 		fb_get_texture_id(gs, FRAMEBUFFER_MAIN),
 
