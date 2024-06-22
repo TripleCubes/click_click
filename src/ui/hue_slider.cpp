@@ -19,7 +19,7 @@ HueSlider hue_slider_new(Vec2 pos, Vec2 sz) {
 
 void hue_slider_update(HueSlider &hue_slider,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 pos = vec2_add(parent_pos, hue_slider.pos);
 
@@ -52,10 +52,10 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void hue_slider_draw(const HueSlider &hue_slider,
-const GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, hue_slider.pos);
 
-	draw_rect_sz(
+	draw_rect(
 		gs,
 		vec2_new(
 			pos.x + hue_slider.slide_percentage * hue_slider.sz.x,

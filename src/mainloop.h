@@ -12,7 +12,7 @@ void update(GraphicStuff &gs,
 	std::vector<Tab> &tab_list,
 	const GameTime &game_time,
 	const Input &input);
-void draw(const GraphicStuff &gs,
+void draw(GraphicStuff &gs,
 	const std::vector<Tab> &tab_list,
 	const GameTime &game_time,
 	const Input &input);

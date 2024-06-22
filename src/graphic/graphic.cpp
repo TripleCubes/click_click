@@ -27,93 +27,35 @@ Vec2i get_main_fb_sz(const GraphicStuff &graphic_stuff) {
 	);
 }
 
+std::string shader_path(const std::string &path) {
+	#ifndef __EMSCRIPTEN__
+	return path;
+	#else
+	return path + "_web";
+	#endif
+}
+
 }
 
 bool graphic_init(GraphicStuff &graphic_stuff) {
-	std::vector<float> verticies_color_rect = {
-		0, 1,
-		1, 1,
-		0, 0,
+	if (mesh_new(graphic_stuff) == -1) {
+		std::cout << "cant init rect mesh" << std::endl;
+		return false;
+	}
+	std::vector<float> rect_verticies = {
+		0, 1, -1, -1, 0, 0, 0, 0,  0,
+		1, 1, -1, -1, 0, 0, 0, 0,  0,
+		0, 0, -1, -1, 0, 0, 0, 0,  0,
 
-		1, 1,
-		1, 0,
-		0, 0,
+		1, 1, -1, -1, 0, 0, 0, 0,  0,
+		1, 0, -1, -1, 0, 0, 0, 0,  0,
+		0, 0, -1, -1, 0, 0, 0, 0,  0,
 	};
+	mesh_add(graphic_stuff, MESH_RECT, rect_verticies);
+	mesh_set(graphic_stuff, MESH_RECT);
 
-	if (mesh_new(graphic_stuff, verticies_color_rect) == -1) {
-		std::cout << "cant init color_rect mesh" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_color_rect_path = "./shader/color_rect";
-	#else
-	std::string shader_color_rect_path = "./shader/color_rect_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_color_rect_path) == -1) {
-		std::cout << "cant init color_rect shader" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_texture_rect_path = "./shader/texture_rect";
-	#else
-	std::string shader_texture_rect_path = "./shader/texture_rect_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_texture_rect_path) == -1) {
-		std::cout << "cant init texture_rect shader" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_texture_one_color_path="./shader/texture_one_color";
-	#else
-	std::string shader_texture_one_color_path="./shader/texture_one_color_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_texture_one_color_path) == -1) {
-		std::cout << "cant init texture_one_color shader" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_color_picker_pos_select_path
-		= "./shader/color_picker/pos_select";
-	#else
-	std::string shader_color_picker_pos_select_path
-		= "./shader/color_picker/pos_select_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_color_picker_pos_select_path) == -1) {
-		std::cout << "cant init color_picker_pos_select shader" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_color_picker_hue_slider_path
-		= "./shader/color_picker/hue_slider";
-	#else
-	std::string shader_color_picker_hue_slider_path
-		= "./shader/color_picker/hue_slider_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_color_picker_hue_slider_path) == -1) {
-		std::cout << "cant init color_picker_hue_slider shader" << std::endl;
-		return false;
-	}
-
-
-	#ifndef __EMSCRIPTEN__
-	std::string shader_tab_draw_path
-		= "./shader/tab/tab_draw";
-	#else
-	std::string shader_tab_draw_path
-		= "./shader/tab/tab_draw_web";
-	#endif
-	if (shader_new(graphic_stuff, shader_tab_draw_path) == -1) {
-		std::cout << "cant init tab_draw shader" << std::endl;
+	if (mesh_new(graphic_stuff) == -1) {
+		std::cout << "cant init basic_draw mesh" << std::endl;
 		return false;
 	}
 
@@ -125,11 +67,38 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	}
 
 
+	if (shader_new(graphic_stuff, shader_path("./shader/basic_draw")) == -1) {
+		std::cout << "cant init shader basic_draw" << std::endl;
+		return false;
+	}
+
+	if (shader_new(graphic_stuff, shader_path("./shader/fb_main")) == -1) {
+		std::cout << "cant init shader fb_main" << std::endl;
+		return false;
+	}
+
+	if (shader_new(graphic_stuff, shader_path("./shader/tab/tab_draw")) == -1){
+		std::cout << "cant init shader tab_draw" << std::endl;
+		return false;
+	}
+
+	if (shader_new(graphic_stuff,
+	               shader_path("./shader/color_picker/pos_select")) == -1) {
+		std::cout << "cant init shader color_picker_pos_select" << std::endl;
+		return false;
+	}
+
+	if (shader_new(graphic_stuff,
+		           shader_path("./shader/color_picker/hue_slider")) == -1) {
+		std::cout << "cant init shader color_picker_hue_slider" << std::endl;
+		return false;
+	}
+
+
 	if (texture_new(graphic_stuff, "./texture/font.png") == -1) {
 		std::cout << "cant init texture font.png" << std::endl;
 		return false;
 	}
-
 
 	return true;
 }
@@ -143,5 +112,5 @@ void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz) {
 	graphic_stuff.current_window_sz.y = sz.y;
 
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
-	fb_resize(graphic_stuff, FRAMEBUFFER_MAIN, main_fb_sz);
+	fb_resize(graphic_stuff, FB_MAIN, main_fb_sz);
 }

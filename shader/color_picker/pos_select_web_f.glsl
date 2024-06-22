@@ -1,13 +1,12 @@
 precision mediump float;
-
 varying vec2 f_uv;
 
 uniform vec4 u_hue_rgb;
 
 float clampf(float f, float min, float max) {
-	if (f < min) { return min; }
-	else if (f > max) { return max; }
-	return f;
+	float result = mix(f, min, float(f < min));
+	result = mix(result, max, float(result > max));
+	return result;
 }
 
 vec4 saturation_scale(vec4 hue_rgb, float sat) {
@@ -44,5 +43,6 @@ void main() {
 	vec4 result = u_hue_rgb;
 	result = saturation_scale(result, f_uv.x);
 	result = value_scale(result, f_uv.y);
+
 	gl_FragColor = result;
 }

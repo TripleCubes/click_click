@@ -1,52 +1,51 @@
 #version 330 core
-
 in vec2 f_uv;
 out vec4 out_color;
 
 float clampf(float f, float min, float max) {
-	if (f < min) { return min; }
-	else if (f > max) { return max; }
-	return f;
+	float result = max(f, min);
+	result = min(result, max);
+	return result;
 }
 
 vec4 hue_to_rgb(float hue) {
 	vec4 color;
 
-	if (hue >= 0 && hue < 1/6.0f) {
-		color.r = 1;
-		color.g = hue*6;
-		color.b = 0;
+	if (hue >= 0.0 && hue < 1.0/6.0) {
+		color.r = 1.0;
+		color.g = hue*6.0;
+		color.b = 0.0;
 	}
-	else if (hue >= 1/6.0f && hue < 2/6.0f) {
-		color.r = 1 - ((hue - 1/6.0f) * 6);
-		color.g = 1;
-		color.b = 0;
+	else if (hue >= 1.0/6.0 && hue < 2.0/6.0) {
+		color.r = 1.0 - ((hue - 1.0/6.0) * 6.0);
+		color.g = 1.0;
+		color.b = 0.0;
 	}
-	else if (hue >= 2/6.0f && hue < 3/6.0f) {
-		color.r = 0;
-		color.g = 1;
-		color.b = (hue - 2/6.0f) * 6;
+	else if (hue >= 2.0/6.0 && hue < 3.0/6.0) {
+		color.r = 0.0;
+		color.g = 1.0;
+		color.b = (hue - 2.0/6.0) * 6.0;
 	}
-	else if (hue >= 3/6.0f && hue < 4/6.0f) {
-		color.r = 0;
-		color.g = 1 - ((hue - 3/6.0f) * 6);
-		color.b = 1;
+	else if (hue >= 3.0/6.0 && hue < 4.0/6.0) {
+		color.r = 0.0;
+		color.g = 1.0 - ((hue - 3.0/6.0) * 6.0);
+		color.b = 1.0;
 	}
-	else if (hue >= 4/6.0f && hue < 5/6.0f) {
-		color.r = (hue - 4/6.0f) * 6;
-		color.g = 0;
-		color.b = 1;
+	else if (hue >= 4.0/6.0 && hue < 5.0/6.0) {
+		color.r = (hue - 4.0/6.0) * 6.0;
+		color.g = 0.0;
+		color.b = 1.0;
 	}
-	else if (hue >= 5/6.0f && hue <= 1) {
-		color.r = 1;
-		color.g = 0;
-		color.b = 1 - ((hue - 5/6.0f) * 6);
+	else if (hue >= 5.0/6.0 && hue <= 1.0) {
+		color.r = 1.0;
+		color.g = 0.0;
+		color.b = 1.0 - ((hue - 5.0/6.0) * 6.0);
 	}
 
-	color.r = clampf(color.r, 0, 1);
-	color.g = clampf(color.g, 0, 1);
-	color.b = clampf(color.b, 0, 1);
-	color.a = 1;
+	color.r = clampf(color.r, 0.0, 1.0);
+	color.g = clampf(color.g, 0.0, 1.0);
+	color.b = clampf(color.b, 0.0, 1.0);
+	color.a = 1.0;
 
 	return color;
 }

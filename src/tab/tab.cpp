@@ -42,7 +42,7 @@ void pallete_data_color(Tab &tab, int pallete_index, Color color) {
 
 void draw_draw_texture(const Tab &tab, const GraphicStuff &gs,
 Vec2 pos) {
-	Vec2 main_fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
+	Vec2 main_fb_sz_f = to_vec2(fb_get_sz(gs, FB_MAIN));
 	Vec2 sz_f = to_vec2(tab.sz);
 	Vec2 pos_normalized = vec2_new(
 		pos.x / main_fb_sz_f.x,
@@ -64,7 +64,7 @@ Vec2 pos) {
 	set_uniform_texture(gs, SHADER_TAB_DRAW,
 		"u_pallete_texture", 1, texture_get_id(gs, tab.pallete_texture_index));
 
-	draw_mesh(gs, MESH_RECT);
+	mesh_draw(gs, MESH_RECT);
 }
 
 }
@@ -144,7 +144,7 @@ Vec2 parent_pos, bool show) {
 	}
 }
 
-void tab_draw(const Tab &tab, const GraphicStuff &gs, const Input &input,
+void tab_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
@@ -155,7 +155,7 @@ Vec2 parent_pos) {
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
 	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
-		draw_rect_sz(
+		draw_rect(
 			gs,
 			vec2_new(
 				floor2(main_fb_mouse_pos.x, tab.px_scale),

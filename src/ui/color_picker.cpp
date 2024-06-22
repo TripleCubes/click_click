@@ -12,8 +12,8 @@
 namespace {
 
 void draw_pos_select_bkg(const ColorPicker &color_picker,
-const GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
+GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FB_MAIN));
 	Vec2 pos = vec2_add(color_picker.pos_select.pos, parent_pos);
 	Vec2 sz = color_picker.pos_select.sz;
 	
@@ -49,12 +49,12 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 		hue_rgb
 	);
 
-	draw_mesh(gs, MESH_RECT);
+	mesh_draw(gs, MESH_RECT);
 }
 
 void draw_hue_slider_bkg(const ColorPicker &color_picker,
-const GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FRAMEBUFFER_MAIN));
+GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 fb_sz_f = to_vec2(fb_get_sz(gs, FB_MAIN));
 	Vec2 pos = vec2_add(color_picker.hue_slider.pos, parent_pos);
 	Vec2 sz = color_picker.hue_slider.sz;
 	
@@ -81,7 +81,7 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 		sz_normalized
 	);
 
-	draw_mesh(gs, MESH_RECT);
+	mesh_draw(gs, MESH_RECT);
 }
 
 }
@@ -124,7 +124,7 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void color_picker_draw(const ColorPicker &color_picker,
-const GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(color_picker.pos, parent_pos);
 	draw_pos_select_bkg(color_picker, gs, pos);
 	draw_hue_slider_bkg(color_picker, gs, pos);

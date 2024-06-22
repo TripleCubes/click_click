@@ -21,7 +21,7 @@ PosSelect pos_select_new(Vec2 pos, Vec2 sz) {
 
 void pos_select_update(PosSelect &pos_select,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 pos = vec2_add(parent_pos, pos_select.pos);
 
@@ -62,30 +62,30 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void pos_select_draw(const PosSelect &pos_select,
-const GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 pspos = vec2_add(pos_select.pos, parent_pos);
 	pspos = vec2_add(pspos, pos_select.selected_pos);
 	Color color = color_new(0, 0, 0, 1);
 
-	draw_rect_sz(
+	draw_rect(
 		gs,
 		vec2_new(pspos.x, pspos.y - 3),
 		vec2_new(1, 3),
 		color
 	);
-	draw_rect_sz(
+	draw_rect(
 		gs,
 		vec2_new(pspos.x, pspos.y + 1),
 		vec2_new(1, 3),
 		color
 	);
-	draw_rect_sz(
+	draw_rect(
 		gs,
 		vec2_new(pspos.x - 3, pspos.y),
 		vec2_new(3, 1),
 		color
 	);
-	draw_rect_sz(
+	draw_rect(
 		gs,
 		vec2_new(pspos.x + 1, pspos.y),
 		vec2_new(3, 1),

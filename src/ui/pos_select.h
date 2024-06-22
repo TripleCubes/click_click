@@ -19,7 +19,7 @@ void pos_select_update(PosSelect &pos_select,
 	const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show);
 
 void pos_select_draw(const PosSelect &pos_select,
-	const GraphicStuff &gs, Vec2 parent_pos);
+	GraphicStuff &gs, Vec2 parent_pos);
 
 Vec2 pos_select_get_selected(const PosSelect &pos_select);
 

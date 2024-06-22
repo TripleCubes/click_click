@@ -5,15 +5,15 @@ struct GraphicStuff;
 struct Vec2i;
 
 const int MESH_RECT = 0;
+const int MESH_BASIC_DRAW = 1;
 
-const int SHADER_COLOR_RECT = 0;
-const int SHADER_TEXTURE_RECT = 1;
-const int SHADER_TEXTURE_ONE_COLOR = 2;
+const int SHADER_BASIC_DRAW = 0;
+const int SHADER_FB_MAIN = 1;
+const int SHADER_TAB_DRAW = 2;
 const int SHADER_COLOR_PICKER_POS_SELECT = 3;
 const int SHADER_COLOR_PICKER_HUE_SLIDER = 4;
-const int SHADER_TAB_DRAW = 5;
 
-const int FRAMEBUFFER_MAIN = 0;
+const int FB_MAIN = 0;
 
 const int TEXTURE_FONT = 0;
 

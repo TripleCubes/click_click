@@ -1,11 +1,10 @@
 precision mediump float;
-
 varying vec2 f_uv;
 
 float clampf(float f, float min, float max) {
-	if (f < min) { return min; }
-	else if (f > max) { return max; }
-	return f;
+	float result = mix(f, min, float(f < min));
+	result = mix(result, max, float(result > max));
+	return result;
 }
 
 vec4 hue_to_rgb(float hue) {

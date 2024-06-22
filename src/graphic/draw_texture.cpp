@@ -1,72 +1,56 @@
 #include "draw_texture.h"
 
-#include "../types/vec2.h"
-#include "../types/vec2i.h"
-#include "../types/color.h"
+#include <array>
+
 #include "../graphic_types/graphic_types.h"
-#include "../graphic/graphic.h"
-#include "../graphic_types/mesh.h"
-#include "../graphic_types/shader.h"
 #include "../graphic_types/framebuffer.h"
+#include "../graphic_types/mesh.h"
+#include "graphic.h"
+#include "../types/vec2i.h"
+#include "../types/vec2.h"
+#include "../types/color.h"
 
-void draw_texture_any_fb(const GraphicStuff &gs, unsigned int texture_id,
-Vec2i texture_sz, Vec2i fb_sz,
-Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz,
-bool flip) {
-	if (sz.x == 0 || sz.y == 0) {
-		return;
+void draw_texture(GraphicStuff &gs, Vec2i tex_sz,
+Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz, Color color, bool flip_color) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
+	pos.y = main_fb_sz.y - pos.y - sz.y;
+	from_pos.y = tex_sz.y - from_pos.y - from_sz.y;
+
+	Vec2 a = vec2_new(pos.x / main_fb_sz.x, pos.y / main_fb_sz.y);
+	Vec2 b = vec2_add(a, vec2_new(sz.x / main_fb_sz.x, 0));
+	Vec2 c = vec2_add(a, vec2_new(sz.x / main_fb_sz.x, sz.y / main_fb_sz.y));
+	Vec2 d = vec2_add(a, vec2_new(0, sz.y / main_fb_sz.y));
+
+	a = vec2_mul(a, 2);
+	a = vec2_add(a, vec2_new(-1, -1));
+	b = vec2_mul(b, 2);
+	b = vec2_add(b, vec2_new(-1, -1));
+	c = vec2_mul(c, 2);
+	c = vec2_add(c, vec2_new(-1, -1));
+	d = vec2_mul(d, 2);
+	d = vec2_add(d, vec2_new(-1, -1));
+
+	Vec2 uv_a = vec2_new(from_pos.x / tex_sz.x, from_pos.y / tex_sz.y);
+	Vec2 uv_b = vec2_add(uv_a, vec2_new(from_sz.x / tex_sz.x, 0));
+	Vec2 uv_c = vec2_add(uv_a, vec2_new(from_sz.x / tex_sz.x,
+	                                    from_sz.y / tex_sz.y));
+	Vec2 uv_d = vec2_add(uv_a, vec2_new(0, from_sz.y / tex_sz.y));
+
+	float flip_color_f = 0;
+	if (flip_color) {
+		flip_color_f = 1;
 	}
 
-	if (sz.x < 0) {
-		sz.x = -sz.x;
-		pos.x = pos.x - sz.x + 1;
-	}
+	std::array<float, VERT_SZ * 6> verts = {
+		a.x, a.y, uv_a.x, uv_a.y, color.r,color.g,color.b,color.a,flip_color_f,
+		d.x, d.y, uv_d.x, uv_d.y, color.r,color.g,color.b,color.a,flip_color_f,
+		b.x, b.y, uv_b.x, uv_b.y, color.r,color.g,color.b,color.a,flip_color_f,
 
-	if (sz.y < 0) {
-		sz.y = -sz.y;
-		pos.y = pos.y - sz.y + 1;
-	}
+		b.x, b.y, uv_b.x, uv_b.y, color.r,color.g,color.b,color.a,flip_color_f,
+		d.x, d.y, uv_d.x, uv_d.y, color.r,color.g,color.b,color.a,flip_color_f,
+		c.x, c.y, uv_c.x, uv_c.y, color.r,color.g,color.b,color.a,flip_color_f,
+	};
 
-	Vec2 fb_sz_f = to_vec2(fb_sz);
-	Vec2 texture_sz_f = to_vec2(texture_sz);
-
-	Vec2 from_pos_normalized = vec2_new(
-		from_pos.x / texture_sz_f.x,
-		from_pos.y / texture_sz_f.y
-	);
-
-	Vec2 from_sz_normalized = vec2_new(
-		from_sz.x / texture_sz_f.x,
-		from_sz.y / texture_sz_f.y
-	);
-
-	if (!flip) {
-		from_pos_normalized.y
-			= 1 - from_pos_normalized.y - from_sz_normalized.y;
-	}
-
-	Vec2 pos_normalized = vec2_new(pos.x / fb_sz_f.x, pos.y / fb_sz_f.y);
-	pos_normalized = vec2_mul(pos_normalized, 2);
-	pos_normalized = vec2_add(pos_normalized, vec2_new(-1, -1));
-
-	Vec2 sz_normalized = vec2_new(sz.x / fb_sz_f.x, sz.y / fb_sz_f.y);
-	sz_normalized = vec2_mul(sz_normalized, 2);
-
-	pos_normalized.y = -pos_normalized.y - sz_normalized.y;
-
-	use_shader(gs, SHADER_TEXTURE_RECT);
-	set_uniform_bool(gs, SHADER_TEXTURE_RECT, "u_flip", flip);
-	set_uniform_vec2(gs, SHADER_TEXTURE_RECT,"u_from_pos",from_pos_normalized);
-	set_uniform_vec2(gs, SHADER_TEXTURE_RECT, "u_from_sz", from_sz_normalized);
-	set_uniform_vec2(gs, SHADER_TEXTURE_RECT, "u_pos", pos_normalized);
-	set_uniform_vec2(gs, SHADER_TEXTURE_RECT, "u_sz", sz_normalized);
-	set_uniform_texture(gs, SHADER_TEXTURE_RECT, "u_texture", 0, texture_id);
-	draw_mesh(gs, MESH_RECT);
-}
-
-void draw_texture(const GraphicStuff &gs, unsigned int texture_id,
-Vec2i texture_sz, Vec2 from_pos, Vec2 from_sz, Vec2 pos, Vec2 sz) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_texture_any_fb(gs, texture_id, texture_sz, main_fb_sz,
-		from_pos, from_sz, pos, sz, true);
+	mesh_add_arr(gs, MESH_BASIC_DRAW, verts);
 }

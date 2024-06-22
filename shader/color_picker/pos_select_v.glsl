@@ -1,5 +1,4 @@
 #version 330 core
-
 layout (location = 0) in vec2 v_pos;
 
 out vec2 f_uv;

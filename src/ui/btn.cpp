@@ -33,7 +33,7 @@ Vec2 parent_pos, bool show) {
 		return;
 	}
 
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 
@@ -57,7 +57,7 @@ Vec2 parent_pos, bool show) {
 	}
 }
 
-void btn_draw(const Btn &btn, const GraphicStuff &gs, Vec2 parent_pos) {
+void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 	Color color = btn.color;
 	
@@ -66,4 +66,15 @@ void btn_draw(const Btn &btn, const GraphicStuff &gs, Vec2 parent_pos) {
 	if (btn.holding || btn.hovered) {
 		flip_color = true;
 	}
+
+	draw_text(
+		gs,
+		btn.text,
+		vec2_add(pos, vec2_new(4, 3)),
+		btn.sz.x - 8,
+		1,
+		color,
+		vec2_new(4, 3),
+		flip_color
+	);
 }

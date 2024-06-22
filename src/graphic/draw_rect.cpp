@@ -1,132 +1,77 @@
 #include "draw_rect.h"
 
+#include <array>
 #include "../types/vec2.h"
 #include "../types/vec2i.h"
 #include "../types/color.h"
+
 #include "../graphic_types/graphic_types.h"
-#include "../graphic/graphic.h"
-#include "../graphic_types/mesh.h"
-#include "../graphic_types/shader.h"
 #include "../graphic_types/framebuffer.h"
+#include "../graphic_types/mesh.h"
 
-void draw_rect_sz_any_fb(const GraphicStuff &gs, Vec2i fb_sz,
-Vec2 pos, Vec2 sz,
-Color color) {
-	if (sz.x == 0 || sz.y == 0) {
-		return;
-	}
+#include "graphic.h"
 
-	if (sz.x < 0) {
-		sz.x = -sz.x;
-		pos.x = pos.x - sz.x + 1;
-	}
-
-	if (sz.y < 0) {
-		sz.y = -sz.y;
-		pos.y = pos.y - sz.y + 1;
-	}
-
-	Vec2 fb_sz_f = to_vec2(fb_sz);
+void draw_rect(GraphicStuff &gs, Vec2 pos, Vec2 sz, Color color) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	
-	Vec2 pos_normalized = vec2_new(pos.x / fb_sz_f.x, pos.y / fb_sz_f.y);
-	pos_normalized = vec2_mul(pos_normalized, 2);
-	pos_normalized = vec2_add(pos_normalized, vec2_new(-1, -1));
+	pos.y = main_fb_sz.y - pos.y - sz.y;
 
-	Vec2 sz_normalized = vec2_new(sz.x / fb_sz_f.x, sz.y / fb_sz_f.y);
-	sz_normalized = vec2_mul(sz_normalized, 2);
+	Vec2 a = vec2_new(pos.x / main_fb_sz.x, pos.y / main_fb_sz.y);
+	Vec2 b = vec2_add(a, vec2_new(sz.x / main_fb_sz.x, 0));
+	Vec2 c = vec2_add(a, vec2_new(sz.x / main_fb_sz.x, sz.y / main_fb_sz.y));
+	Vec2 d = vec2_add(a, vec2_new(0, sz.y / main_fb_sz.y));
 
-	pos_normalized.y = -pos_normalized.y - sz_normalized.y;
+	a = vec2_mul(a, 2);
+	a = vec2_add(a, vec2_new(-1, -1));
+	b = vec2_mul(b, 2);
+	b = vec2_add(b, vec2_new(-1, -1));
+	c = vec2_mul(c, 2);
+	c = vec2_add(c, vec2_new(-1, -1));
+	d = vec2_mul(d, 2);
+	d = vec2_add(d, vec2_new(-1, -1));
 
-	use_shader(gs, SHADER_COLOR_RECT);
-	set_uniform_vec2(gs, SHADER_COLOR_RECT, "u_pos", pos_normalized);
-	set_uniform_vec2(gs, SHADER_COLOR_RECT, "u_sz", sz_normalized);
-	set_uniform_color(gs, SHADER_COLOR_RECT, "u_color", color);
-	draw_mesh(gs, MESH_RECT);
+	std::array<float, VERT_SZ * 6> verts = {
+		a.x, a.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+		d.x, d.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+		b.x, b.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+
+		b.x, b.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+		d.x, d.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+		c.x, c.y, -1, -1, color.r, color.g, color.b, color.a, 0,
+	};
+
+	mesh_add_arr(gs, MESH_BASIC_DRAW, verts);
 }
 
-void draw_rect_pos_any_fb(const GraphicStuff &gs, Vec2i fb_sz,
-Vec2 pos_a, Vec2 pos_b,
-Color color){
-	if (pos_a.x == pos_b.x || pos_a.y == pos_b.y) {
-		return;
-	}
-
-	if (pos_b.x < pos_a.x) {
-		float swap = pos_a.x;
-		pos_a.x = pos_b.x;
-		pos_b.x = swap;
-	}
-
-	if (pos_b.y < pos_a.y) {
-		float swap = pos_a.y;
-		pos_a.y = pos_b.y;
-		pos_b.y = swap;
-	}
-
-	draw_rect_sz_any_fb(gs, fb_sz, pos_a, vec2_sub(pos_b, pos_a), color);
-}
-
-void draw_rect_border_sz_any_fb(const GraphicStuff &gs, Vec2i fb_sz, Vec2 pos,
-Vec2 sz, float border_w, Color color) {
-	if (sz.x == 0 || sz.y == 0) {
-		return;
-	}
-
-	if (sz.x < 0) {
-		sz.x = -sz.x;
-		pos.x = pos.x - sz.x + 1;
-	}
-
-	if (sz.y < 0) {
-		sz.y = -sz.y;
-		pos.y = pos.y - sz.y + 1;
-	}
-
+void draw_rect_border(GraphicStuff &gs,
+Vec2 pos, Vec2 sz, Color color, float border_w) {
 	Vec2 top_left = vec2_new(pos.x, pos.y);
-	Vec2 top_right = vec2_new(pos.x + sz.x - 1, pos.y);
-	Vec2 bottom_right = vec2_new(pos.x + sz.x - 1, pos.y + sz.y - 1);
-	Vec2 bottom_left = vec2_new(pos.x, pos.y + sz.y - 1);
+	Vec2 top_right = vec2_new(pos.x + sz.x, pos.y);
+	Vec2 bottom_right = vec2_new(pos.x + sz.x, pos.y + sz.y);
+	Vec2 bottom_left = vec2_new(pos.x, pos.y + sz.y);
 
-	draw_rect_sz_any_fb(
+	draw_rect(
 		gs,
-		fb_sz,
 		top_left,
 		vec2_new(sz.x, border_w),
 		color
 	);
-	draw_rect_sz_any_fb(
+	draw_rect(
 		gs,
-		fb_sz,
-		top_right,
-		vec2_new(- border_w, sz.y),
+		vec2_add(top_right, vec2_new(-border_w, 0)),
+		vec2_new(border_w, sz.y),
 		color
 	);
-	draw_rect_sz_any_fb(
+	draw_rect(
 		gs,
-		fb_sz,
-		bottom_right,
-		vec2_new(- sz.x, - border_w),
-		color);
-	draw_rect_sz_any_fb(
+		vec2_add(bottom_right, vec2_new(-sz.x, -border_w)),
+		vec2_new(sz.x, border_w),
+		color
+	);
+	draw_rect(
 		gs,
-		fb_sz,
-		bottom_left,
-		vec2_new(border_w, - sz.y),
-		color);
-}
-
-void draw_rect_sz(const GraphicStuff &gs, Vec2 pos, Vec2 sz, Color color) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_rect_sz_any_fb(gs, main_fb_sz, pos, sz, color);
-}
-
-void draw_rect_pos(const GraphicStuff &gs, Vec2 pos_a, Vec2 pos_b,Color color){
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_rect_pos_any_fb(gs, main_fb_sz, pos_a, pos_b, color);
-}
-
-void draw_rect_border_sz(const GraphicStuff &gs, Vec2 pos, Vec2 sz,
-float border_w, Color color) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FRAMEBUFFER_MAIN);
-	draw_rect_border_sz_any_fb(gs, main_fb_sz, pos, sz, border_w, color);
+		vec2_add(bottom_left, vec2_new(0, -sz.y)),
+		vec2_new(border_w, sz.y),
+		color
+	);
 }

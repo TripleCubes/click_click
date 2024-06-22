@@ -103,7 +103,7 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void color_pallete_draw(const ColorPallete &color_pallete,
-const GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, Vec2 parent_pos) {
 	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
 	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
 
@@ -115,7 +115,7 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 	for (int column = 0; column < COLOR_PALLETE_NUM_COLUMN; column++) {
 		int index = get_index(color_pallete.at_page, row, column);
 
-		draw_rect_sz(
+		draw_rect(
 			gs,
 			vec2_new(
 				cp_pos.x + row * click_sz + COLOR_PALLETE_SPACING,
@@ -137,7 +137,7 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 		(COLOR_PALLETE_NUM_ROW * COLOR_PALLETE_NUM_COLUMN) %
 		COLOR_PALLETE_NUM_COLUMN;
 
-	draw_rect_border_sz(
+	draw_rect_border(
 		gs,
 		vec2_new(
 			cp_pos.x + row * click_sz - COLOR_PALLETE_SPACING,
@@ -147,7 +147,7 @@ const GraphicStuff &gs, Vec2 parent_pos) {
 			click_sz + COLOR_PALLETE_SPACING * 2,
 			click_sz + COLOR_PALLETE_SPACING * 2
 		),
-		COLOR_PALLETE_SPACING * 2,
-		color_new(0, 0, 0, 1)
+		color_new(0, 0, 0, 1),
+		COLOR_PALLETE_SPACING * 2
 	);
 }

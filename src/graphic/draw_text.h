@@ -8,4 +8,8 @@ struct Vec2;
 struct Vec2i;
 struct Color;
 
+Vec2 draw_text(GraphicStuff &gs,
+	const std::string &text, Vec2 pos, float box_w, int scale,
+	Color color, Vec2 margin, bool flip_color);
+
 #endif
