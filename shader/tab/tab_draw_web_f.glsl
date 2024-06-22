@@ -6,7 +6,7 @@ uniform sampler2D u_draw_texture;
 uniform sampler2D u_pallete_texture;
 
 int mod(int a, int b) {
-	return a - (a / b);
+	return a - (a / b * b);
 }
 
 vec4 get_color(int index) {

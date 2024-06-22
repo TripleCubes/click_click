@@ -104,17 +104,6 @@ const Input &input) {
 		true
 	);
 
-	draw_text(
-		gs,
-		"Hello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a testHello this is a test, Hello this is a test",
-		vec2_new(10, 10),
-		300,
-		1,
-		color_new(0, 0, 0, 1),
-		vec2_new(4, 3),
-		false
-	);
-
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
 		texture_get_id(gs, TEXTURE_FONT));
