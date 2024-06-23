@@ -24,6 +24,6 @@ Btn btn_new(Vec2 pos, Vec2 sz, Color color, const std::string &text);
 void btn_update(Btn &btn, const GraphicStuff &gs, const Input &input,
 	Vec2 parent_pos, bool show);
 
-void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos);
+void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected);
 
 #endif

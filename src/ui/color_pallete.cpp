@@ -108,7 +108,8 @@ GraphicStuff &gs, Vec2 parent_pos) {
 	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
 
 	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
-		btn_draw(color_pallete.page_btn_list[i], gs, cp_pos);
+		btn_draw(color_pallete.page_btn_list[i], gs,
+		         cp_pos, i == color_pallete.at_page);
 	}
 
 	for (int row = 0; row < COLOR_PALLETE_NUM_ROW; row++) {

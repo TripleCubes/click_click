@@ -57,13 +57,13 @@ Vec2 parent_pos, bool show) {
 	}
 }
 
-void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos) {
+void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 	Color color = btn.color;
 	
 	bool flip_color = false;
 
-	if (btn.holding || btn.hovered) {
+	if (btn.holding || btn.hovered || selected) {
 		flip_color = true;
 	}
 
