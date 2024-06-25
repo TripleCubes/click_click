@@ -45,6 +45,8 @@ int mesh_new(GraphicStuff &graphic_stuff){
 	
 	#endif
 
+	mesh.running = true;
+
 	return index;
 }
 

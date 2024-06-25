@@ -9,6 +9,7 @@
 namespace {
 
 const Vec2 BTN_SZ = vec2_new(60, 12);
+const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
 const Color BTN_COLOR = color_new(125/255.0f, 240/255.0f, 154/255.0f, 1);
 
 int get_blank_index(const std::vector<Layer> &layer_list) {
@@ -46,6 +47,14 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 		BTN_COLOR,
 		name
 	);
+	layer.delete_btn = btn_new(
+		vec2_new(BTN_SZ.x + 2, 0),
+		DELETE_BTN_SZ,
+		BTN_COLOR,
+		"D"
+	);
+
+	layer.running = true;
 
 	return index;
 }
@@ -53,11 +62,13 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 void layer_btn_update(Layer &layer, const GraphicStuff &gs, const Input &input,
 Vec2 parent_pos, bool show) {
 	btn_update(layer.btn, gs, input, parent_pos, show);
+	btn_update(layer.delete_btn, gs, input, parent_pos, show);
 }
 
 void layer_btn_draw(const Layer &layer, GraphicStuff &gs, Vec2 parent_pos,
 bool selected) {
 	btn_draw(layer.btn, gs, parent_pos, selected);
+	btn_draw(layer.delete_btn, gs, parent_pos, false);
 }
 
 void layer_data(Layer &layer, Vec2i pos, unsigned char pallete_index) {

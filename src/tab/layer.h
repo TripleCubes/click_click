@@ -17,6 +17,7 @@ struct Layer {
 	int texture_index = 0;
 
 	Btn btn;
+	Btn delete_btn;
 };
 
 int layer_new(std::vector<Layer> &layer_list, GraphicStuff &gs,

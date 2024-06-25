@@ -151,7 +151,7 @@ Vec2 get_layer_btn_list_pos(const Tab &tab) {
 	return vec2_add(tab.layer_bar.pos, vec2_new(10, 10));
 }
 
-void layer_btn_list_update(Tab &tab, const GraphicStuff &gs,
+void layer_btn_list_update(Tab &tab, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool show) {
 	Vec2 layer_btn_list_pos = get_layer_btn_list_pos(tab);
 
@@ -171,6 +171,18 @@ const Input &input, Vec2 parent_pos, bool show) {
 	
 		if (layer.btn.clicked) {
 			tab.layer_order_list_index = i;
+			return;
+		}
+
+		if (layer.delete_btn.clicked && tab.layer_order_list.size() > 1) {
+			layer_release(tab.layer_list, gs, index);
+			tab.layer_order_list.erase(tab.layer_order_list.begin() + i);
+
+			if (tab.layer_order_list_index > 0
+			&& i <= tab.layer_order_list_index) {
+				tab.layer_order_list_index--;
+			}
+
 			return;
 		}
 	}
@@ -219,6 +231,8 @@ Vec2 pos, Vec2i sz, int px_scale) {
 		vec2i_new(16, 16), tab.pallete_data);
 
 	tab_layer_new(tab, gs);
+
+	tab.running = true;
 
 	return index;
 }

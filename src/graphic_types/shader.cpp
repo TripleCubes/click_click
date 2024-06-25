@@ -104,6 +104,8 @@ int shader_new(GraphicStuff &graphic_stuff, const std::string &path) {
 		return -1;
 	}
 
+	shader.running = true;
+
 	return index;
 }
 

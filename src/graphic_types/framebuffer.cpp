@@ -61,6 +61,8 @@ int framebuffer_new(GraphicStuff &gs, int w, int h) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	framebuffer.running = true;
+
 	return index;
 }
 

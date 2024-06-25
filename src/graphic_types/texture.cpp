@@ -66,6 +66,8 @@ int texture_blank_new_format(GraphicStuff &gs, int w, int h, bool red) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	texture.running = true;
+
 	return index;
 }
 
@@ -101,6 +103,8 @@ int texture_new(GraphicStuff &gs, const std::string &path) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(img_data);
+
+	texture.running = true;
 
 	return index;
 }
