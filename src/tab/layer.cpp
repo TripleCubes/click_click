@@ -4,6 +4,7 @@
 #include "../graphic_types/texture.h"
 #include "../types/vec2.h"
 #include "../types/color.h"
+#include "../input.h"
 
 namespace {
 

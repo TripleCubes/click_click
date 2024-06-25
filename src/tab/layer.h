@@ -7,6 +7,7 @@
 #include "../ui/btn.h"
 
 struct GraphicStuff;
+struct Input;
 
 struct Layer {
 	bool running = true;

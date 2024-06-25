@@ -6,6 +6,7 @@
 #include "../types/vec2.h"
 #include "../ui/tab/color_picker.h"
 #include "../ui/tab/color_pallete.h"
+#include "../ui/tab/layer_bar.h"
 #include "layer.h"
 
 struct Color;
@@ -20,6 +21,7 @@ struct Tab {
 
 	ColorPicker color_picker;
 	ColorPallete color_pallete;
+	LayerBar layer_bar;
 
 	std::vector<unsigned char> pallete_data;
 	int pallete_texture_index = 0;

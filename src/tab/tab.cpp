@@ -17,8 +17,7 @@
 
 namespace {
 
-const Vec2 LAYER_BTN_LIST_POS = vec2_new(10, 100);
-const float LAYER_BTN_LIST_LINE_HEIGHT = 13;
+const float LAYER_BTN_LIST_LINE_HEIGHT = 12;
 
 int get_blank_index(const std::vector<Tab> &list) {
 	for (int i = 0; i < (int)list.size(); i++) {
@@ -140,22 +139,28 @@ Vec2 parent_pos) {
 	}
 }
 
-void tab_layer_new(Tab &tab, GraphicStuff &gs, Vec2i sz) {
+void tab_layer_new(Tab &tab, GraphicStuff &gs) {
 	std::vector<unsigned char> data;
-	data.resize(sz.x * sz.y, 0);
-	int index = layer_new(tab.layer_list, gs, "bkg", sz, data);
+	data.resize(tab.sz.x * tab.sz.y, 0);
+	int index = layer_new(tab.layer_list, gs, "bkg", tab.sz, data);
 	
 	tab.layer_order_list.push_back(index);
 }
 
+Vec2 get_layer_btn_list_pos(const Tab &tab) {
+	return vec2_add(tab.layer_bar.pos, vec2_new(10, 10));
+}
+
 void layer_btn_list_update(Tab &tab, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool show) {
+	Vec2 layer_btn_list_pos = get_layer_btn_list_pos(tab);
+
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		Layer &layer = tab.layer_list[index];
 
-		Vec2 add = vec2_new(LAYER_BTN_LIST_POS.x,
-			LAYER_BTN_LIST_POS.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
+		Vec2 add = vec2_new(layer_btn_list_pos.x,
+			layer_btn_list_pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
 		layer_btn_update(layer, gs, input,
 			vec2_add(parent_pos, add), show);
 	}
@@ -172,12 +177,14 @@ const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void layer_btn_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 layer_btn_list_pos = get_layer_btn_list_pos(tab);
+
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
 
-		Vec2 add = vec2_new(LAYER_BTN_LIST_POS.x,
-		    LAYER_BTN_LIST_POS.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
+		Vec2 add = vec2_new(layer_btn_list_pos.x,
+		    layer_btn_list_pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
 		layer_btn_draw(layer, gs,
 			vec2_add(parent_pos, add),
 			i == tab.layer_order_list_index);
@@ -200,8 +207,10 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
+
 	tab.color_picker = color_picker_new(vec2_new(50, 10));
 	tab.color_pallete = color_pallete_new(vec2_new(300, 10));
+	tab.layer_bar = layer_bar_new(vec2_new(300, 120), vec2_new(100, 120));
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
@@ -209,8 +218,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	texture_data(gs, tab.pallete_texture_index,
 		vec2i_new(16, 16), tab.pallete_data);
 
-	tab_layer_new(tab, gs, sz);
-	tab_layer_new(tab, gs, sz);
+	tab_layer_new(tab, gs);
 
 	return index;
 }
@@ -219,8 +227,12 @@ void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos, bool show) {
 	color_picker_update(tab.color_picker, gs, input, parent_pos, show);
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
+	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
 
 	layer_btn_list_update(tab, gs, input, parent_pos, show);
+	if (tab.layer_bar.add_btn.clicked) {
+		tab_layer_new(tab, gs);
+	}
 
 	if (!show) {
 		return;
@@ -241,6 +253,7 @@ Vec2 parent_pos) {
 
 	color_picker_draw(tab.color_picker, gs, parent_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);
+	layer_bar_draw(tab.layer_bar, gs, parent_pos);
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
