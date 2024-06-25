@@ -77,8 +77,8 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		return false;
 	}
 
-	if (shader_new(graphic_stuff, shader_path("./shader/tab/tab_draw")) == -1){
-		std::cout << "cant init shader tab_draw" << std::endl;
+	if (shader_new(graphic_stuff, shader_path("./shader/tab/layer_draw"))==-1){
+		std::cout << "cant init shader layer_draw" << std::endl;
 		return false;
 	}
 

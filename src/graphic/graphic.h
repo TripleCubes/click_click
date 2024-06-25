@@ -9,7 +9,7 @@ const int MESH_BASIC_DRAW = 1;
 
 const int SHADER_BASIC_DRAW = 0;
 const int SHADER_FB_MAIN = 1;
-const int SHADER_TAB_DRAW = 2;
+const int SHADER_LAYER_DRAW = 2;
 const int SHADER_COLOR_PICKER_POS_SELECT = 3;
 const int SHADER_COLOR_PICKER_HUE_SLIDER = 4;
 
