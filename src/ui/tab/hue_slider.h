@@ -1,5 +1,5 @@
-#ifndef UI__HUE_SLIDER_H
-#define UI__HUE_SLIDER_H
+#ifndef UI__TAB__HUE_SLIDER_H
+#define UI__TAB__HUE_SLIDER_H
 
 #include "../../types/vec2.h"
 

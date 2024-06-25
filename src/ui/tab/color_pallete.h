@@ -1,5 +1,5 @@
-#ifndef UI__COLOR_PALLETE_H
-#define UI__COLOR_PALLETE_H
+#ifndef UI__TAB__COLOR_PALLETE_H
+#define UI__TAB__COLOR_PALLETE_H
 
 #include <array>
 #include "../../types/vec2.h"

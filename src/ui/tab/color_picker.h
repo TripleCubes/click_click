@@ -1,5 +1,5 @@
-#ifndef UI__COLOR_PICKER_H
-#define UI__COLOR_PICKER_H
+#ifndef UI__TAB__COLOR_PICKER_H
+#define UI__TAB__COLOR_PICKER_H
 
 #include "pos_select.h"
 #include "hue_slider.h"

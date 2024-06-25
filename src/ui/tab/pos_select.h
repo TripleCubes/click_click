@@ -1,5 +1,5 @@
-#ifndef UI__POS_SELECT_H
-#define UI__POS_SELECT_H
+#ifndef UI__TAB__POS_SELECT_H
+#define UI__TAB__POS_SELECT_H
 
 #include "../../types/vec2.h"
 
