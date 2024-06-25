@@ -4,8 +4,8 @@
 #include <vector>
 #include "../types/vec2i.h"
 #include "../types/vec2.h"
-#include "../ui/color_picker.h"
-#include "../ui/color_pallete.h"
+#include "../ui/tab/color_picker.h"
+#include "../ui/tab/color_pallete.h"
 
 struct Color;
 struct GraphicStuff;

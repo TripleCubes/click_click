@@ -1,7 +1,7 @@
 #ifndef UI__HUE_SLIDER_H
 #define UI__HUE_SLIDER_H
 
-#include "../types/vec2.h"
+#include "../../types/vec2.h"
 
 struct GraphicStuff;
 struct Input;

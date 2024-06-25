@@ -3,7 +3,7 @@
 
 #include "pos_select.h"
 #include "hue_slider.h"
-#include "../types/color.h"
+#include "../../types/color.h"
 
 struct Vec2;
 struct GraphicStuff;

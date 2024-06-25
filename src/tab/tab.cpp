@@ -67,6 +67,70 @@ Vec2 pos) {
 	mesh_draw(gs, MESH_RECT);
 }
 
+void tex_draw_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
+Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	int pallete_index = tab.color_pallete.selected_index;
+
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
+	Vec2i tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+
+	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
+		return;
+	}
+
+	if (!in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
+		return;
+	}
+
+	if ((input.left_down && input.mouse_move) || input.left_click) {
+		px(tab, tex_draw_mouse_pos, pallete_index);
+		texture_data_red(gs, tab.draw_texture_index, tab.sz, tab.draw_data);
+	}
+}
+
+
+void color_picker_color_pallete_data_update(Tab &tab, GraphicStuff &gs) {
+	int pallete_index = tab.color_pallete.selected_index;
+
+	if (tab.color_picker.color_changed) {
+		Color color = color_picker_get_rgb(tab.color_picker);
+		tab.color_pallete.color_list[pallete_index] = color;
+
+		pallete_data_color(tab, pallete_index, color);
+		texture_data(gs, tab.pallete_texture_index,
+			vec2i_new(16, 16), tab.pallete_data);
+	}
+
+	if (tab.color_pallete.selection_changed) {
+		Color color = tab.color_pallete.color_list[pallete_index];
+		color_picker_set_rgb(tab.color_picker, color);
+	}
+}
+
+void px_cursor_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
+Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2i tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+
+	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
+		draw_rect(
+			gs,
+			vec2_new(
+				floor2(main_fb_mouse_pos.x, tab.px_scale),
+				floor2(main_fb_mouse_pos.y, tab.px_scale)
+			),
+			vec2_new(tab.px_scale, tab.px_scale),
+			color_new(0, 0, 0, 1)
+		);
+	}
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -106,65 +170,16 @@ Vec2 parent_pos, bool show) {
 		return;
 	}
 
-	Vec2 pos = vec2_add(parent_pos, tab.pos);
-	
-	int pallete_index = tab.color_pallete.selected_index;
-
-	if (tab.color_picker.color_changed) {
-		Color color = color_picker_get_rgb(tab.color_picker);
-		tab.color_pallete.color_list[pallete_index] = color;
-
-		pallete_data_color(tab, pallete_index, color);
-		texture_data(gs, tab.pallete_texture_index,
-			vec2i_new(16, 16), tab.pallete_data);
-	}
-
-	if (tab.color_pallete.selection_changed) {
-		Color color = tab.color_pallete.color_list[pallete_index];
-		color_picker_set_rgb(tab.color_picker, color);
-	}
-
-
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
-	Vec2i tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-		return;
-	}
-
-	if (!in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
-		return;
-	}
-
-	if ((input.left_down && input.mouse_move) || input.left_click) {
-		px(tab, tex_draw_mouse_pos, pallete_index);
-		texture_data_red(gs, tab.draw_texture_index, tab.sz, tab.draw_data);
-	}
+	color_picker_color_pallete_data_update(tab, gs);
+	tex_draw_data_update(tab, gs, input, parent_pos);
 }
 
 void tab_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
-
 	draw_draw_texture(tab, gs, pos);
 
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2i tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
-		draw_rect(
-			gs,
-			vec2_new(
-				floor2(main_fb_mouse_pos.x, tab.px_scale),
-				floor2(main_fb_mouse_pos.y, tab.px_scale)
-			),
-			vec2_new(tab.px_scale, tab.px_scale),
-			color_new(0, 0, 0, 1)
-		);
-	}
+	px_cursor_draw(tab, gs, input, parent_pos);
 
 	color_picker_draw(tab.color_picker, gs, parent_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);

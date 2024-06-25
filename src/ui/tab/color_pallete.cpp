@@ -2,12 +2,12 @@
 
 #include <string>
 
-#include "../graphic_types/graphic_types.h"
-#include "../graphic/draw_rect.h"
-#include "../input.h"
+#include "../../graphic_types/graphic_types.h"
+#include "../../graphic/draw_rect.h"
+#include "../../input.h"
 
-#include "../basic_math.h"
-#include "../pos_convert.h"
+#include "../../basic_math.h"
+#include "../../pos_convert.h"
 
 namespace {
 

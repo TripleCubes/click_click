@@ -1,7 +1,7 @@
 #ifndef UI__POS_SELECT_H
 #define UI__POS_SELECT_H
 
-#include "../types/vec2.h"
+#include "../../types/vec2.h"
 
 struct GraphicStuff;
 struct Input;

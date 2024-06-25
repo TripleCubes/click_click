@@ -1,14 +1,14 @@
 #include "hue_slider.h"
 
-#include "../graphic_types/graphic_types.h"
-#include "../graphic_types/framebuffer.h"
-#include "../graphic/graphic.h"
-#include "../graphic/draw_rect.h"
-#include "../input.h"
+#include "../../graphic_types/graphic_types.h"
+#include "../../graphic_types/framebuffer.h"
+#include "../../graphic/graphic.h"
+#include "../../graphic/draw_rect.h"
+#include "../../input.h"
 
-#include "../types/color.h"
-#include "../basic_math.h"
-#include "../pos_convert.h"
+#include "../../types/color.h"
+#include "../../basic_math.h"
+#include "../../pos_convert.h"
 
 HueSlider hue_slider_new(Vec2 pos, Vec2 sz) {
 	HueSlider hue_slider;

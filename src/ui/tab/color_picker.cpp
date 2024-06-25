@@ -1,13 +1,13 @@
 #include "color_picker.h"
 
-#include "../types/vec2.h"
-#include "../types/color.h"
-#include "../graphic_types/graphic_types.h"
-#include "../graphic_types/shader.h"
-#include "../graphic_types/mesh.h"
-#include "../graphic_types/framebuffer.h"
-#include "../graphic/graphic.h"
-#include "../input.h"
+#include "../../types/vec2.h"
+#include "../../types/color.h"
+#include "../../graphic_types/graphic_types.h"
+#include "../../graphic_types/shader.h"
+#include "../../graphic_types/mesh.h"
+#include "../../graphic_types/framebuffer.h"
+#include "../../graphic/graphic.h"
+#include "../../input.h"
 
 namespace {
 

@@ -2,9 +2,9 @@
 #define UI__COLOR_PALLETE_H
 
 #include <array>
-#include "../types/vec2.h"
-#include "../types/color.h"
-#include "btn.h"
+#include "../../types/vec2.h"
+#include "../../types/color.h"
+#include "../btn.h"
 
 const int COLOR_PALLETE_NUM_COLUMN = 8;
 const int COLOR_PALLETE_NUM_ROW = 2;
