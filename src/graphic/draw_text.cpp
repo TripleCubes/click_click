@@ -198,6 +198,25 @@ bool flip_color) {
 	return box_sz;
 }
 
+Vec2 draw_icon_no_bkg(GraphicStuff &gs,
+int icon, Vec2 pos, int scale, Color color, bool flip_color) {
+	draw_texture(
+		gs,
+		texture_get_sz(gs, TEXTURE_FONT),
+
+		vec2_new(icon * 6, 48),
+		vec2_new(6, 6),
+
+		pos,
+		vec2_mul(vec2_new(6, 6), scale),
+
+		color,
+		flip_color
+	);
+
+	return vec2_mul(vec2_new(6, 6), scale);
+}
+
 }
 
 Vec2 draw_text(GraphicStuff &gs,
@@ -220,6 +239,55 @@ Color color, Vec2 bkg_margin, bool flip_color) {
 	box_sz.y -= CHAR_H - REAL_CHAR_H + 1;
 
 	const int CORNER_PX_SZ = scale;
+
+	draw_rect(
+		gs,
+		vec2_new(pos.x - bkg_margin.x + CORNER_PX_SZ, pos.y - bkg_margin.y),
+		vec2_new(box_sz.x + bkg_margin.x * 2 - CORNER_PX_SZ * 2, bkg_margin.y),
+		color
+	);
+	draw_rect(
+		gs,
+		vec2_new(pos.x - bkg_margin.x + CORNER_PX_SZ, pos.y + box_sz.y),
+		vec2_new(box_sz.x + bkg_margin.x * 2 - CORNER_PX_SZ * 2, bkg_margin.y),
+		color
+	);
+	draw_rect(
+		gs,
+		vec2_new(pos.x - bkg_margin.x, pos.y - bkg_margin.y + CORNER_PX_SZ),
+		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y * 2 - CORNER_PX_SZ * 2),
+		color
+	);
+	draw_rect(
+		gs,
+		vec2_new(pos.x + box_sz.x, pos.y - bkg_margin.y + CORNER_PX_SZ),
+		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y * 2 - CORNER_PX_SZ * 2),
+		color
+	);
+
+	return box_sz;
+}
+
+Vec2 draw_icon(GraphicStuff &gs,
+int icon, Vec2 pos, int scale, Color color, Vec2 bkg_margin, bool flip_color) {
+	Vec2 box_sz = draw_icon_no_bkg(
+		gs,
+		icon,
+		pos,
+		scale,
+		color,
+		flip_color
+	);
+
+	if (!flip_color) {
+		return box_sz;
+	}
+
+	const int CORNER_PX_SZ = scale;
+	
+	box_sz.x -= 1;
+	box_sz.y -= 1;
+
 	draw_rect(
 		gs,
 		vec2_new(pos.x - bkg_margin.x + CORNER_PX_SZ, pos.y - bkg_margin.y),

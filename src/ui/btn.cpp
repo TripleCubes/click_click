@@ -67,14 +67,38 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 		flip_color = true;
 	}
 
-	draw_text(
-		gs,
-		btn.text,
-		vec2_add(pos, vec2_new(4, 3)),
-		btn.sz.x - 8,
-		1,
-		color,
-		vec2_new(4, 3),
-		flip_color
-	);
+	if (btn.text == "ICON_PLUS") {
+		draw_icon(
+			gs,
+			ICON_PLUS,
+			vec2_add(pos, vec2_new(3, 3)),
+			1,
+			color,
+			vec2_new(3, 3),
+			flip_color
+		);
+	}
+	else if (btn.text == "ICON_X") {
+		draw_icon(
+			gs,
+			ICON_X,
+			vec2_add(pos, vec2_new(3, 3)),
+			1,
+			color,
+			vec2_new(3, 3),
+			flip_color
+		);
+	}
+	else {
+		draw_text(
+			gs,
+			btn.text,
+			vec2_add(pos, vec2_new(4, 3)),
+			btn.sz.x - 8,
+			1,
+			color,
+			vec2_new(4, 3),
+			flip_color
+		);
+	}
 }
