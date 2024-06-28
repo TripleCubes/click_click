@@ -12,6 +12,7 @@
 struct Color;
 struct GraphicStuff;
 struct Input;
+struct GameTime;
 
 struct Tab {
 	bool running = true;
@@ -19,7 +20,8 @@ struct Tab {
 	Vec2i sz;
 	int px_scale = 1;
 
-	Vec2 mouse_click_pos;
+	Vec2 tex_draw_tag_pos;
+	int pen_check_count = 0;
 
 	ColorPicker color_picker;
 	ColorPallete color_pallete;
@@ -41,7 +43,7 @@ struct Tab {
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 	Vec2 pos, Vec2i sz, int px_scale);
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
-	Vec2 parent_pos, bool show);
+	const GameTime &game_time, Vec2 parent_pos, bool show);
 void tab_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 	Vec2 parent_pos);
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);

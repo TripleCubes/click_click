@@ -12,9 +12,11 @@
 
 #include "../graphic_types/graphic_types.h"
 #include "../input.h"
+#include "../game_time.h"
 #include "../pos_convert.h"
 #include "../basic_math.h"
 
+#include "../draw_tool/draw_tool_px.h"
 #include "../draw_tool/draw_tool_line.h"
 
 #include <cmath>
@@ -105,10 +107,50 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 		PALLETE_TOOL_PREVIEW, pos);
 }
 
-void tool_preview_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos) {
+//void tool_preview_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
+//Vec2 parent_pos) {
+//	Vec2 pos = vec2_add(parent_pos, tab.pos);
+//	
+//	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+//	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
+//	Vec2 tex_draw_mouse_pos
+//		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+//
+//	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
+//		return;
+//	}
+//
+//	if (input.left_down && input.mouse_move) {
+//		draw_tool_line(
+//			tab.tool_preview_data,
+//			tab.sz,
+//			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
+//			tex_draw_mouse_pos,
+//			1
+//		);
+//		texture_data_red(gs, tab.tool_preview_texture_index,
+//			tab.sz, tab.tool_preview_data);
+//		draw_tool_line(
+//			tab.tool_preview_data,
+//			tab.sz,
+//			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
+//			tex_draw_mouse_pos,
+//			0
+//		);
+//	}
+//}
+
+int get_layer_index(const Tab &tab) {
+	return tab.layer_order_list[tab.layer_order_list_index];
+}
+
+void layer_list_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
+const GameTime &game_time, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	int pallete_index = tab.color_pallete.selected_index;
 	
+	Layer &layer = tab.layer_list[get_layer_index(tab)];
+
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 tex_draw_mouse_pos
@@ -118,58 +160,27 @@ Vec2 parent_pos) {
 		return;
 	}
 
-//	if (!in_rect(tex_draw_mouse_pos, vec2_new(0, 0), to_vec2(tab.sz))) {
-//		return;
-//	}
+	bool drawn = false;
+
+	if (input.left_click) {
+		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
+		draw_tool_px(layer.data, tab.sz,
+			to_vec2i(tex_draw_mouse_pos), pallete_index);
+
+		drawn = true;
+	}
 
 	if (input.left_down && input.mouse_move) {
-		draw_tool_line(
-			tab.tool_preview_data,
-			tab.sz,
-			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
-			tex_draw_mouse_pos,
-			1
-		);
-		texture_data_red(gs, tab.tool_preview_texture_index,
-			tab.sz, tab.tool_preview_data);
-		draw_tool_line(
-			tab.tool_preview_data,
-			tab.sz,
-			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
-			tex_draw_mouse_pos,
-			0
-		);
+		draw_tool_line(layer.data, tab.sz, tab.tex_draw_tag_pos,
+			tex_draw_mouse_pos, pallete_index);
+		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
+
+		drawn = true;
 	}
-}
 
-int get_layer_index(const Tab &tab) {
-	return tab.layer_order_list[tab.layer_order_list_index];
-}
-
-void layer_list_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos) {
-//	Vec2 pos = vec2_add(parent_pos, tab.pos);
-//	int pallete_index = tab.color_pallete.selected_index;
-//	
-//	Layer &layer = tab.layer_list[get_layer_index(tab)];
-//
-//	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-//	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
-//	Vec2i tex_draw_mouse_pos
-//		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-//
-//	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-//		return;
-//	}
-//
-//	if (!in_rect(to_vec2(tex_draw_mouse_pos),vec2_new(0, 0),to_vec2(tab.sz))) {
-//		return;
-//	}
-//
-//	if ((input.left_down && input.mouse_move) || input.left_click) {
-//		layer_data(layer, tex_draw_mouse_pos, pallete_index);
-//		layer_set_texture_data(layer, gs);
-//	}
+	if (drawn) {
+		layer_set_texture_data(layer, gs);
+	}
 }
 
 void color_picker_color_pallete_data_update(Tab &tab, GraphicStuff &gs) {
@@ -322,7 +333,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 }
 
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos, bool show) {
+const GameTime &game_time, Vec2 parent_pos, bool show) {
 	color_picker_update(tab.color_picker, gs, input, parent_pos, show);
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
@@ -338,12 +349,7 @@ Vec2 parent_pos, bool show) {
 
 	color_picker_color_pallete_data_update(tab, gs);
 
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	if (input.left_click) {
-		tab.mouse_click_pos = main_fb_mouse_pos;
-	}
-	tool_preview_data_update(tab, gs, input, parent_pos);
-	layer_list_data_update(tab, gs, input, parent_pos);
+	layer_list_data_update(tab, gs, input, game_time, parent_pos);
 }
 
 void tab_draw(const Tab &tab, GraphicStuff &gs, const Input &input,

@@ -67,7 +67,7 @@ void update(GraphicStuff &gs,
 std::vector<Tab> &tab_list,
 const GameTime &game_time,
 const Input &input) {
-	tab_update(tab_list[0], gs, input, vec2_new(0, 0), true);
+	tab_update(tab_list[0], gs, input, game_time, vec2_new(0, 0), true);
 }
 
 void draw(GraphicStuff &gs,

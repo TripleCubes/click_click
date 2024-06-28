@@ -206,6 +206,9 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index) {
 				vec2i_new(i, std::floor(pos_2.y)), pallete_index);
 		}
 	}
+
+	draw_tool_px(data, data_sz, to_vec2i(pos_1), pallete_index);
+	draw_tool_px(data, data_sz, to_vec2i(pos_2), pallete_index);
 }
 
 }
