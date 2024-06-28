@@ -1,6 +1,7 @@
 #include "vec2i.h"
 
 #include "vec2.h"
+#include <cmath>
 
 Vec2i vec2i_new(int x, int y) {
 	Vec2i veci;
@@ -10,7 +11,7 @@ Vec2i vec2i_new(int x, int y) {
 }
 
 Vec2i to_vec2i(Vec2 vec) {
-	return vec2i_new(vec.x, vec.y);
+	return vec2i_new(std::floor(vec.x), std::floor(vec.y));
 }
 
 bool vec2i_equals(Vec2i vec_a, Vec2i vec_b) {

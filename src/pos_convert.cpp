@@ -22,10 +22,3 @@ Vec2 get_main_fb_mouse_pos(const GraphicStuff &gs, Vec2 mouse_pos) {
 	result = vec2_add(result, get_main_fb_offset(gs));
 	return result;
 }
-
-Vec2i get_tex_draw_mouse_pos(const Tab &tab, Vec2 main_fb_tab_pos,
-Vec2 main_fb_mouse_pos) {
-	Vec2 result = vec2_sub(main_fb_mouse_pos, main_fb_tab_pos);
-	result = vec2_div(result, tab.px_scale);
-	return to_vec2i(result);
-}

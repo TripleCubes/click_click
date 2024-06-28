@@ -19,12 +19,19 @@ struct Tab {
 	Vec2i sz;
 	int px_scale = 1;
 
+	Vec2 mouse_click_pos;
+
 	ColorPicker color_picker;
 	ColorPallete color_pallete;
 	LayerBar layer_bar;
 
 	std::vector<unsigned char> pallete_data;
 	int pallete_texture_index = 0;
+	std::vector<unsigned char> tool_preview_pallete_data;
+	int tool_preview_pallete_texture_index = 0;
+
+	std::vector<unsigned char> tool_preview_data;
+	int tool_preview_texture_index = 0;
 
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;

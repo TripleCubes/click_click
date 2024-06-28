@@ -21,7 +21,7 @@ struct ColorPallete {
 	std::array<Color, COLOR_PALLETE_NUM_COLUMN *
 	                  COLOR_PALLETE_NUM_ROW *
 	                  COLOR_PALLETE_NUM_PAGE> color_list;
-	int selected_index = 0;
+	int selected_index = 1;
 	bool selection_changed = false;
 	int at_page = 0;
 

@@ -29,8 +29,6 @@ void layer_btn_update(Layer &layer, const GraphicStuff &gs, const Input &input,
 void layer_btn_draw(const Layer &layer, GraphicStuff &gs, Vec2 parent_pos,
 	bool selected);
 
-void layer_data(Layer &layer, Vec2i pos, unsigned char pallete_index);
-
 void layer_set_texture_data(const Layer &layer, GraphicStuff &gs);
 
 void layer_release(std::vector<Layer> &layer_list, GraphicStuff &gs,int index);

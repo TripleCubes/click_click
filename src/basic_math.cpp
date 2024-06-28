@@ -7,6 +7,10 @@ float floor2(float a, float b) {
 	return std::floor(a / b) * b;
 }
 
+float mod2(float a, float b) {
+	return a - std::floor(a / b) * b;
+}
+
 bool in_rect(Vec2 pos, Vec2 rect_pos, Vec2 rect_sz) {
 	if (pos.x < rect_pos.x) {
 		return false;

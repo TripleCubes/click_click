@@ -71,11 +71,6 @@ bool selected) {
 	btn_draw(layer.delete_btn, gs, parent_pos, false);
 }
 
-void layer_data(Layer &layer, Vec2i pos, unsigned char pallete_index) {
-	int data_index = layer.sz.y * pos.y + pos.x;
-	layer.data[data_index] = pallete_index;
-}
-
 void layer_set_texture_data(const Layer &layer, GraphicStuff &gs) {
 	texture_data_red(gs, layer.texture_index, layer.sz, layer.data);
 }
