@@ -73,6 +73,7 @@ int main () {
 	float game_start_time = glfwGetTime();
 	float frame_start_time = game_start_time;
 	GameTime game_time;
+
 	Input input;
 
 	GraphicStuff graphic_stuff;
