@@ -146,6 +146,10 @@ int get_layer_index(const Tab &tab) {
 
 void layer_list_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
 const GameTime &game_time, Vec2 parent_pos) {
+	if (input.key_list[KEY_SPACE].down) {
+		return;
+	}
+
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	int pallete_index = tab.color_pallete.selected_index;
 	
