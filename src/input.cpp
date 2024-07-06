@@ -126,7 +126,6 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_LEFT,
 	GLFW_KEY_RIGHT,
 };
-
 #endif
 
 #ifndef __EMSCRIPTEN__
@@ -173,6 +172,7 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 	double mouse_y;
 	glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
 	if (mouse_x != input.mouse_pos.x || mouse_y != input.mouse_pos.y) {
+		input.prev_mouse_pos = input.mouse_pos;
 		input.mouse_pos.x = mouse_x;
 		input.mouse_pos.y = mouse_y;
 		input.mouse_move = true;
@@ -221,6 +221,7 @@ void input_update(Input &input) {
 	int mouse_y = 0;
 	glfwGetMousePos(&mouse_x, &mouse_y);
 	if (mouse_x != input.mouse_pos.x || mouse_y != input.mouse_pos.y) {
+		input.prev_mouse_pos = input.mouse_pos;
 		input.mouse_pos.x = mouse_x;
 		input.mouse_pos.y = mouse_y;
 		input.mouse_move = true;

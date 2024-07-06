@@ -286,6 +286,28 @@ void layer_btn_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	}
 }
 
+void canvas_move_update(Tab &tab, const GraphicStuff &gs,
+const Input &input, Vec2 parent_pos) {
+	if (input.key_list[KEY_SPACE].down && input.left_down && input.mouse_move){
+		Vec2 pos = vec2_add(parent_pos, tab.pos);
+
+		Vec2 main_fb_mouse_pos
+			= get_main_fb_mouse_pos(gs, input.mouse_pos);
+		Vec2 prev_main_fb_mouse_pos
+			= get_main_fb_mouse_pos(gs, input.prev_mouse_pos);
+		Vec2 tex_draw_mouse_pos
+			= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+		Vec2 prev_tex_draw_mouse_pos
+			= get_tex_draw_mouse_pos(tab, pos, prev_main_fb_mouse_pos);
+
+		Vec2 mouse_diff = vec2_sub(
+			tex_draw_mouse_pos,
+			prev_tex_draw_mouse_pos
+		);
+		tab.pos = vec2_add(tab.pos, vec2_mul(mouse_diff, tab.px_scale));
+	}
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -339,13 +361,16 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
 
 	layer_btn_list_update(tab, gs, input, parent_pos, show);
-	if (tab.layer_bar.add_btn.clicked) {
-		tab_layer_new(tab, gs);
-	}
 
 	if (!show) {
 		return;
 	}
+
+	if (tab.layer_bar.add_btn.clicked) {
+		tab_layer_new(tab, gs);
+	}
+
+	canvas_move_update(tab, gs, input, parent_pos);
 
 	color_picker_color_pallete_data_update(tab, gs);
 

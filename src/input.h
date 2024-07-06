@@ -77,6 +77,7 @@ struct KeyState {
 
 struct Input {
 	Vec2 mouse_pos;
+	Vec2 prev_mouse_pos;
 	
 	bool left_click = false;
 	bool left_down = false;
