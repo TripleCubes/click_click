@@ -133,6 +133,8 @@ void key_list_update(Input &input, GLFWwindow *glfw_window) {
 #else
 void key_list_update(Input &input) {
 #endif
+	input.key_event = false;
+
 	for (int i = 0; i < KEY_COUNT; i++) {
 		int key_glfw = KEY_GLFW_LIST[i];
 		
@@ -152,10 +154,12 @@ void key_list_update(Input &input) {
 				input.key_list[i].press = true;
 			}
 			input.key_list[i].down = true;
+			input.key_event = true;
 		}
 		else {
 			if (prev_state.down) {
 				input.key_list[i].release = true;
+				input.key_event = true;
 			}
 			input.key_list[i].down = false;
 		}
@@ -166,6 +170,7 @@ void key_list_update(Input &input) {
 
 #ifndef __EMSCRIPTEN__
 void input_update(Input &input, GLFWwindow *glfw_window) {
+	input.mouse_event = false;
 	input.mouse_move = false;
 
 	double mouse_x;
@@ -176,6 +181,7 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 		input.mouse_pos.x = mouse_x;
 		input.mouse_pos.y = mouse_y;
 		input.mouse_move = true;
+		input.mouse_event = true;
 	}
 
 
@@ -186,10 +192,12 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 			input.left_click = true;
 		}
 		input.left_down = true;
+		input.mouse_event = true;
 	}
 	else {
 		if (input.left_down) {
 			input.left_release = true;
+			input.mouse_event = true;
 		}
 		input.left_down = false;
 	}
@@ -201,10 +209,12 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 			input.right_click = true;
 		}
 		input.right_down = true;
+		input.mouse_event = true;
 	}
 	else {
 		if (input.right_down) {
 			input.right_release = true;
+			input.mouse_event = true;
 		}
 		input.right_down = false;
 	}
@@ -215,6 +225,7 @@ void input_update(Input &input, GLFWwindow *glfw_window) {
 
 #else
 void input_update(Input &input) {
+	input.mouse_event = false;
 	input.mouse_move = false;
 
 	int mouse_x = 0;
@@ -225,6 +236,7 @@ void input_update(Input &input) {
 		input.mouse_pos.x = mouse_x;
 		input.mouse_pos.y = mouse_y;
 		input.mouse_move = true;
+		input.mouse_event = true;
 	}
 
 
@@ -235,10 +247,12 @@ void input_update(Input &input) {
 			input.left_click = true;
 		}
 		input.left_down = true;
+		input.mouse_event = true;
 	}
 	else {
 		if (input.left_down) {
 			input.left_release = true;
+			input.mouse_event = true;
 		}
 		input.left_down = false;
 	}
@@ -250,10 +264,12 @@ void input_update(Input &input) {
 			input.right_click = true;
 		}
 		input.right_down = true;
+		input.mouse_event = true;
 	}
 	else {
 		if (input.right_down) {
 			input.right_release = true;
+			input.mouse_event = true;
 		}
 		input.right_down = false;
 	}

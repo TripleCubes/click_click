@@ -188,12 +188,19 @@ void draw(GraphicStuff &gs,
 const std::vector<Tab> &tab_list,
 const GameTime &game_time,
 const Input &input) {
-	draw_canvas(gs, tab_list[0], input);
-	create_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
-		BLUR_COLOR, false);
-	create_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
-		BLUR_COLOR, true);
-	draw_blurred_rects(gs, tab_list[0]);
-	draw_ui(gs, tab_list[0], game_time);
+	bool mouse_in_window = in_rect(
+		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
+	);
+	if ((input.mouse_event && mouse_in_window) || input.key_event
+	|| game_time.frame_passed == 0) {
+		draw_canvas(gs, tab_list[0], input);
+		create_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
+			BLUR_COLOR, false);
+		create_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
+			BLUR_COLOR, true);
+		draw_blurred_rects(gs, tab_list[0]);
+		draw_ui(gs, tab_list[0], game_time);
+	}
+
 	draw_fb_main(gs);
 }

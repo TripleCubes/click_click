@@ -105,6 +105,7 @@ int main () {
 		draw(graphic_stuff, tab_list, game_time, input);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
+		game_time.frame_passed++;
 
 		glfwSwapBuffers(glfw_window);
 	}

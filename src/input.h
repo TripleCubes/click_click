@@ -90,6 +90,9 @@ struct Input {
 	bool mouse_move = false;
 
 	std::array<KeyState, KEY_COUNT> key_list;
+
+	bool mouse_event = false;
+	bool key_event = false;
 };
 
 #ifndef __EMSCRIPTEN__
