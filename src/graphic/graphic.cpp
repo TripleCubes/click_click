@@ -129,4 +129,8 @@ void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz) {
 
 	Vec2i main_fb_sz = get_main_fb_sz(graphic_stuff);
 	fb_resize(graphic_stuff, FB_MAIN, main_fb_sz);
+	fb_resize(graphic_stuff, FB_BLUR_0, main_fb_sz);
+	fb_resize(graphic_stuff, FB_BLUR_1, main_fb_sz);
+	
+	graphic_stuff.just_resized = true;
 }

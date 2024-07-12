@@ -53,6 +53,7 @@ void main_loop() {
 	double window_w = 0;
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
+	graphic_stuff.just_resized = false;
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	
 	glfwPollEvents();

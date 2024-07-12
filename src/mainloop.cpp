@@ -192,7 +192,7 @@ const Input &input) {
 		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
 	);
 	if ((input.mouse_event && mouse_in_window) || input.key_event
-	|| game_time.frame_passed == 0) {
+	|| game_time.frame_passed == 0 || gs.just_resized) {
 		draw_canvas(gs, tab_list[0], input);
 		create_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);

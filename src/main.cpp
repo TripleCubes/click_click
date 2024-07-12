@@ -94,6 +94,7 @@ int main () {
 		frame_start_time = glfwGetTime();
 		game_time.time_since_start = frame_start_time - game_start_time;
 
+		graphic_stuff.just_resized = false;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 		
 		glfwPollEvents();

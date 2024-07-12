@@ -36,6 +36,7 @@ struct Framebuffer {
 struct GraphicStuff {
 	Vec2i current_window_sz;
 	int px_scale = 1;
+	bool just_resized = false;
 	std::vector<Mesh> mesh_list;
 	std::vector<Shader> shader_list;
 	std::vector<Texture> texture_list;
