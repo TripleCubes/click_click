@@ -7,7 +7,7 @@
 namespace {
 
 const float BTN_HEIGHT = 12;
-const Color BTN_COLOR = color_new(129/255.0f, 209/255.0f, 123/255.0f, 1);
+const Color BTN_COLOR = color_new(0.2, 0.2, 0.2, 1);
 
 }
 
@@ -17,7 +17,7 @@ LayerBar layer_bar_new(Vec2 pos, Vec2 sz) {
 	layer_bar.sz = sz;
 	
 	layer_bar.add_btn = btn_new(
-		vec2_new(pos.x + 10, pos.y + sz.y - BTN_HEIGHT - 10),
+		vec2_new(pos.x, pos.y + sz.y - BTN_HEIGHT),
 		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
 		BTN_COLOR,
 		"ICON_PLUS"

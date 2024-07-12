@@ -8,9 +8,9 @@
 
 namespace {
 
-const Vec2 BTN_SZ = vec2_new(60, 12);
+const Vec2 BTN_SZ = vec2_new(100 - 21, 12);
 const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
-const Color BTN_COLOR = color_new(129/255.0f, 209/255.0f, 123/255.0f, 1);
+const Color BTN_COLOR = color_new(0.2, 0.2, 0.2, 1);
 
 int get_blank_index(const std::vector<Layer> &layer_list) {
 	for (int i = 0; i < (int)layer_list.size(); i++) {

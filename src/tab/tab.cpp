@@ -217,8 +217,8 @@ Vec2 parent_pos) {
 		draw_rect(
 			gs,
 			vec2_new(
-				pos.x + std::floor(tex_draw_mouse_pos.x) * tab.px_scale,
-				pos.y + std::floor(tex_draw_mouse_pos.y) * tab.px_scale
+				std::floor(pos.x) + std::floor(tex_draw_mouse_pos.x) * tab.px_scale,
+				std::floor(pos.y) + std::floor(tex_draw_mouse_pos.y) * tab.px_scale
 			),
 			vec2_new(tab.px_scale, tab.px_scale),
 			color_new(0, 0, 0, 1)
@@ -234,20 +234,14 @@ void tab_layer_new(Tab &tab, GraphicStuff &gs) {
 	tab.layer_order_list.push_back(index);
 }
 
-Vec2 get_layer_btn_list_pos(const Tab &tab) {
-	return vec2_add(tab.layer_bar.pos, vec2_new(10, 10));
-}
-
 void layer_btn_list_update(Tab &tab, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool show) {
-	Vec2 layer_btn_list_pos = get_layer_btn_list_pos(tab);
-
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		Layer &layer = tab.layer_list[index];
 
-		Vec2 add = vec2_new(layer_btn_list_pos.x,
-			layer_btn_list_pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
+		Vec2 add = vec2_new(tab.layer_bar.pos.x,
+			tab.layer_bar.pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
 		layer_btn_update(layer, gs, input,
 			vec2_add(parent_pos, add), show);
 	}
@@ -276,14 +270,12 @@ const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void layer_btn_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2 layer_btn_list_pos = get_layer_btn_list_pos(tab);
-
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
 
-		Vec2 add = vec2_new(layer_btn_list_pos.x,
-		    layer_btn_list_pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
+		Vec2 add = vec2_new(tab.layer_bar.pos.x,
+			tab.layer_bar.pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
 		layer_btn_draw(layer, gs,
 			vec2_add(parent_pos, add),
 			i == tab.layer_order_list_index);
@@ -325,13 +317,16 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	}
 	Tab &tab = tab_list[index];
 
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
 
-	tab.color_picker = color_picker_new(vec2_new(50, 10));
-	tab.color_pallete = color_pallete_new(vec2_new(300, 10));
-	tab.layer_bar = layer_bar_new(vec2_new(300, 120), vec2_new(100, 120));
+	tab.color_picker = color_picker_new(vec2_new(159, 6));
+	tab.color_pallete = color_pallete_new(vec2_new(110, 5));
+	tab.layer_bar = layer_bar_new(vec2_new(4, main_fb_sz.y - 100 - 4),
+	                              vec2_new(100, 100));
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
@@ -381,13 +376,41 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	layer_list_data_update(tab, gs, input, game_time, parent_pos);
 }
 
-void tab_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
+void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
+	auto draw = [&gs, main_fb_sz, parent_pos](Vec2 pos, Vec2 sz) -> void {
+		draw_texture(
+			gs,
+			main_fb_sz,
+			vec2_add(parent_pos, pos),
+			vec2_add(parent_pos, sz),
+			vec2_add(parent_pos, pos),
+			vec2_add(parent_pos, sz),
+			color_new(0, 0, 0, 0),
+			false
+		);
+	};
+
+	draw(
+		vec2_sub(tab.color_pallete.pos, vec2_new(2, 3)),
+		vec2_add(COLOR_PALLETE_SZ, vec2_new(4, 6))
+	);
+	draw(
+		vec2_sub(tab.color_picker.pos, vec2_new(4, 4)),
+		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
+	);
+}
+
+void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
+
 	layer_list_draw(tab, gs, pos);
-
 	px_cursor_draw(tab, gs, input, parent_pos);
+}
 
+void tab_ui_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	layer_btn_list_draw(tab, gs, parent_pos);
 
 	color_picker_draw(tab.color_picker, gs, parent_pos);

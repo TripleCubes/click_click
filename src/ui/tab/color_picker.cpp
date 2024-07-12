@@ -91,12 +91,12 @@ ColorPicker color_picker_new(Vec2 pos) {
 	color_picker.pos = pos;
 	
 	color_picker.pos_select = pos_select_new(
-		vec2_add(pos, vec2_new(10, 10)),
+		vec2_new(0, 0),
 		vec2_new(64, 64)
 	);
 
 	color_picker.hue_slider = hue_slider_new(
-		vec2_add(pos, vec2_new(10, 84)),
+		vec2_new(0, 74),
 		vec2_new(64, 10)
 	);
 
@@ -158,4 +158,11 @@ void color_picker_set_rgb(ColorPicker &color_picker, Color rgb) {
 		= hsv.g * color_picker.pos_select.sz.x;
 	color_picker.pos_select.selected_pos.y
 		= (1 - hsv.b) * color_picker.pos_select.sz.y;
+}
+
+Vec2 color_picker_get_sz(const ColorPicker &color_picker) {
+	return vec2_new(
+		color_picker.hue_slider.sz.x,
+		color_picker.hue_slider.pos.y + color_picker.hue_slider.sz.y
+	);
 }

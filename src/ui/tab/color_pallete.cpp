@@ -34,7 +34,7 @@ ColorPallete color_pallete_new(Vec2 pos) {
 				i * COLOR_PALLETE_PAGE_BTN_SZ.y
 			),
 			COLOR_PALLETE_PAGE_BTN_SZ,
-			color_new(1, 87/255.0f, 95/255.0f, 1),
+			color_new(0.2, 0.2, 0.2, 1),
 			std::to_string(i)
 		);
 	}

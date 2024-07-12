@@ -66,6 +66,16 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		return false;
 	}
 
+	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {
+		std::cout << "cant init blur_0 frambuffer" << std::endl;
+		return false;
+	}
+
+	if (framebuffer_new(graphic_stuff, main_fb_sz.x, main_fb_sz.y) == -1) {
+		std::cout << "cant init blur_1 framebuffer" << std::endl;
+		return false;
+	}
+
 
 	if (shader_new(graphic_stuff, shader_path("./shader/basic_draw")) == -1) {
 		std::cout << "cant init shader basic_draw" << std::endl;
@@ -91,6 +101,12 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 	if (shader_new(graphic_stuff,
 		           shader_path("./shader/color_picker/hue_slider")) == -1) {
 		std::cout << "cant init shader color_picker_hue_slider" << std::endl;
+		return false;
+	}
+
+	if (shader_new(graphic_stuff,
+		           shader_path("./shader/graphic_effect/blur")) == -1) {
+		std::cout << "cant init shader blur" << std::endl;
 		return false;
 	}
 

@@ -87,7 +87,7 @@ int main () {
 	}
 
 	std::vector<Tab> tab_list;
-	tab_new(tab_list, graphic_stuff, vec2_new(10, 150), vec2i_new(128, 128), 2);
+	tab_new(tab_list, graphic_stuff, vec2_new(10, 150), vec2i_new(32, 32), 4);
 
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;

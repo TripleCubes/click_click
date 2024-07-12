@@ -24,6 +24,8 @@ void color_picker_update(ColorPicker &color_picker,
 void color_picker_draw(const ColorPicker &color_picker,
 	GraphicStuff &gs, Vec2 parent_pos);
 
+Vec2 color_picker_get_sz(const ColorPicker &color_picker);
+
 Color color_picker_get_hsv(const ColorPicker &color_picker);
 Color color_picker_get_rgb(const ColorPicker &color_picker);
 void color_picker_set_rgb(ColorPicker &color_picker, Color rgb);

@@ -12,8 +12,11 @@ const int SHADER_FB_MAIN = 1;
 const int SHADER_LAYER_DRAW = 2;
 const int SHADER_COLOR_PICKER_POS_SELECT = 3;
 const int SHADER_COLOR_PICKER_HUE_SLIDER = 4;
+const int SHADER_BLUR = 5;
 
 const int FB_MAIN = 0;
+const int FB_BLUR_0 = 1;
+const int FB_BLUR_1 = 2;
 
 const int TEXTURE_FONT = 0;
 
