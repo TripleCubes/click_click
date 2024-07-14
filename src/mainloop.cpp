@@ -92,7 +92,7 @@ const GameTime &game_time
 	mesh_draw(gs, MESH_BASIC_DRAW);
 }
 
-void create_blurred_texture(GraphicStuff &gs, unsigned int from_texture_id,
+void draw_blurred_texture(GraphicStuff &gs, unsigned int from_texture_id,
 Color color, bool flip) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 
@@ -194,9 +194,9 @@ const Input &input) {
 	if ((input.mouse_event && mouse_in_window) || input.key_event
 	|| game_time.frame_passed == 0 || gs.just_resized) {
 		draw_canvas(gs, tab_list[0], input);
-		create_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
+		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);
-		create_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
+		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 			BLUR_COLOR, true);
 		draw_blurred_rects(gs, tab_list[0]);
 		draw_ui(gs, tab_list[0], game_time);
