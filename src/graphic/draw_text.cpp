@@ -16,8 +16,6 @@
 
 #include "draw_rect.h"
 
-#include <iostream>
-
 namespace {
 
 const int CHAR_W = 4;
@@ -261,6 +259,7 @@ Color color, Vec2 bkg_margin, bool flip_color) {
 		return box_sz;
 	}
 
+	box_sz.x -= 1;
 	box_sz.y -= CHAR_H - REAL_CHAR_H + 1;
 
 	const int CORNER_PX_SZ = scale;
