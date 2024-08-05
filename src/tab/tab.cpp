@@ -348,6 +348,10 @@ Vec2 pos, Vec2i sz, int px_scale) {
 
 	tab_layer_new(tab, gs);
 
+	// TEST
+	tab.textarea = textarea_new(vec2_new(300, 10), vec2_new(70, 50),
+		color_new(1, 129/255.0, 118/255.0, 1), "This is a test");
+
 	tab.running = true;
 
 	return index;
@@ -360,6 +364,8 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
 
 	layer_btn_list_update(tab, gs, input, parent_pos, show);
+	// TEST
+	textarea_update(tab.textarea, gs, input, parent_pos, show, true);
 
 	if (!show) {
 		return;
@@ -412,6 +418,8 @@ Vec2 parent_pos) {
 
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	layer_btn_list_draw(tab, gs, parent_pos);
+	// TEST
+	textarea_draw(tab.textarea, gs, parent_pos, true);
 
 	color_picker_draw(tab.color_picker, gs, parent_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);

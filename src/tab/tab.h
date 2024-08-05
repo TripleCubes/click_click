@@ -9,6 +9,9 @@
 #include "../ui/tab/layer_bar.h"
 #include "layer.h"
 
+// TEST
+#include "../ui/textarea.h"
+
 struct Color;
 struct GraphicStuff;
 struct Input;
@@ -37,6 +40,9 @@ struct Tab {
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;
 	int layer_order_list_index = 0;
+
+	// TEST
+	TextArea textarea;
 };
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,

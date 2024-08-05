@@ -61,7 +61,7 @@ Vec2 get_char_pos(char c) {
 	return vec2_new(60, 6);
 }
 
-Vec2 get_boxed_text(std::string &result, const std::string &text,
+Vec2 get_text_linebreaks_inserted(std::string &result, const std::string &text,
 float box_w, int scale) {
 	result = text;
 
@@ -69,6 +69,8 @@ float box_w, int scale) {
 
 	int last_line_break = 0;
 	int current_word_start = 0;
+
+	std::vector<int> insert_linebreak_list;
 
 	for (int i = 0; i < (int)result.length(); i++) {
 		char c = result[i];
@@ -81,9 +83,32 @@ float box_w, int scale) {
 		}
 	
 		if (w > box_w && current_word_start - 1 >= 0) {
-			result[current_word_start - 1] = '\n';
-			last_line_break = current_word_start;
+			if (last_line_break == current_word_start) {
+				insert_linebreak_list.push_back(i);
+				current_word_start = i;
+				last_line_break = i;
+				num_line += 1;
+			}
+			else {
+				result[current_word_start - 1] = '\n';
+				last_line_break = current_word_start;
+				num_line += 1;
+			}
+		}
+
+		if (w > box_w && current_word_start == 0) {
+			insert_linebreak_list.push_back(i);
+			current_word_start = i;
+			last_line_break = i;
 			num_line += 1;
+		}
+	}
+
+	for (int i = (int)insert_linebreak_list.size() - 1; i >= 0; i--) {
+		for (int j = (int)result.length(); j >= 0; j--) {
+			if (j == insert_linebreak_list[i]) {
+				result.insert(j, 1, '\n');
+			}
 		}
 	}
 
@@ -169,7 +194,7 @@ Vec2 draw_text_no_bkg(GraphicStuff &gs,
 const std::string &text, Vec2 pos, float box_w, int scale, Color color,
 bool flip_color) {
 	std::string boxed_text;
-	Vec2 box_sz = get_boxed_text(boxed_text, text, box_w, scale);
+	Vec2 box_sz = get_text_linebreaks_inserted(boxed_text, text, box_w, scale);
 
 	std::vector<std::string> line_list;
 	str_split_lines(line_list, boxed_text);
