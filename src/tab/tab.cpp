@@ -100,7 +100,8 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 	for (int i = (int)tab.layer_order_list.size() - 1; i >= 0; i--) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
-		layer_texture_draw(tab, gs, layer.texture_index, PALLETE_DRAW, pos);
+		layer_texture_draw(tab, gs, layer.texture_index, PALLETE_DRAW,
+			vec2_floor(pos));
 	}
 
 	layer_texture_draw(tab, gs, tab.tool_preview_texture_index,

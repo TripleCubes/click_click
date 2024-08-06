@@ -252,7 +252,7 @@ Color color, Vec2 bkg_margin, bool flip_color) {
 	}
 
 	box_sz.x -= 1;
-	box_sz.y -= CHAR_H - REAL_CHAR_H + 1;
+	box_sz.y -= CHAR_H - REAL_CHAR_H;
 
 	const int CORNER_PX_SZ = scale;
 
@@ -265,19 +265,19 @@ Color color, Vec2 bkg_margin, bool flip_color) {
 	draw_rect(
 		gs,
 		vec2_new(pos.x - bkg_margin.x + CORNER_PX_SZ, pos.y + box_sz.y),
-		vec2_new(box_sz.x + bkg_margin.x * 2 - CORNER_PX_SZ * 2, bkg_margin.y),
+		vec2_new(box_sz.x + bkg_margin.x*2 - CORNER_PX_SZ*2, bkg_margin.y - 1),
 		color
 	);
 	draw_rect(
 		gs,
 		vec2_new(pos.x - bkg_margin.x, pos.y - bkg_margin.y + CORNER_PX_SZ),
-		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y * 2 - CORNER_PX_SZ * 2),
+		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y*2 - CORNER_PX_SZ*2 - 1),
 		color
 	);
 	draw_rect(
 		gs,
 		vec2_new(pos.x + box_sz.x, pos.y - bkg_margin.y + CORNER_PX_SZ),
-		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y * 2 - CORNER_PX_SZ * 2),
+		vec2_new(bkg_margin.x, box_sz.y + bkg_margin.y*2 - CORNER_PX_SZ*2 - 1),
 		color
 	);
 
