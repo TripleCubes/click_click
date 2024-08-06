@@ -89,12 +89,16 @@ int main () {
 	std::vector<Tab> tab_list;
 	tab_new(tab_list, graphic_stuff, vec2_new(10, 150), vec2i_new(32, 32), 4);
 
+	const float REDRAW_REQUEST_WAIT = 0.5;
+	int redraw_request_count = 0;
+
 	while (!glfwWindowShouldClose(glfw_window)) {
 		game_time.delta = glfwGetTime() - frame_start_time;
 		frame_start_time = glfwGetTime();
 		game_time.time_since_start = frame_start_time - game_start_time;
 
 		graphic_stuff.just_resized = false;
+		graphic_stuff.redraw_requested = false;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 		
 		glfwPollEvents();
@@ -102,6 +106,12 @@ int main () {
 		input_update(input, glfw_window);
 
 		update(graphic_stuff, tab_list, game_time, input);
+
+		if (redraw_request_count * REDRAW_REQUEST_WAIT
+		                                        < game_time.time_since_start) {
+			redraw_request_count++;
+			graphic_stuff.redraw_requested = true;
+		}
 
 		draw(graphic_stuff, tab_list, game_time, input);
 

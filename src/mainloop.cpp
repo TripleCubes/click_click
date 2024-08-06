@@ -61,7 +61,7 @@ const GameTime &game_time
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
-	tab_ui_draw(tab, gs, TAB_OFFSET);
+	tab_ui_draw(tab, gs, game_time, TAB_OFFSET);
 
 	draw_text(
 		gs,
@@ -192,7 +192,7 @@ const Input &input) {
 		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
 	);
 	if ((input.mouse_event && mouse_in_window) || input.key_event
-	|| game_time.frame_passed == 0 || gs.just_resized) {
+	|| game_time.frame_passed == 0 || gs.just_resized || gs.redraw_requested) {
 		draw_canvas(gs, tab_list[0], input);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);

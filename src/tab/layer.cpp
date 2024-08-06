@@ -8,9 +8,9 @@
 
 namespace {
 
-const Vec2 BTN_SZ = vec2_new(100 - 21, 12);
+const Vec2 TEXTAREA_SZ = vec2_new(100 - 21, 12);
 const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
-const Color BTN_COLOR = color_new(0.2, 0.2, 0.2, 1);
+const Color TEXTAREA_COLOR = color_new(0.2, 0.2, 0.2, 1);
 
 int get_blank_index(const std::vector<Layer> &layer_list) {
 	for (int i = 0; i < (int)layer_list.size(); i++) {
@@ -41,16 +41,16 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 	layer.data = data;
 	layer.texture_index = texture_blank_new_red(gs, sz.x, sz.y);
 
-	layer.btn = btn_new(
+	layer.textarea = textarea_new(
 		vec2_new(0, 0),
-		BTN_SZ,
-		BTN_COLOR,
+		TEXTAREA_SZ,
+		TEXTAREA_COLOR,
 		name
 	);
 	layer.delete_btn = btn_new(
-		vec2_new(BTN_SZ.x + 2, 0),
+		vec2_new(TEXTAREA_SZ.x + 2, 0),
 		DELETE_BTN_SZ,
-		BTN_COLOR,
+		TEXTAREA_COLOR,
 		"ICON_X"
 	);
 
@@ -59,15 +59,16 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 	return index;
 }
 
-void layer_btn_update(Layer &layer, const GraphicStuff &gs, const Input &input,
-Vec2 parent_pos, bool show) {
-	btn_update(layer.btn, gs, input, parent_pos, show);
+void layer_textarea_update(Layer &layer, const GraphicStuff &gs,
+const GameTime &game_time, const Input &input, Vec2 parent_pos,
+bool active, bool show) {
+	textarea_update(layer.textarea,gs,game_time,input,parent_pos,active,show);
 	btn_update(layer.delete_btn, gs, input, parent_pos, show);
 }
 
-void layer_btn_draw(const Layer &layer, GraphicStuff &gs, Vec2 parent_pos,
-bool selected) {
-	btn_draw(layer.btn, gs, parent_pos, selected);
+void layer_textarea_draw(const Layer &layer, GraphicStuff &gs,
+const GameTime &game_time, Vec2 parent_pos, bool active, bool selected) {
+	textarea_draw(layer.textarea, gs, game_time, parent_pos, active, selected);
 	btn_draw(layer.delete_btn, gs, parent_pos, false);
 }
 

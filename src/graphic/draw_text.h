@@ -11,6 +11,10 @@ struct Color;
 const int ICON_PLUS = 0;
 const int ICON_X = 1;
 
+const int CHAR_W = 4;
+const int REAL_CHAR_H = 6;
+const int CHAR_H = 8;
+
 Vec2 draw_text(GraphicStuff &gs,
 	const std::string &text, Vec2 pos, float box_w, int scale,
 	Color color, Vec2 margin, bool flip_color);

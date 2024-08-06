@@ -26,7 +26,7 @@ namespace {
 const int PALLETE_DRAW = 0;
 const int PALLETE_TOOL_PREVIEW = 1;
 
-const float LAYER_BTN_LIST_LINE_HEIGHT = 12;
+const float LAYER_TEXTAREA_LIST_LINE_HEIGHT = 12;
 
 int get_blank_index(const std::vector<Tab> &list) {
 	for (int i = 0; i < (int)list.size(); i++) {
@@ -234,23 +234,39 @@ void tab_layer_new(Tab &tab, GraphicStuff &gs) {
 	tab.layer_order_list.push_back(index);
 }
 
-void layer_btn_list_update(Tab &tab, GraphicStuff &gs,
-const Input &input, Vec2 parent_pos, bool show) {
+void layer_textarea_list_update(Tab &tab, GraphicStuff &gs,
+const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		Layer &layer = tab.layer_list[index];
 
 		Vec2 add = vec2_new(tab.layer_bar.pos.x,
-			tab.layer_bar.pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
-		layer_btn_update(layer, gs, input,
-			vec2_add(parent_pos, add), show);
+			tab.layer_bar.pos.y + LAYER_TEXTAREA_LIST_LINE_HEIGHT * i);
+		layer_textarea_update(
+			layer,
+			gs,
+			game_time,
+			input,
+			vec2_add(parent_pos, add),
+			i == tab.layer_order_list_index && tab.tab_name_editing,
+			show
+		);
+	}
+
+	if (input.left_click) {
+		tab.tab_name_editing = false;
 	}
 
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
 	
-		if (layer.btn.clicked) {
+		if (layer.textarea.clicked) {
+			if (tab.layer_order_list_index == i) {
+				tab.tab_name_editing = true;
+				return;
+			}
+
 			tab.layer_order_list_index = i;
 			return;
 		}
@@ -269,15 +285,17 @@ const Input &input, Vec2 parent_pos, bool show) {
 	}
 }
 
-void layer_btn_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
+void layer_textarea_list_draw(const Tab &tab, GraphicStuff &gs,
+const GameTime &game_time, Vec2 parent_pos) {
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
 
 		Vec2 add = vec2_new(tab.layer_bar.pos.x,
-			tab.layer_bar.pos.y + LAYER_BTN_LIST_LINE_HEIGHT * i);
-		layer_btn_draw(layer, gs,
+			tab.layer_bar.pos.y + LAYER_TEXTAREA_LIST_LINE_HEIGHT * i);
+		layer_textarea_draw(layer, gs, game_time,
 			vec2_add(parent_pos, add),
+			i == tab.layer_order_list_index && tab.tab_name_editing,
 			i == tab.layer_order_list_index);
 	}
 }
@@ -348,10 +366,6 @@ Vec2 pos, Vec2i sz, int px_scale) {
 
 	tab_layer_new(tab, gs);
 
-	// TEST
-	tab.textarea = textarea_new(vec2_new(300, 10), vec2_new(70, 50),
-		color_new(1, 129/255.0, 118/255.0, 1), "This is a test");
-
 	tab.running = true;
 
 	return index;
@@ -363,9 +377,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
 
-	layer_btn_list_update(tab, gs, input, parent_pos, show);
-	// TEST
-	textarea_update(tab.textarea, gs, input, parent_pos, show, true);
+	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
 
 	if (!show) {
 		return;
@@ -416,10 +428,9 @@ Vec2 parent_pos) {
 	px_cursor_draw(tab, gs, input, parent_pos);
 }
 
-void tab_ui_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
-	layer_btn_list_draw(tab, gs, parent_pos);
-	// TEST
-	textarea_draw(tab.textarea, gs, parent_pos, true);
+void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const GameTime &game_time,
+Vec2 parent_pos) {
+	layer_textarea_list_draw(tab, gs, game_time, parent_pos);
 
 	color_picker_draw(tab.color_picker, gs, parent_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);

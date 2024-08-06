@@ -18,10 +18,6 @@
 
 namespace {
 
-const int CHAR_W = 4;
-const int REAL_CHAR_H = 6;
-const int CHAR_H = 8;
-
 Vec2 get_char_pos(char c) {
 	if (c >= 'A' && c <= 'P') {
 		return vec2_new((c - 'A') * 4, 0);
@@ -103,11 +99,7 @@ float box_w, int scale) {
 	}
 
 	for (int i = (int)insert_linebreak_list.size() - 1; i >= 0; i--) {
-		for (int j = (int)result.length(); j >= 0; j--) {
-			if (j == insert_linebreak_list[i]) {
-				result.insert(j, 1, '\n');
-			}
-		}
+		result.insert(insert_linebreak_list[i], 1, '\n');
 	}
 
 	return vec2_new(box_w, num_line * CHAR_H * scale);
