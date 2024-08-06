@@ -27,6 +27,9 @@ std::vector<Tab> tab_list;
 float game_start_time = 0;
 float frame_start_time = 0;
 
+const float REDRAW_REQUEST_WAIT = 0.5;
+int redraw_request_count = 0;
+
 bool init() {
 	glfwInit();
 
@@ -54,12 +57,19 @@ void main_loop() {
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 	graphic_stuff.just_resized = false;
+	graphic_stuff.redraw_requested = false;
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	
 	glfwPollEvents();
 
 	input_update(input);
 	update(graphic_stuff, tab_list, game_time, input);
+
+	if (redraw_request_count * REDRAW_REQUEST_WAIT
+											< game_time.time_since_start) {
+		redraw_request_count++;
+		graphic_stuff.redraw_requested = true;
+	}
 
 	draw(graphic_stuff, tab_list, game_time, input);
 	

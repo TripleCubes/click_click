@@ -101,7 +101,7 @@ int main () {
 		graphic_stuff.redraw_requested = false;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 		
-		glfwPollEvents();
+		glfwWaitEventsTimeout(0.5);
 
 		input_update(input, glfw_window);
 
