@@ -4,6 +4,7 @@
 #include "../game_time.h"
 #include "../basic_math.h"
 #include "../pos_convert.h"
+#include "../consts.h"
 #include "../graphic_types/graphic_types.h"
 #include "../graphic_types/framebuffer.h"
 #include "../graphic/graphic.h"
@@ -19,7 +20,6 @@
 namespace {
 
 const Vec2 TEXT_MARGIN = vec2_new(4, 3);
-const int TEXT_SCALE = 1;
 
 bool shift_down(const Input &input) {
 	return input.key_list[KEY_LEFT_SHIFT].down
@@ -167,7 +167,7 @@ bool active, bool show) {
 
 		Vec2 clicked_pos = vec2_sub(mouse_pos, pos);
 		int click_x_char
-			= std::floor((clicked_pos.x - TEXT_MARGIN.x) / CHAR_W /TEXT_SCALE);
+			= std::floor((clicked_pos.x - TEXT_MARGIN.x + 2) / CHAR_W /TEXT_SCALE);
 		click_x_char = clampi(click_x_char, 0, (int)textarea.text.length());
 		textarea.cursor_at = click_x_char;
 	}

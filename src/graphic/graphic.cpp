@@ -116,6 +116,11 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 		return false;
 	}
 
+	if (texture_new(graphic_stuff, "./texture/icons.png") == -1) {
+		std::cout << "cant init texture icons.png" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 

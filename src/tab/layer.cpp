@@ -5,12 +5,13 @@
 #include "../types/vec2.h"
 #include "../types/color.h"
 #include "../input.h"
+#include "../consts.h"
 
 namespace {
 
 const Vec2 TEXTAREA_SZ = vec2_new(100 - 21, 12);
 const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
-const Color TEXTAREA_COLOR = color_new(0.2, 0.2, 0.2, 1);
+const Color TEXTAREA_COLOR = BTN_TEXTAREA_COLOR;
 
 int get_blank_index(const std::vector<Layer> &layer_list) {
 	for (int i = 0; i < (int)layer_list.size(); i++) {

@@ -4,6 +4,10 @@
 #include <vector>
 #include "../types/vec2i.h"
 
+const int CURSOR_POINTER = 0;
+const int CURSOR_TEXT = 1;
+const int CURSOR_FILL = 2;
+
 struct Mesh {
 	bool running = true;
 	unsigned int vbo = 0;
@@ -38,6 +42,7 @@ struct GraphicStuff {
 	int px_scale = 1;
 	bool just_resized = false;
 	bool redraw_requested = false;
+	int cursor_icon = CURSOR_POINTER;
 	std::vector<Mesh> mesh_list;
 	std::vector<Shader> shader_list;
 	std::vector<Texture> texture_list;

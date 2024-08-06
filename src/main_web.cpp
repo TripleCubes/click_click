@@ -42,6 +42,8 @@ bool init() {
 		return false;
 	}
 
+	glfwDisable(GLFW_MOUSE_CURSOR);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -58,6 +60,7 @@ void main_loop() {
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 	graphic_stuff.just_resized = false;
 	graphic_stuff.redraw_requested = false;
+	graphic_stuff.cursor_icon = CURSOR_POINTER;
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	
 	glfwPollEvents();

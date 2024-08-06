@@ -12,6 +12,7 @@
 
 #include "../basic_math.h"
 #include "../pos_convert.h"
+#include "../consts.h"
 
 Btn btn_new(Vec2 pos, Vec2 sz, Color color, const std::string &text) {
 	Btn btn;
@@ -72,7 +73,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 			gs,
 			ICON_PLUS,
 			vec2_add(pos, vec2_new(3, 3)),
-			1,
+			TEXT_SCALE,
 			color,
 			vec2_new(3, 3),
 			flip_color
@@ -83,7 +84,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 			gs,
 			ICON_X,
 			vec2_add(pos, vec2_new(3, 3)),
-			1,
+			TEXT_SCALE,
 			color,
 			vec2_new(3, 3),
 			flip_color
@@ -95,7 +96,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 			btn.text,
 			vec2_add(pos, vec2_new(4, 3)),
 			btn.sz.x - 8,
-			1,
+			TEXT_SCALE,
 			color,
 			vec2_new(4, 3),
 			flip_color

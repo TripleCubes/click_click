@@ -52,6 +52,9 @@ GLFWwindow * init() {
 
 	glfwSetFramebufferSizeCallback(glfw_window, on_resize);
 
+
+	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 
@@ -99,9 +102,10 @@ int main () {
 
 		graphic_stuff.just_resized = false;
 		graphic_stuff.redraw_requested = false;
+		graphic_stuff.cursor_icon = CURSOR_POINTER;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 		
-		glfwWaitEventsTimeout(0.5);
+		glfwWaitEventsTimeout(REDRAW_REQUEST_WAIT);
 
 		input_update(input, glfw_window);
 

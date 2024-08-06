@@ -9,6 +9,8 @@
 #include "../../basic_math.h"
 #include "../../pos_convert.h"
 
+#include "../../consts.h"
+
 namespace {
 
 int get_index(int page, int row, int column) {
@@ -34,7 +36,7 @@ ColorPallete color_pallete_new(Vec2 pos) {
 				i * COLOR_PALLETE_PAGE_BTN_SZ.y
 			),
 			COLOR_PALLETE_PAGE_BTN_SZ,
-			color_new(0.2, 0.2, 0.2, 1),
+			BTN_TEXTAREA_COLOR,
 			std::to_string(i)
 		);
 	}

@@ -15,6 +15,7 @@ Vec2 vec2_add(Vec2 vec_a, Vec2 vec_b);
 Vec2 vec2_sub(Vec2 vec_a, Vec2 vec_b);
 Vec2 vec2_mul(Vec2 vec, float f);
 Vec2 vec2_div(Vec2 vec, float f);
+Vec2 vec2_floor(Vec2 vec);
 
 float vec2_length(Vec2 vec);
 Vec2 vec2_normalized(Vec2 vec);

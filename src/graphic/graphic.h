@@ -19,6 +19,7 @@ const int FB_BLUR_0 = 1;
 const int FB_BLUR_1 = 2;
 
 const int TEXTURE_FONT = 0;
+const int TEXTURE_ICONS = 1;
 
 bool graphic_init(GraphicStuff &graphic_stuff);
 void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz);

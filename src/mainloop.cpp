@@ -28,6 +28,7 @@
 
 #include "basic_math.h"
 #include "pos_convert.h"
+#include "consts.h"
 
 // TEST
 #include <iostream>
@@ -69,7 +70,7 @@ const GameTime &game_time
 		vec2_new(main_fb_sz.x - 30, 10),
 		20,
 		1,
-		color_new(0, 0, 0, 1),
+		BTN_TEXTAREA_COLOR,
 		vec2_new(4, 3),
 		true
 	);
@@ -80,7 +81,7 @@ const GameTime &game_time
 		vec2_new(main_fb_sz.x - 30, 22),
 		20,
 		1,
-		color_new(0, 0, 0, 1),
+		BTN_TEXTAREA_COLOR,
 		vec2_new(4, 3),
 		true
 	);
@@ -175,6 +176,35 @@ void draw_fb_main(const GraphicStuff &gs) {
 	mesh_draw(gs, MESH_RECT);
 }
 
+void draw_cursor(GraphicStuff &gs, const Input &input) {
+	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+
+	Vec2 draw_pos_add;
+	if (gs.cursor_icon == CURSOR_TEXT) {
+		draw_pos_add = vec2_new(-1, -5);
+	}
+
+	draw_texture(
+		gs,
+		texture_get_sz(gs, TEXTURE_ICONS),
+		vec2_new(10 * gs.cursor_icon, 0),
+		vec2_new(10, 10),
+		vec2_add(vec2_floor(mouse_pos), draw_pos_add),
+		vec2_new(10, 10),
+		color_new(0.5, 0.5, 0.5, 1),
+		false
+	);
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_ICONS));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
 }
 
 void update(GraphicStuff &gs,
@@ -200,6 +230,7 @@ const Input &input) {
 			BLUR_COLOR, true);
 		draw_blurred_rects(gs, tab_list[0]);
 		draw_ui(gs, tab_list[0], game_time);
+		draw_cursor(gs, input);
 	}
 
 	draw_fb_main(gs);

@@ -264,6 +264,7 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 		if (layer.textarea.clicked) {
 			if (tab.layer_order_list_index == i) {
 				tab.tab_name_editing = true;
+				gs.cursor_icon = CURSOR_TEXT;
 				return;
 			}
 
@@ -280,6 +281,11 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 				tab.layer_order_list_index--;
 			}
 
+			return;
+		}
+
+		if (layer.textarea.hovered && tab.layer_order_list_index == i) {
+			gs.cursor_icon = CURSOR_TEXT;
 			return;
 		}
 	}

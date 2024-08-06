@@ -30,6 +30,10 @@ Vec2 vec2_div(Vec2 vec, float f) {
 	return vec2_new(vec.x / f, vec.y / f);
 }
 
+Vec2 vec2_floor(Vec2 vec) {
+	return vec2_new(std::floor(vec.x), std::floor(vec.y));
+}
+
 float vec2_length(Vec2 vec) {
 	return std::sqrt(vec.x * vec.x + vec.y * vec.y);
 }
