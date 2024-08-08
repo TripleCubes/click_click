@@ -35,13 +35,13 @@
 
 namespace {
 
-const Color BLUR_COLOR = color_new(129/255.0f, 255/255.0f, 83/255.0f, 1);
+const Color BLUR_COLOR = color_new(1, 1, 1, 1);
 const Vec2 TAB_OFFSET = vec2_new(0, 0);
 
 void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
-	clear(color_new(1, 1, 1, 1));
+	clear(color_new(0.69, 0.94, 0.62, 1));
 
 	tab_canvas_draw(tab, gs, input, TAB_OFFSET);
 

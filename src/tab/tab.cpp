@@ -348,7 +348,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.sz = sz;
 	tab.px_scale = px_scale;
 
-	tab.color_picker = color_picker_new(vec2_new(159, 6));
+	tab.color_picker = color_picker_new(vec2_new(112, 97));
 	tab.color_pallete = color_pallete_new(vec2_new(110, 5));
 	tab.layer_bar = layer_bar_new(vec2_new(4, main_fb_sz.y - 100 - 4),
 	                              vec2_new(100, 100));

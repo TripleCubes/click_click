@@ -19,7 +19,7 @@ PosSelect pos_select_new(Vec2 pos, Vec2 sz) {
 	return pos_select;
 }
 
-void pos_select_update(PosSelect &pos_select,
+void pos_select_cond(PosSelect &pos_select,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
@@ -34,6 +34,24 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 		return;
 	}
 
+	if (!in_rect(mouse_pos, vec2_new(0, 0), to_vec2(main_fb_sz))) {
+		return;
+	}
+
+	if (!in_rect(mouse_pos, pos, pos_select.sz)) {
+		return;
+	}
+
+	if (input.left_click) {
+		pos_select.selected = true;
+	}
+}
+
+void pos_select_select(PosSelect &pos_select, const GraphicStuff &gs,
+const Input &input, Vec2 parent_pos) {
+	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 pos = vec2_add(parent_pos, pos_select.pos);
+
 	if (pos_select.selected) {
 		pos_select.selected_pos = vec2_sub(mouse_pos, pos);
 		pos_select.selected_pos.x = clampf(
@@ -47,18 +65,12 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 			pos_select.sz.y
 		);
 	}
+}
 
-	if (!in_rect(mouse_pos, vec2_new(0, 0), to_vec2(main_fb_sz))) {
-		return;
-	}
-
-	if (!in_rect(mouse_pos, pos, pos_select.sz)) {
-		return;
-	}
-
-	if (input.left_click) {
-		pos_select.selected = true;
-	}
+void pos_select_update(PosSelect &pos_select,
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
+	pos_select_cond(pos_select, gs, input, parent_pos, show);
+	pos_select_select(pos_select, gs, input, parent_pos);
 }
 
 void pos_select_draw(const PosSelect &pos_select,
