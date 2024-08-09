@@ -138,7 +138,7 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
-	draw(vec2_new(0, 0), vec2_new(100, main_fb_sz.y));
+	draw(vec2_new(0, 0), vec2_new(SIDE_BAR_W, main_fb_sz.y));
 	tab_blur_rects_draw(tab, gs, TAB_OFFSET);
 
 	use_shader(gs, SHADER_BASIC_DRAW);

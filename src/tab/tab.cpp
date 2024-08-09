@@ -15,6 +15,7 @@
 #include "../game_time.h"
 #include "../pos_convert.h"
 #include "../basic_math.h"
+#include "../consts.h"
 
 #include "../draw_tool/draw_tool_px.h"
 #include "../draw_tool/draw_tool_line.h"
@@ -348,10 +349,11 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.sz = sz;
 	tab.px_scale = px_scale;
 
-	tab.color_picker = color_picker_new(vec2_new(112, 97));
-	tab.color_pallete = color_pallete_new(vec2_new(110, 5));
+	tab.color_picker = color_picker_new(vec2_new(SIDE_BAR_W + 9, 207));
+	tab.color_pallete = color_pallete_new(vec2_new(SIDE_BAR_W + 32, 8));
 	tab.layer_bar = layer_bar_new(vec2_new(4, main_fb_sz.y - 100 - 4),
 	                              vec2_new(100, 100));
+	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
@@ -383,6 +385,8 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	color_picker_update(tab.color_picker, gs, input, parent_pos, show);
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
+	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
+		!tab.tab_name_editing, show);
 
 	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
 
@@ -418,12 +422,16 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	};
 
 	draw(
-		vec2_sub(tab.color_pallete.pos, vec2_new(2, 3)),
-		vec2_add(COLOR_PALLETE_SZ, vec2_new(4, 6))
+		vec2_sub(tab.color_pallete.pos, vec2_new(24 + 3, 3)),
+		vec2_add(COLOR_PALLETE_SZ, vec2_new(24 + 6, 6))
 	);
 	draw(
 		vec2_sub(tab.color_picker.pos, vec2_new(4, 4)),
 		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
+	);
+	draw(
+		vec2_sub(tab.tool_picker.pos, vec2_new(3, 3)),
+		vec2_add(TOOL_PICKER_SZ, vec2_new(5, 6))
 	);
 }
 
@@ -442,6 +450,7 @@ Vec2 parent_pos) {
 	color_picker_draw(tab.color_picker, gs, parent_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, parent_pos);
+	tool_picker_draw(tab.tool_picker, gs, parent_pos);
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

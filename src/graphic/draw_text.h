@@ -10,6 +10,11 @@ struct Color;
 
 const int ICON_PLUS = 0;
 const int ICON_X = 1;
+const int ICON_MINUS = 2;
+const int ICON_CURVE = 3;
+const int ICON_FILL = 4;
+const int ICON_PEN = 5;
+const int ICON_SELECT = 6;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;

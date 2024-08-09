@@ -4,6 +4,7 @@
 
 #include "../../graphic_types/graphic_types.h"
 #include "../../graphic/draw_rect.h"
+#include "../../graphic/draw_text.h"
 #include "../../input.h"
 
 #include "../../basic_math.h"
@@ -31,8 +32,7 @@ ColorPallete color_pallete_new(Vec2 pos) {
 	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
 		color_pallete.page_btn_list[i] = btn_new(
 			vec2_new(
-				(COLOR_PALLETE_COLOR_CLICK_SZ + COLOR_PALLETE_SPACING * 2) *
-					COLOR_PALLETE_NUM_ROW,
+				-24,
 				i * COLOR_PALLETE_PAGE_BTN_SZ.y
 			),
 			COLOR_PALLETE_PAGE_BTN_SZ,
@@ -153,4 +153,20 @@ GraphicStuff &gs, Vec2 parent_pos) {
 		color_new(0, 0, 0, 1),
 		COLOR_PALLETE_SPACING * 2
 	);
+
+	for (int i = 1; i <= COLOR_PALLETE_NUM_COLUMN; i++) {
+		draw_text(
+			gs,
+			std::to_string(i),
+			vec2_new(
+				cp_pos.x - 8,
+				cp_pos.y + (COLOR_PALLETE_COLOR_CLICK_SZ) * (i - 1) + 2
+			),
+			12,
+			1,
+			KEY_HINT_COLOR,
+			vec2_new(0, 0),
+			false
+		);
+	}
 }

@@ -68,27 +68,38 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 		flip_color = true;
 	}
 
-	if (btn.text == "ICON_PLUS") {
+	auto _draw_icon = [&gs, color, flip_color, pos](int icon) {
 		draw_icon(
 			gs,
-			ICON_PLUS,
+			icon,
 			vec2_add(pos, vec2_new(3, 3)),
 			TEXT_SCALE,
 			color,
 			vec2_new(3, 3),
 			flip_color
 		);
+	};
+
+	if (btn.text == "ICON_PLUS") {
+		_draw_icon(ICON_PLUS);
 	}
 	else if (btn.text == "ICON_X") {
-		draw_icon(
-			gs,
-			ICON_X,
-			vec2_add(pos, vec2_new(3, 3)),
-			TEXT_SCALE,
-			color,
-			vec2_new(3, 3),
-			flip_color
-		);
+		_draw_icon(ICON_X);
+	}
+	else if (btn.text == "ICON_MINUS") {
+		_draw_icon(ICON_MINUS);
+	}
+	else if (btn.text == "ICON_CURVE") {
+		_draw_icon(ICON_CURVE);
+	}
+	else if (btn.text == "ICON_FILL") {
+		_draw_icon(ICON_FILL);
+	}
+	else if (btn.text == "ICON_PEN") {
+		_draw_icon(ICON_PEN);
+	}
+	else if (btn.text == "ICON_SELECT") {
+		_draw_icon(ICON_SELECT);
 	}
 	else {
 		draw_text(
