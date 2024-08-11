@@ -435,6 +435,55 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	);
 }
 
+void tab_bkg_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	Vec2 sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
+
+	const float TILE_SZ = 50;
+	
+	for (float x = pos.x; floor2(x, TILE_SZ) <= pos.x + sz.x; x += TILE_SZ){
+		float start_x = floor2(x, TILE_SZ);
+		float end_x = start_x + TILE_SZ;
+		if (start_x < pos.x) {
+			start_x = std::floor(pos.x);
+		}
+		if (end_x > pos.x + sz.x) {
+			end_x = std::floor(pos.x) + sz.x;
+		}
+
+		for (float y = pos.y; floor2(y, TILE_SZ) <= pos.y + sz.y;
+		y += TILE_SZ) {
+			float start_y = floor2(y, TILE_SZ);
+			float end_y = start_y + TILE_SZ;
+			if (start_y < pos.y) {
+				start_y = std::floor(pos.y);
+			}
+			if (end_y > pos.y + sz.y) {
+				end_y = std::floor(pos.y) + sz.y;
+			}
+
+			Color color_0 = color_new(0.9, 0.9, 0.9, 1);
+			Color color_1 = color_new(0.75, 0.75, 0.75, 1);
+			Color color;
+			int x_even = (int)start_x / (int)TILE_SZ % 2 == 0;
+			int y_even = (int)start_y / (int)TILE_SZ % 2 == 0;
+			if (x_even == y_even) {
+				color = color_0;
+			}
+			else {
+				color = color_1;
+			}
+
+			draw_rect(
+				gs,
+				vec2_new(start_x, start_y),
+				vec2_new(end_x - start_x, end_y - start_y),
+				color
+			);
+		}
+	}
+}
+
 void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);

@@ -5,7 +5,7 @@
 #include "../btn.h"
 #include <array>
 
-const Vec2 TOOL_PICKER_SZ = vec2_new(12*4 + 3, 12 + 10);
+const Vec2 TOOL_PICKER_SZ = vec2_new(12*4 + 3, 21);
 const int NUM_BTN = 4;
 
 struct GraphicStuff;

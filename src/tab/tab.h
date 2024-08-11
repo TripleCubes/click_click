@@ -47,6 +47,7 @@ int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
 	const GameTime &game_time, Vec2 parent_pos, bool show);
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
+void tab_bkg_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
 void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 	Vec2 parent_pos);
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs,

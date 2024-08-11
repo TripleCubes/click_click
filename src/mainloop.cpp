@@ -38,10 +38,23 @@ namespace {
 const Color BLUR_COLOR = color_new(1, 1, 1, 1);
 const Vec2 TAB_OFFSET = vec2_new(0, 0);
 
-void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
+void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 	clear(color_new(0.69, 0.94, 0.62, 1));
+
+	tab_bkg_draw(tab, gs, TAB_OFFSET);
+	
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_FONT));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
 
 	tab_canvas_draw(tab, gs, input, TAB_OFFSET);
 
@@ -223,6 +236,7 @@ const Input &input) {
 	);
 	if ((input.mouse_event && mouse_in_window) || input.key_event
 	|| game_time.frame_passed == 0 || gs.just_resized || gs.redraw_requested) {
+		draw_canvas_bkg(gs, tab_list[0]);
 		draw_canvas(gs, tab_list[0], input);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);
