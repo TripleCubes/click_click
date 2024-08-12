@@ -21,11 +21,6 @@ namespace {
 
 const Vec2 TEXT_MARGIN = vec2_new(4, 3);
 
-bool shift_down(const Input &input) {
-	return input.key_list[KEY_LEFT_SHIFT].down
-		|| input.key_list[KEY_RIGHT_SHIFT].down;
-}
-
 void text_input_handling(TextArea &textarea, const GameTime &game_time,
 const Input &input) {
 	char add = ' ';

@@ -67,6 +67,16 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_DOWN,
 	GLFW_KEY_LEFT,
 	GLFW_KEY_RIGHT,
+
+	GLFW_KEY_MINUS,
+	GLFW_KEY_EQUAL,
+	GLFW_KEY_LEFT_BRACKET,
+	GLFW_KEY_RIGHT_BRACKET,
+	GLFW_KEY_SEMICOLON,
+	GLFW_KEY_APOSTROPHE,
+	GLFW_KEY_COMMA,
+	GLFW_KEY_PERIOD,
+	GLFW_KEY_SLASH,
 };
 #else
 const std::vector<int> KEY_GLFW_LIST = {
@@ -125,6 +135,16 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_DOWN,
 	GLFW_KEY_LEFT,
 	GLFW_KEY_RIGHT,
+
+	'-',
+	'=',
+	'[',
+	']',
+	';',
+	'\'',
+	',',
+	'.',
+	'/',
 };
 #endif
 
@@ -279,3 +299,13 @@ void input_update(Input &input) {
 }
 
 #endif
+
+bool ctrl_down(const Input &input) {
+	return input.key_list[KEY_LEFT_CTRL].down
+		|| input.key_list[KEY_RIGHT_CTRL].down;
+}
+
+bool shift_down(const Input &input) {
+	return input.key_list[KEY_LEFT_SHIFT].down
+		|| input.key_list[KEY_RIGHT_SHIFT].down;
+}

@@ -29,6 +29,8 @@ const int PALLETE_TOOL_PREVIEW = 1;
 
 const float LAYER_TEXTAREA_LIST_LINE_HEIGHT = 12;
 
+const int ZOOM_MAX = 15;
+
 int get_blank_index(const std::vector<Tab> &list) {
 	for (int i = 0; i < (int)list.size(); i++) {
 		if (!list[i].running) {
@@ -219,8 +221,10 @@ Vec2 parent_pos) {
 		draw_rect(
 			gs,
 			vec2_new(
-				std::floor(pos.x) + std::floor(tex_draw_mouse_pos.x) * tab.px_scale,
-				std::floor(pos.y) + std::floor(tex_draw_mouse_pos.y) * tab.px_scale
+				std::floor(pos.x)
+					+ std::floor(tex_draw_mouse_pos.x) * tab.px_scale,
+				std::floor(pos.y)
+					+ std::floor(tex_draw_mouse_pos.y) * tab.px_scale
 			),
 			vec2_new(tab.px_scale, tab.px_scale),
 			color_new(0, 0, 0, 1)
@@ -330,6 +334,53 @@ const Input &input, Vec2 parent_pos) {
 	}
 }
 
+bool kb_zoom_out(const Input &input) {
+	return ctrl_down(input) && input.key_list[KEY_MINUS].press;
+}
+
+bool kb_zoom_in(const Input &input) {
+	return ctrl_down(input) && input.key_list[KEY_EQUAL].press;
+}
+
+bool kb_zoom_0(const Input &input) {
+	return ctrl_down(input) && input.key_list[KEY_0].press;
+}
+
+void canvas_zoom_move(Tab &tab, Vec2 sz_diff) {
+	sz_diff = vec2_div(sz_diff, 2);
+	tab.pos = vec2_sub(tab.pos, sz_diff);
+}
+
+void canvas_zoom_out(Tab &tab) {
+	Vec2 before_sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
+	tab.px_scale = clampi(tab.px_scale - 1, 1, ZOOM_MAX);
+	Vec2 after_sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
+
+	canvas_zoom_move(tab, vec2_sub(after_sz, before_sz));
+}
+
+void canvas_zoom_in(Tab &tab) {
+	Vec2 before_sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
+	tab.px_scale = clampi(tab.px_scale + 1, 1, ZOOM_MAX);
+	Vec2 after_sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
+
+	canvas_zoom_move(tab, vec2_sub(after_sz, before_sz));
+}
+
+void center_canvas(Tab &tab, const GraphicStuff &gs) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 view_sz = vec2_new(main_fb_sz.x - SIDE_BAR_W, main_fb_sz.y);
+
+	const float MARGIN = 30;
+	int px_scale_max_x = (view_sz.x - MARGIN*2) / tab.sz.x;
+	int px_scale_max_y = (view_sz.y - MARGIN*2) / tab.sz.y;
+
+	tab.px_scale = std::min(px_scale_max_x, px_scale_max_y);
+	tab.px_scale = clampi(tab.px_scale, 1, ZOOM_MAX);
+	tab.pos.x = view_sz.x / 2 - tab.sz.x * tab.px_scale / 2 + SIDE_BAR_W;
+	tab.pos.y = view_sz.y / 2 - tab.sz.y * tab.px_scale / 2;
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -354,6 +405,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.layer_bar = layer_bar_new(vec2_new(4, main_fb_sz.y - 100 - 4),
 	                              vec2_new(100, 100));
 	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
+	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 122, 6));
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
@@ -387,6 +439,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
 		!tab.tab_name_editing, show);
+	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
 
 	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
 
@@ -396,6 +449,16 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 
 	if (tab.layer_bar.add_btn.clicked) {
 		tab_layer_new(tab, gs);
+	}
+
+	if (tab.btn_panel.zoom_out_btn.clicked || kb_zoom_out(input)) {
+		canvas_zoom_out(tab);
+	}
+	else if (tab.btn_panel.zoom_in_btn.clicked || kb_zoom_in(input)) {
+		canvas_zoom_in(tab);
+	}
+	else if (tab.btn_panel.zoom_0_btn.clicked || kb_zoom_0(input)) {
+		center_canvas(tab, gs);
 	}
 
 	canvas_move_update(tab, gs, input, parent_pos);
@@ -432,6 +495,10 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	draw(
 		vec2_sub(tab.tool_picker.pos, vec2_new(3, 3)),
 		vec2_add(TOOL_PICKER_SZ, vec2_new(5, 6))
+	);
+	draw(
+		vec2_sub(tab.btn_panel.pos, vec2_new(1, 1)),
+		vec2_add(BTN_PANEL_SZ, vec2_new(2, 2))
 	);
 }
 
@@ -500,6 +567,7 @@ Vec2 parent_pos) {
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, parent_pos);
 	tool_picker_draw(tab.tool_picker, gs, parent_pos);
+	btn_panel_draw(tab.btn_panel, gs, parent_pos);
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

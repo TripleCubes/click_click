@@ -8,6 +8,7 @@
 #include "../ui/tab/color_pallete.h"
 #include "../ui/tab/layer_bar.h"
 #include "../ui/tab/tool_picker.h"
+#include "../ui/tab/btn_panel.h"
 #include "layer.h"
 
 struct Color;
@@ -27,6 +28,7 @@ struct Tab {
 	ColorPallete color_pallete;
 	LayerBar layer_bar;
 	ToolPicker tool_picker;
+	BtnPanel btn_panel;
 
 	std::vector<unsigned char> pallete_data;
 	int pallete_texture_index = 0;

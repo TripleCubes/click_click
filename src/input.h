@@ -67,7 +67,17 @@ const int KEY_DOWN = 49;
 const int KEY_LEFT = 50;
 const int KEY_RIGHT = 51;
 
-const int KEY_COUNT = 52;
+const int KEY_MINUS = 52;
+const int KEY_EQUAL = 53;
+const int KEY_LEFT_SQUARE_BRACKET = 54;
+const int KEY_RIGHT_SQUARE_BRACKET = 55;
+const int KEY_SEMICOLON = 56;
+const int KEY_BACKSLASH = 57;
+const int KEY_COMMA = 58;
+const int KEY_DOT = 59;
+const int KEY_FORWARD_SLASH = 60;
+
+const int KEY_COUNT = 61;
 
 struct KeyState {
 	bool press = false;
@@ -100,5 +110,8 @@ void input_update(Input &input, GLFWwindow *glfw_window);
 #else
 void input_update(Input &input);
 #endif
+
+bool ctrl_down(const Input &input);
+bool shift_down(const Input &input);
 
 #endif
