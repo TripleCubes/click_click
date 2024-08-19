@@ -101,6 +101,12 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 	else if (btn.text == "ICON_SELECT") {
 		_draw_icon(ICON_SELECT);
 	}
+	else if (btn.text == "ICON_UP") {
+		_draw_icon(ICON_UP);
+	}
+	else if (btn.text == "ICON_DOWN") {
+		_draw_icon(ICON_DOWN);
+	}
 	else {
 		draw_text(
 			gs,

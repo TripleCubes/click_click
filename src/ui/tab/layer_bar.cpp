@@ -17,21 +17,41 @@ LayerBar layer_bar_new(Vec2 pos, Vec2 sz) {
 	layer_bar.sz = sz;
 	
 	layer_bar.add_btn = btn_new(
-		vec2_new(pos.x, pos.y + sz.y - BTN_HEIGHT),
+		vec2_new(0, sz.y - BTN_HEIGHT),
 		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
 		BTN_COLOR,
 		"ICON_PLUS"
 	);
 	
+	layer_bar.up_btn = btn_new(
+		vec2_new(11, sz.y - BTN_HEIGHT),
+		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
+		BTN_COLOR,
+		"ICON_UP"
+	);
+
+	layer_bar.down_btn = btn_new(
+		vec2_new(22, sz.y - BTN_HEIGHT),
+		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
+		BTN_COLOR,
+		"ICON_DOWN"
+	);
+
 	return layer_bar;
 }
 
 void layer_bar_update(LayerBar &layer_bar, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool show) {
-	btn_update(layer_bar.add_btn, gs, input, parent_pos, show);
+	Vec2 pos = vec2_add(layer_bar.pos, parent_pos);
+	btn_update(layer_bar.add_btn, gs, input, pos, show);
+	btn_update(layer_bar.up_btn, gs, input, pos, show);
+	btn_update(layer_bar.down_btn, gs, input, pos, show);
 }
 
 void layer_bar_draw(const LayerBar &layer_bar, GraphicStuff &gs,
 Vec2 parent_pos) {
-	btn_draw(layer_bar.add_btn, gs, parent_pos, false);
+	Vec2 pos = vec2_add(layer_bar.pos, parent_pos);
+	btn_draw(layer_bar.add_btn, gs, pos, false);
+	btn_draw(layer_bar.up_btn, gs, pos, false);
+	btn_draw(layer_bar.down_btn, gs, pos, false);
 }

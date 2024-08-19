@@ -90,7 +90,7 @@ int main () {
 	}
 
 	std::vector<Tab> tab_list;
-	tab_new(tab_list, graphic_stuff, vec2_new(200, 100), vec2i_new(32, 32), 4);
+	tab_new(tab_list, graphic_stuff, vec2_new(200, 100), vec2i_new(128,128),4);
 
 	const float REDRAW_REQUEST_WAIT = 0.5;
 	int redraw_request_count = 0;

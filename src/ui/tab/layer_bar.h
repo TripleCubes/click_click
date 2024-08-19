@@ -6,6 +6,8 @@
 
 struct LayerBar {
 	Btn add_btn;
+	Btn up_btn;
+	Btn down_btn;
 	Vec2 pos;
 	Vec2 sz;
 };

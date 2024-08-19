@@ -15,6 +15,8 @@ const int ICON_CURVE = 3;
 const int ICON_FILL = 4;
 const int ICON_PEN = 5;
 const int ICON_SELECT = 6;
+const int ICON_UP = 7;
+const int ICON_DOWN = 8;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;
