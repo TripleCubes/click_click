@@ -20,6 +20,9 @@
 #include "../draw_tool/draw_tool_px.h"
 #include "../draw_tool/draw_tool_line.h"
 
+#include "brush.h"
+#include "curve.h"
+
 #include <cmath>
 
 namespace {
@@ -39,13 +42,6 @@ int get_blank_index(const std::vector<Tab> &list) {
 	}
 
 	return -1;
-}
-
-Vec2 get_tex_draw_mouse_pos(const Tab &tab, Vec2 main_fb_tab_pos,
-Vec2 main_fb_mouse_pos) {
-	Vec2 result = vec2_sub(main_fb_mouse_pos, main_fb_tab_pos);
-	result = vec2_div(result, tab.px_scale);
-	return result;
 }
 
 void pallete_data_color(Tab &tab, int pallete_index, Color color) {
@@ -111,83 +107,21 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 		PALLETE_TOOL_PREVIEW, pos);
 }
 
-//void tool_preview_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
-//Vec2 parent_pos) {
-//	Vec2 pos = vec2_add(parent_pos, tab.pos);
-//	
-//	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-//	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
-//	Vec2 tex_draw_mouse_pos
-//		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-//
-//	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-//		return;
-//	}
-//
-//	if (input.left_down && input.mouse_move) {
-//		draw_tool_line(
-//			tab.tool_preview_data,
-//			tab.sz,
-//			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
-//			tex_draw_mouse_pos,
-//			1
-//		);
-//		texture_data_red(gs, tab.tool_preview_texture_index,
-//			tab.sz, tab.tool_preview_data);
-//		draw_tool_line(
-//			tab.tool_preview_data,
-//			tab.sz,
-//			get_tex_draw_mouse_pos(tab, pos, tab.mouse_click_pos),
-//			tex_draw_mouse_pos,
-//			0
-//		);
-//	}
-//}
-
 int get_layer_index(const Tab &tab) {
 	return tab.layer_order_list[tab.layer_order_list_index];
 }
 
-void layer_list_data_update(Tab &tab, GraphicStuff &gs, const Input &input,
-const GameTime &game_time, Vec2 parent_pos) {
-	if (input.key_list[KEY_SPACE].down) {
-		return;
+void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
+Vec2 parent_pos) {
+	if (input.key_list[KEY_SPACE].down) { return; }
+
+	if (tab.tool_picker.selected_index == TOOL_BRUSH) {
+		brush_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 	}
 
-	Vec2 pos = vec2_add(parent_pos, tab.pos);
-	int pallete_index = tab.color_pallete.selected_index;
-	
-	Layer &layer = tab.layer_list[get_layer_index(tab)];
-
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
-	Vec2 tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-		return;
-	}
-
-	bool drawn = false;
-
-	if (input.left_click) {
-		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
-		draw_tool_px(layer.data, tab.sz,
-			to_vec2i(tex_draw_mouse_pos), pallete_index);
-
-		drawn = true;
-	}
-
-	if (input.left_down && input.mouse_move) {
-		draw_tool_line(layer.data, tab.sz, tab.tex_draw_tag_pos,
-			tex_draw_mouse_pos, pallete_index);
-		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
-
-		drawn = true;
-	}
-
-	if (drawn) {
-		layer_set_texture_data(layer, gs);
+	else if (tab.tool_picker.selected_index == TOOL_CURVE) {
+		curve_tool_preview_update(tab, gs, input, parent_pos);
+		curve_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 	}
 }
 
@@ -465,7 +399,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 
 	color_picker_color_pallete_data_update(tab, gs);
 
-	layer_list_data_update(tab, gs, input, game_time, parent_pos);
+	tool_update(tab, gs, input, parent_pos);
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {

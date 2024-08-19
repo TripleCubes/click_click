@@ -5,6 +5,11 @@
 #include "../btn.h"
 #include <array>
 
+const int TOOL_BRUSH = 0;
+const int TOOL_CURVE = 1;
+const int TOOL_FILL = 2;
+const int TOOL_SELECT = 3;
+
 const Vec2 TOOL_PICKER_SZ = vec2_new(12*4 + 3, 21);
 const int NUM_BTN = 4;
 
