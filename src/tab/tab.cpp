@@ -24,6 +24,7 @@
 #include "curve.h"
 
 #include <cmath>
+#include <iostream>
 
 namespace {
 
@@ -111,17 +112,75 @@ int get_layer_index(const Tab &tab) {
 	return tab.layer_order_list[tab.layer_order_list_index];
 }
 
+bool cursor_on_ui(const Tab &tab, const GraphicStuff &gs,
+const Input &input, Vec2 parent_pos) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+
+	auto check = [parent_pos](Vec2 pos, Vec2 rect_pos, Vec2 rect_sz) -> bool {
+		return in_rect(pos, vec2_add(parent_pos, rect_pos), rect_sz);
+	};
+
+	bool on_ui = false;
+	
+	on_ui = in_rect(mouse_pos,
+		vec2_new(0, 0), vec2_new(SIDE_BAR_W, main_fb_sz.y));
+	if (on_ui) { return true; }
+
+	on_ui = check(
+		mouse_pos,
+		vec2_sub(tab.color_pallete.pos, vec2_new(24 + 3, 3)),
+		vec2_add(COLOR_PALLETE_SZ, vec2_new(24 + 6, 6))
+	);
+	if (on_ui) { return true; }
+
+	Vec2 color_picker_pos
+		= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
+	on_ui = check(
+		mouse_pos,
+		vec2_sub(color_picker_pos, vec2_new(4, 4)),
+		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
+	);
+	if (on_ui) { return true; }
+
+	on_ui = check(
+		mouse_pos,
+		vec2_sub(tab.tool_picker.pos, vec2_new(3, 3)),
+		vec2_add(TOOL_PICKER_SZ, vec2_new(5, 6))
+	);
+	if (on_ui) { return true; }
+
+	on_ui = check(
+		mouse_pos,
+		vec2_sub(tab.btn_panel.pos, vec2_new(1, 1)),
+		vec2_add(BTN_PANEL_SZ, vec2_new(2, 2))
+	);
+	if (on_ui) { return true; }
+
+	return false;
+}
+
 void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	if (input.key_list[KEY_SPACE].down) { return; }
 
-	if (tab.tool_picker.selected_index == TOOL_BRUSH) {
-		brush_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
+	if (cursor_on_ui(tab, gs, input, parent_pos) && input.left_click) {
+		tab.clicked_and_hold_on_ui = true;
 	}
 
-	else if (tab.tool_picker.selected_index == TOOL_CURVE) {
-		curve_tool_preview_update(tab, gs, input, parent_pos);
-		curve_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
+	if (!tab.clicked_and_hold_on_ui) {
+		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
+			brush_tool_update(tab, get_layer_index(tab), gs, input,parent_pos);
+		}
+
+		else if (tab.tool_picker.selected_index == TOOL_CURVE) {
+			curve_tool_preview_update(tab, gs, input, parent_pos);
+			curve_tool_update(tab, get_layer_index(tab), gs, input,parent_pos);
+		}
+	}
+
+	if (input.left_release) {
+		tab.clicked_and_hold_on_ui = false;
 	}
 }
 
@@ -536,7 +595,10 @@ Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
 	layer_list_draw(tab, gs, pos);
-	px_cursor_draw(tab, gs, input, parent_pos);
+	
+	if (!cursor_on_ui(tab, gs, input, parent_pos)) {
+		px_cursor_draw(tab, gs, input, parent_pos);
+	}
 }
 
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const GameTime &game_time,

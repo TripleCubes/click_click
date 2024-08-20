@@ -24,6 +24,7 @@ struct Tab {
 
 	Vec2 tex_draw_tag_pos;
 	int num_layer_created = 0;
+	bool clicked_and_hold_on_ui = false;
 
 	ColorPicker color_picker;
 	ColorPallete color_pallete;
@@ -47,14 +48,20 @@ struct Tab {
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 	Vec2 pos, Vec2i sz, int px_scale);
+
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
 	const GameTime &game_time, Vec2 parent_pos, bool show);
+
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
+
 void tab_bkg_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
+
 void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 	Vec2 parent_pos);
+
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs,
 	const GameTime &game_time, Vec2 parent_pos);
+
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
 #endif
