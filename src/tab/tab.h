@@ -23,6 +23,7 @@ struct Tab {
 	int px_scale = 1;
 
 	Vec2 tex_draw_tag_pos;
+	int num_layer_created = 0;
 
 	ColorPicker color_picker;
 	ColorPallete color_pallete;

@@ -166,12 +166,14 @@ Vec2 parent_pos) {
 	}
 }
 
-void tab_layer_new(Tab &tab, int at, GraphicStuff &gs) {
+void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
+GraphicStuff &gs) {
 	std::vector<unsigned char> data;
 	data.resize(tab.sz.x * tab.sz.y, 0);
-	int index = layer_new(tab.layer_list, gs, "bkg", tab.sz, data);
+	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
 	
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
+	tab.num_layer_created++;
 }
 
 void layer_textarea_list_update(Tab &tab, GraphicStuff &gs,
@@ -385,7 +387,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	texture_data_red(gs, tab.tool_preview_texture_index, sz,
 		tab.tool_preview_data);
 
-	tab_layer_new(tab, 0, gs);
+	tab_layer_new(tab, 0, "bkg", gs);
 
 	tab.running = true;
 
@@ -408,7 +410,12 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	}
 
 	if (tab.layer_bar.add_btn.clicked) {
-		tab_layer_new(tab, tab.layer_order_list_index + 1, gs);
+		tab_layer_new(
+			tab,
+			tab.layer_order_list_index + 1,
+			"layer " + std::to_string(tab.num_layer_created),
+			gs
+		);
 		tab.layer_order_list_index++;
 	}
 
