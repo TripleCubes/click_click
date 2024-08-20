@@ -142,13 +142,8 @@ bool active, bool show) {
 		input_handling(textarea, game_time, input);
 	}
 
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 pos = vec2_add(parent_pos, textarea.pos);
-
-	if (!in_rect(mouse_pos, vec2_new(0, 0), to_vec2(main_fb_sz))) {
-		return;
-	}
 
 	if (!in_rect(mouse_pos, pos, textarea.sz)) {
 		return;

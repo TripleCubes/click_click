@@ -58,7 +58,6 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 		return;
 	}
 
-	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 
 	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
@@ -75,10 +74,6 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 		}
 	}
 
-
-	if (!in_rect(mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-		return;
-	}
 
 	if (!input.left_click) {
 		return;

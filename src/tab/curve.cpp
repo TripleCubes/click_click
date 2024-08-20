@@ -14,13 +14,8 @@ Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-		return;
-	}
 
 	if (input.left_down && input.mouse_move) {
 		draw_tool_line(
@@ -55,13 +50,8 @@ const Input &input, Vec2 parent_pos) {
 	Layer &layer = tab.layer_list[layer_index];
 
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 main_fb_sz = to_vec2(get_main_fb_sz(gs));
 	Vec2 tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (!in_rect(main_fb_mouse_pos, vec2_new(0, 0), main_fb_sz)) {
-		return;
-	}
 
 	if (input.left_click) {
 		tab.tex_draw_tag_pos = tex_draw_mouse_pos;

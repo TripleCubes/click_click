@@ -34,16 +34,11 @@ Vec2 parent_pos, bool show) {
 		return;
 	}
 
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 
 	if (input.left_release) {
 		btn.holding = false;
-	}
-
-	if (!in_rect(mouse_pos, vec2_new(0, 0), to_vec2(main_fb_sz))) {
-		return;
 	}
 
 	if (!in_rect(mouse_pos, pos, btn.sz)) {

@@ -234,8 +234,9 @@ const Input &input) {
 	bool mouse_in_window = in_rect(
 		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
 	);
-	if ((input.mouse_event && mouse_in_window) || input.key_event
-	|| game_time.frame_passed == 0 || gs.just_resized || gs.redraw_requested) {
+	if ((input.mouse_event && mouse_in_window) || input.left_down
+	|| input.left_release || input.key_event || game_time.frame_passed == 0
+	|| gs.just_resized || gs.redraw_requested) {
 		draw_canvas_bkg(gs, tab_list[0]);
 		draw_canvas(gs, tab_list[0], input);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),

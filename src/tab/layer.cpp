@@ -9,7 +9,7 @@
 
 namespace {
 
-const Vec2 TEXTAREA_SZ = vec2_new(100 - 21, 12);
+const Vec2 TEXTAREA_SZ = vec2_new(100 - 20, 12);
 const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
 const Color TEXTAREA_COLOR = BTN_TEXTAREA_COLOR;
 
@@ -49,7 +49,7 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 		name
 	);
 	layer.delete_btn = btn_new(
-		vec2_new(TEXTAREA_SZ.x + 2, 0),
+		vec2_new(TEXTAREA_SZ.x + 1, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
 		"ICON_X"
