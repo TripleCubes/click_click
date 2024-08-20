@@ -24,14 +24,14 @@ LayerBar layer_bar_new(Vec2 pos, Vec2 sz) {
 	);
 	
 	layer_bar.up_btn = btn_new(
-		vec2_new(11, sz.y - BTN_HEIGHT),
+		vec2_new(13, sz.y - BTN_HEIGHT),
 		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
 		BTN_COLOR,
 		"ICON_UP"
 	);
 
 	layer_bar.down_btn = btn_new(
-		vec2_new(22, sz.y - BTN_HEIGHT),
+		vec2_new(24, sz.y - BTN_HEIGHT),
 		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
 		BTN_COLOR,
 		"ICON_DOWN"

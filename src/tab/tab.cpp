@@ -178,6 +178,9 @@ GraphicStuff &gs) {
 
 void layer_textarea_list_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 bottom_pos = vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
+
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		Layer &layer = tab.layer_list[index];
@@ -189,7 +192,7 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 			gs,
 			game_time,
 			input,
-			vec2_add(parent_pos, add),
+			vec2_add(bottom_pos, add),
 			i == tab.layer_order_list_index && tab.tab_name_editing,
 			show
 		);
@@ -240,6 +243,9 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 
 void layer_textarea_list_draw(const Tab &tab, GraphicStuff &gs,
 const GameTime &game_time, Vec2 parent_pos) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 bottom_pos = vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
+
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
@@ -247,7 +253,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 		Vec2 add = vec2_new(tab.layer_bar.pos.x,
 			tab.layer_bar.pos.y + LAYER_TEXTAREA_LIST_LINE_HEIGHT * i);
 		layer_textarea_draw(layer, gs, game_time,
-			vec2_add(parent_pos, add),
+			vec2_add(bottom_pos, add),
 			i == tab.layer_order_list_index && tab.tab_name_editing,
 			i == tab.layer_order_list_index);
 	}
@@ -356,15 +362,13 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	}
 	Tab &tab = tab_list[index];
 
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
 
-	tab.color_picker = color_picker_new(vec2_new(SIDE_BAR_W + 9, 207));
+	tab.color_picker = color_picker_new(vec2_new(SIDE_BAR_W + 9, -93));
 	tab.color_pallete = color_pallete_new(vec2_new(SIDE_BAR_W + 32, 8));
-	tab.layer_bar = layer_bar_new(vec2_new(4, main_fb_sz.y - 100 - 4),
+	tab.layer_bar = layer_bar_new(vec2_new(4, -100 - 3),
 	                              vec2_new(100, 100));
 	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
 	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 122, 6));
@@ -396,9 +400,13 @@ Vec2 pos, Vec2i sz, int px_scale) {
 
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
 const GameTime &game_time, Vec2 parent_pos, bool show) {
-	color_picker_update(tab.color_picker, gs, input, parent_pos, show);
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 bottom_pos
+		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
+
+	color_picker_update(tab.color_picker, gs, input, bottom_pos, show);
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
-	layer_bar_update(tab.layer_bar, gs, input, parent_pos, show);
+	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
 		!tab.tab_name_editing, show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
@@ -455,14 +463,19 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 		vec2_sub(tab.color_pallete.pos, vec2_new(24 + 3, 3)),
 		vec2_add(COLOR_PALLETE_SZ, vec2_new(24 + 6, 6))
 	);
+	
+	Vec2 color_picker_pos
+		= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
 	draw(
-		vec2_sub(tab.color_picker.pos, vec2_new(4, 4)),
+		vec2_sub(color_picker_pos, vec2_new(4, 4)),
 		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
 	);
+
 	draw(
 		vec2_sub(tab.tool_picker.pos, vec2_new(3, 3)),
 		vec2_add(TOOL_PICKER_SZ, vec2_new(5, 6))
 	);
+
 	draw(
 		vec2_sub(tab.btn_panel.pos, vec2_new(1, 1)),
 		vec2_add(BTN_PANEL_SZ, vec2_new(2, 2))
@@ -528,11 +541,15 @@ Vec2 parent_pos) {
 
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const GameTime &game_time,
 Vec2 parent_pos) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 bottom_pos
+		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
+
 	layer_textarea_list_draw(tab, gs, game_time, parent_pos);
 
-	color_picker_draw(tab.color_picker, gs, parent_pos);
+	color_picker_draw(tab.color_picker, gs, bottom_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);
-	layer_bar_draw(tab.layer_bar, gs, parent_pos);
+	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, parent_pos);
 	btn_panel_draw(tab.btn_panel, gs, parent_pos);
 }
