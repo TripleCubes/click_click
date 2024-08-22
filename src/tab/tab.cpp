@@ -22,9 +22,9 @@
 
 #include "brush.h"
 #include "curve.h"
+#include "fill.h"
 
 #include <cmath>
-#include <iostream>
 
 namespace {
 
@@ -164,7 +164,10 @@ void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	if (input.key_list[KEY_SPACE].down) { return; }
 
-	if (cursor_on_ui(tab, gs, input, parent_pos) && input.left_click) {
+	bool b_cursor_on_ui
+		= cursor_on_ui(tab, gs, input, parent_pos);
+
+	if (b_cursor_on_ui && input.left_click) {
 		tab.clicked_and_hold_on_ui = true;
 	}
 
@@ -176,6 +179,13 @@ Vec2 parent_pos) {
 		else if (tab.tool_picker.selected_index == TOOL_CURVE) {
 			curve_tool_preview_update(tab, gs, input, parent_pos);
 			curve_tool_update(tab, get_layer_index(tab), gs, input,parent_pos);
+		}
+
+		else if (tab.tool_picker.selected_index == TOOL_FILL) {
+			if (!b_cursor_on_ui) {
+				gs.cursor_icon = CURSOR_FILL;
+			}
+			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 		}
 	}
 
