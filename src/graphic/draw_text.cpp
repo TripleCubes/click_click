@@ -215,11 +215,20 @@ bool flip_color) {
 
 Vec2 draw_icon_no_bkg(GraphicStuff &gs,
 int icon, Vec2 pos, int scale, Color color, bool flip_color) {
+	Vec2 icon_pos;
+
+	if (icon < 10) {
+		icon_pos = vec2_new(icon * 6, 48);
+	}
+	else {
+		icon_pos = vec2_new((icon - 10) * 6, 54);
+	}
+
 	draw_texture(
 		gs,
 		texture_get_sz(gs, TEXTURE_FONT),
 
-		vec2_new(icon * 6, 48),
+		icon_pos,
 		vec2_new(6, 6),
 
 		pos,

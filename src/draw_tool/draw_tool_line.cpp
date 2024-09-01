@@ -8,6 +8,10 @@
 
 namespace {
 
+Vec2 vec_middle(Vec2 vec) {
+	return vec2_new(std::floor(vec.x) + 0.5, std::floor(vec.y) + 0.5);
+}
+
 Vec2 down_ceil(Vec2 pos, Vec2 dir) {
 	float pos_y_ceiled = std::ceil(pos.y);
 	float dist_y = pos_y_ceiled - pos.y;
@@ -306,5 +310,11 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index) {
 		return;
 	}
 
-	line_down(data, data_sz, pos_1, pos_2, pallete_index);
+	line_down(
+		data,
+		data_sz,
+		vec_middle(pos_1),
+		vec_middle(pos_2),
+		pallete_index
+	);
 }

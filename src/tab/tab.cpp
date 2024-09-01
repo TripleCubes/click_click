@@ -105,7 +105,7 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 	}
 
 	layer_texture_draw(tab, gs, tab.tool_preview_texture_index,
-		PALLETE_TOOL_PREVIEW, pos);
+		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
 }
 
 int get_layer_index(const Tab &tab) {
@@ -440,7 +440,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.layer_bar = layer_bar_new(vec2_new(4, -100 - 3),
 	                              vec2_new(100, 100));
 	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
-	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 122, 6));
+	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 161, 6));
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));

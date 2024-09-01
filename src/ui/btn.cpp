@@ -102,6 +102,39 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 	else if (btn.text == "ICON_DOWN") {
 		_draw_icon(ICON_DOWN);
 	}
+	else if (btn.text == "ICON_SZ_1") {
+		_draw_icon(ICON_SZ_1);
+	}
+	else if (btn.text == "ICON_SZ_2") {
+		_draw_icon(ICON_SZ_2);
+	}
+	else if (btn.text == "ICON_SZ_3") {
+		_draw_icon(ICON_SZ_3);
+	}
+	else if (btn.text == "ICON_SZ_3_5") {
+		_draw_icon(ICON_SZ_3_5);
+	}
+	else if (btn.text == "ICON_SZ_4") {
+		_draw_icon(ICON_SZ_4);
+	}
+	else if (btn.text == "ICON_FILL_ALL") {
+		_draw_icon(ICON_FILL_ALL);
+	}
+	else if (btn.text == "ICON_FILL_DITHERED") {
+		_draw_icon(ICON_FILL_DITHERED);
+	}
+	else if (btn.text == "ICON_FREE_SELECT") {
+		_draw_icon(ICON_FREE_SELECT);
+	}
+	else if (btn.text == "ICON_MAGIC_WAND") {
+		_draw_icon(ICON_MAGIC_WAND);
+	}
+	else if (btn.text == "ICON_SELECT_ADD") {
+		_draw_icon(ICON_SELECT_ADD);
+	}
+	else if (btn.text == "ICON_SELECT_SUBTRACT") {
+		_draw_icon(ICON_SELECT_SUBTRACT);
+	}
 	else {
 		draw_text(
 			gs,
