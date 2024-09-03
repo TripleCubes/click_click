@@ -9,6 +9,7 @@
 #include "../graphic/graphic.h"
 #include "../graphic/draw_rect.h"
 #include "../graphic/draw_texture.h"
+#include "../graphic/draw_text.h"
 
 #include "../graphic_types/graphic_types.h"
 #include "../input.h"
@@ -24,6 +25,7 @@
 #include "curve.h"
 #include "fill.h"
 
+#include <string>
 #include <cmath>
 
 namespace {
@@ -644,6 +646,17 @@ Vec2 parent_pos) {
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, parent_pos);
 	btn_panel_draw(tab.btn_panel, gs, parent_pos);
+	
+	draw_text(
+		gs,
+		"x" + std::to_string(tab.px_scale),
+		vec2_add(tab.btn_panel.pos, vec2_new(45, 3)),
+		100,
+		TEXT_SCALE,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(0, 0),
+		false
+	);
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
