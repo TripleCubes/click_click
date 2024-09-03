@@ -9,8 +9,8 @@
 #include "../basic_math.h"
 #include "../draw_tool/draw_tool_line.h"
 
-void curve_tool_preview_update(Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos) {
+void curve_tool_preview_update(Tab &tab, int sz, GraphicStuff &gs,
+const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
@@ -23,7 +23,8 @@ Vec2 parent_pos) {
 			tab.sz,
 			tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos,
-			1
+			1,
+			sz
 		);
 		texture_data_red(gs, tab.tool_preview_texture_index,
 			tab.sz, tab.tool_preview_data);
@@ -32,7 +33,8 @@ Vec2 parent_pos) {
 			tab.sz,
 			tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos,
-			0
+			0,
+			sz
 		);
 	}
 
@@ -42,7 +44,7 @@ Vec2 parent_pos) {
 	}
 }
 
-void curve_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
+void curve_tool_update(Tab &tab, int layer_index, int sz, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
@@ -59,7 +61,7 @@ const Input &input, Vec2 parent_pos) {
 
 	if (input.left_release) {
 		draw_tool_line(layer.data, tab.sz, tab.tex_draw_tag_pos,
-			tex_draw_mouse_pos, pallete_index);
+			tex_draw_mouse_pos, pallete_index, sz);
 		layer_set_texture_data(layer, gs);
 	}
 }

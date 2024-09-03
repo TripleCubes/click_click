@@ -21,7 +21,7 @@ Vec2i pos) {
 
 void fill(std::vector<unsigned char> &data, Vec2i data_sz, Vec2i pos,
 unsigned char replace_index, unsigned char pallete_index) {
-	draw_tool_px(data, data_sz, pos, pallete_index);
+	draw_tool_px(data, data_sz, pos, pallete_index, 0);
 
 	for (int i = 0; i < (int)dirs.size(); i++) {
 		Vec2i next_pos = vec2i_add(dirs[i], pos);

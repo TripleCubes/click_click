@@ -160,6 +160,34 @@ const Input &input, Vec2 parent_pos) {
 	return false;
 }
 
+void px_tool_preview_update(Tab &tab, int sz, GraphicStuff &gs,
+const Input &input, Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+
+	if (input.mouse_move || input.key_event) {
+		draw_tool_px(
+			tab.tool_preview_data,
+			tab.sz,
+			to_vec2i(tex_draw_mouse_pos),
+			1,
+			sz
+		);
+		texture_data_red(gs, tab.tool_preview_texture_index,
+			tab.sz, tab.tool_preview_data);
+		draw_tool_px(
+			tab.tool_preview_data,
+			tab.sz,
+			to_vec2i(tex_draw_mouse_pos),
+			0,
+			sz
+		);
+	}
+}
+
 void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
 Vec2 parent_pos) {
 	if (input.key_list[KEY_SPACE].down) { return; }
@@ -173,20 +201,39 @@ Vec2 parent_pos) {
 
 	if (!tab.clicked_and_hold_on_ui) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
-			brush_tool_update(tab, get_layer_index(tab), gs, input,parent_pos);
+			if (!b_cursor_on_ui) {
+				px_tool_preview_update(tab,
+					tab.tool_picker.brush_selected_index,
+					gs, input, parent_pos);
+			}
+			brush_tool_update(tab, get_layer_index(tab),
+				tab.tool_picker.brush_selected_index, gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_CURVE) {
-			curve_tool_preview_update(tab, gs, input, parent_pos);
-			curve_tool_update(tab, get_layer_index(tab), gs, input,parent_pos);
+			if (!b_cursor_on_ui && !input.left_down && !input.left_release) {
+				px_tool_preview_update(tab,
+					tab.tool_picker.curve_selected_index,
+					gs, input, parent_pos);
+			}
+			curve_tool_preview_update(tab,tab.tool_picker.curve_selected_index,
+				gs, input, parent_pos);
+			curve_tool_update(tab, get_layer_index(tab),
+				tab.tool_picker.curve_selected_index, gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_FILL) {
 			if (!b_cursor_on_ui) {
 				gs.cursor_icon = CURSOR_FILL;
+				px_tool_preview_update(tab, 0, gs, input, parent_pos);
 			}
 			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 		}
+	}
+
+	if (b_cursor_on_ui) {
+		texture_data_red(gs, tab.tool_preview_texture_index,
+			tab.sz, tab.tool_preview_data);
 	}
 
 	if (input.left_release) {
@@ -209,29 +256,6 @@ void color_picker_color_pallete_data_update(Tab &tab, GraphicStuff &gs) {
 	if (tab.color_pallete.selection_changed) {
 		Color color = tab.color_pallete.color_list[pallete_index];
 		color_picker_set_rgb(tab.color_picker, color);
-	}
-}
-
-void px_cursor_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos) {
-	Vec2 pos = vec2_add(parent_pos, tab.pos);
-
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (in_rect(tex_draw_mouse_pos, vec2_new(0, 0), to_vec2(tab.sz))) {
-		draw_rect(
-			gs,
-			vec2_new(
-				std::floor(pos.x)
-					+ std::floor(tex_draw_mouse_pos.x) * tab.px_scale,
-				std::floor(pos.y)
-					+ std::floor(tex_draw_mouse_pos.y) * tab.px_scale
-			),
-			vec2_new(tab.px_scale, tab.px_scale),
-			color_new(0, 0, 0, 1)
-		);
 	}
 }
 
@@ -605,10 +629,6 @@ Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
 	layer_list_draw(tab, gs, pos);
-	
-	if (!cursor_on_ui(tab, gs, input, parent_pos)) {
-		px_cursor_draw(tab, gs, input, parent_pos);
-	}
 }
 
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const GameTime &game_time,

@@ -200,16 +200,16 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 		draw_pos_add = vec2_new(-1, -5);
 	}
 
-	draw_texture(
-		gs,
-		texture_get_sz(gs, TEXTURE_ICONS),
-		vec2_new(10 * gs.cursor_icon, 0),
-		vec2_new(10, 10),
-		vec2_add(vec2_add(vec2_floor(mouse_pos), draw_pos_add), vec2_new(2,1)),
-		vec2_new(10, 10),
-		color_new(0, 0, 0, 1),
-		false
-	);
+//	draw_texture(
+//		gs,
+//		texture_get_sz(gs, TEXTURE_ICONS),
+//		vec2_new(10 * gs.cursor_icon, 0),
+//		vec2_new(10, 10),
+//		vec2_add(vec2_add(vec2_floor(mouse_pos), draw_pos_add), vec2_new(1,1)),
+//		vec2_new(10, 10),
+//		color_new(0, 0, 0, 1),
+//		false
+//	);
 	draw_texture(
 		gs,
 		texture_get_sz(gs, TEXTURE_ICONS),
