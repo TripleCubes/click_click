@@ -23,28 +23,7 @@ int get_index(int page, int row, int column) {
 	       column;
 }
 
-}
-
-ColorPallete color_pallete_new(Vec2 pos) {
-	ColorPallete color_pallete;
-	color_pallete.pos = pos;
-
-	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
-		color_pallete.page_btn_list[i] = btn_new(
-			vec2_new(
-				-24,
-				i * COLOR_PALLETE_PAGE_BTN_SZ.y
-			),
-			COLOR_PALLETE_PAGE_BTN_SZ,
-			BTN_TEXTAREA_COLOR,
-			std::to_string(i)
-		);
-	}
-
-	return color_pallete;
-}
-
-void color_pallete_update(ColorPallete &color_pallete,
+void mouse_update(ColorPallete &color_pallete,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	color_pallete.selection_changed = false;
 
@@ -97,6 +76,57 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 		}
 	}
 	}
+}
+
+void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
+	if (!shift_down(input)) {
+		for (int i = KEY_1; i <= KEY_8; i++) {
+			if (input.key_list[i].press) {
+				int next_index = i - KEY_1;
+				if (next_index == color_pallete.selected_index) {
+					color_pallete.selected_index = next_index + 8;
+				}
+				else {
+					color_pallete.selected_index = next_index;
+				}
+			}
+		}
+	}
+
+	if (shift_down(input)) {
+		for (int i = KEY_1; i <= KEY_4; i++) {
+			if (input.key_list[i].press) {
+				color_pallete.at_page = i - KEY_1;
+			}
+		}
+	}
+}
+
+}
+
+ColorPallete color_pallete_new(Vec2 pos) {
+	ColorPallete color_pallete;
+	color_pallete.pos = pos;
+
+	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
+		color_pallete.page_btn_list[i] = btn_new(
+			vec2_new(
+				-24,
+				i * COLOR_PALLETE_PAGE_BTN_SZ.y
+			),
+			COLOR_PALLETE_PAGE_BTN_SZ,
+			BTN_TEXTAREA_COLOR,
+			std::to_string(i + 1)
+		);
+	}
+
+	return color_pallete;
+}
+
+void color_pallete_update(ColorPallete &color_pallete,
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
+	mouse_update(color_pallete, gs, input, parent_pos, show);
+	kb_update(color_pallete, input, show);
 }
 
 void color_pallete_draw(const ColorPallete &color_pallete,

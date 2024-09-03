@@ -67,6 +67,8 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	}
 
 
+	if (!show) { return; }
+
 	if (tool_picker.selected_index == TOOL_BRUSH) {
 		for (int i = 0; i < NUM_SZ_BTN; i++) {
 			if (tool_picker.sz_btn_list[i].clicked) {
