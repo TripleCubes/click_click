@@ -10,6 +10,7 @@
 #include "../ui/tab/tool_picker.h"
 #include "../ui/tab/btn_panel.h"
 #include "layer.h"
+#include "select.h"
 
 struct Color;
 struct GraphicStuff;
@@ -31,6 +32,8 @@ struct Tab {
 	LayerBar layer_bar;
 	ToolPicker tool_picker;
 	BtnPanel btn_panel;
+
+	Selection selection;
 
 	std::vector<unsigned char> pallete_data;
 	int pallete_texture_index = 0;

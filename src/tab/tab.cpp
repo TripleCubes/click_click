@@ -191,7 +191,7 @@ const Input &input, Vec2 parent_pos) {
 }
 
 void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
-Vec2 parent_pos) {
+const GameTime &game_time, Vec2 parent_pos) {
 	if (input.key_list[KEY_SPACE].down) { return; }
 
 	bool b_cursor_on_ui
@@ -231,6 +231,13 @@ Vec2 parent_pos) {
 			}
 			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 		}
+
+		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
+			select_tool_update(tab, get_layer_index(tab), gs, input,
+				game_time, tab.tool_picker.select_second_selected_index == 1,
+				parent_pos);
+			select_tool_preview_update(tab, gs, game_time);
+		}
 	}
 
 	if (b_cursor_on_ui) {
@@ -240,6 +247,11 @@ Vec2 parent_pos) {
 
 	if (input.left_release) {
 		tab.clicked_and_hold_on_ui = false;
+	}
+
+	if (tab.selection.point_list.size() != 0
+	|| tab.selection.point_list_2.size() != 0) {
+		gs.redraw_requested = true;
 	}
 }
 
@@ -468,6 +480,9 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
 	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 161, 6));
 
+	tab.selection.map.resize(tab.sz.x * tab.sz.y, 0);
+	tab.selection.map_2.resize(tab.sz.x * tab.sz.y, 0);
+
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
 	tab.pallete_texture_index = texture_blank_new(gs, 16, 16);
@@ -535,7 +550,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	layer_bar_event_handle(tab);
 	canvas_move_update(tab, gs, input, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
-	tool_update(tab, gs, input, parent_pos);
+	tool_update(tab, gs, input, game_time, parent_pos);
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {

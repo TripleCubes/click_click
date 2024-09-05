@@ -38,6 +38,18 @@ float vec2_length(Vec2 vec) {
 	return std::sqrt(vec.x * vec.x + vec.y * vec.y);
 }
 
+float vec2_length_sqr(Vec2 vec) {
+	return vec.x * vec.x + vec.y * vec.y;
+}
+
+float vec2_dist(Vec2 vec_a, Vec2 vec_b) {
+	return vec2_length(vec2_sub(vec_a, vec_b));
+}
+
+float vec2_dist_sqr(Vec2 vec_a, Vec2 vec_b) {
+	return vec2_length_sqr(vec2_sub(vec_a, vec_b));
+}
+
 Vec2 vec2_normalized(Vec2 vec) {
 	return vec2_div(vec, vec2_length(vec));
 }
