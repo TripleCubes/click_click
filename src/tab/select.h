@@ -3,6 +3,11 @@
 
 #include <vector>
 #include "../types/vec2.h"
+#include "../types/vec2i.h"
+
+const int SELECT_RECT = 0;
+const int SELECT_FREE = 1;
+const int SELECT_MAGIC_WAND = 2;
 
 struct Tab;
 struct GraphicStuff;
@@ -14,6 +19,8 @@ struct SelectPoint {
 };
 
 struct Selection {
+	Vec2i rect_top_left = vec2i_new(-1, -1);
+	Vec2i rect_bottom_right = vec2i_new(-1, -1);
 	std::vector<SelectPoint> point_list;
 	std::vector<SelectPoint> point_list_2;
 	std::vector<unsigned char> map;
@@ -29,6 +36,6 @@ void select_tool_preview_update(Tab &tab, GraphicStuff &gs,
 
 void select_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, bool subtract,
-	Vec2 parent_pos);
+	int select_type, Vec2 parent_pos);
 
 #endif

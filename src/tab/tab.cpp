@@ -235,7 +235,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
 			select_tool_update(tab, get_layer_index(tab), gs, input,
 				game_time, tab.tool_picker.select_second_selected_index == 1,
-				parent_pos);
+				tab.tool_picker.select_selected_index, parent_pos);
 			select_tool_preview_update(tab, gs, game_time);
 		}
 	}
@@ -518,7 +518,8 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
-		!tab.tab_name_editing, show);
+		!tab.tab_name_editing && !input.left_down && !input.left_release,
+		show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
 
 	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
