@@ -2,6 +2,7 @@
 
 #include <array>
 #include "../types/vec2i.h"
+#include "../tab/select.h"
 #include "draw_tool_px.h"
 
 namespace {
@@ -19,26 +20,36 @@ Vec2i pos) {
 	return data[data_index];
 }
 
-void fill(std::vector<unsigned char> &data, Vec2i data_sz, Vec2i pos,
+void fill(std::vector<unsigned char> &data, const Selection &selection,
+Vec2i data_sz, Vec2i pos,
 unsigned char replace_index, unsigned char pallete_index) {
-	draw_tool_px(data, data_sz, pos, pallete_index, 0);
+	draw_tool_px(data, selection, data_sz, pos, pallete_index, 0);
 
 	for (int i = 0; i < (int)dirs.size(); i++) {
 		Vec2i next_pos = vec2i_add(dirs[i], pos);
 		
 		unsigned char px = get_px(data, data_sz, next_pos);
 		
-		if (px == replace_index
-		&& next_pos.x >= 0 && next_pos.y >= 0
-		&& next_pos.x < data_sz.x && next_pos.y < data_sz.y) {
-			fill(data, data_sz, next_pos, replace_index, pallete_index);
+		if (next_pos.x < 0 || next_pos.y < 0
+		|| next_pos.x >= data_sz.x || next_pos.y >= data_sz.y) {
+			continue;
+		}
+
+		int index = next_pos.y * data_sz.y + next_pos.x;
+		bool selection_cond = selection.point_list_2.size() == 0
+			|| selection.map[index] == 1;
+
+		if (px == replace_index && selection_cond) {
+			fill(data, selection, data_sz, next_pos,
+				replace_index, pallete_index);
 		}
 	}
 }
 
 }
 
-void draw_tool_fill(std::vector<unsigned char> &data, Vec2i data_sz,
+void draw_tool_fill(std::vector<unsigned char> &data, 
+const Selection &selection, Vec2i data_sz,
 Vec2i pos, unsigned char pallete_index) {
 	if (pos.x < 0 || pos.y < 0 || pos.x >= data_sz.x || pos.y >= data_sz.y) {
 		return;
@@ -49,5 +60,5 @@ Vec2i pos, unsigned char pallete_index) {
 		return;
 	}
 
-	fill(data, data_sz, pos, px, pallete_index);
+	fill(data, selection, data_sz, pos, px, pallete_index);
 }

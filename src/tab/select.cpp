@@ -119,8 +119,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 				continue;
 			}
 
-			draw_tool_px(
-				tab.tool_preview_data,
+			draw_tool_px_no_selection(
+				tab.selection_preview_data,
+				tab.selection,
 				tab.sz,
 				vec2i_new(x, top_left.y),
 				pallete_index,
@@ -134,8 +135,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 				continue;
 			}
 
-			draw_tool_px(
-				tab.tool_preview_data,
+			draw_tool_px_no_selection(
+				tab.selection_preview_data,
+				tab.selection,
 				tab.sz,
 				vec2i_new(bottom_right.x, y),
 				pallete_index,
@@ -149,8 +151,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 				continue;
 			}
 
-			draw_tool_px(
-				tab.tool_preview_data,
+			draw_tool_px_no_selection(
+				tab.selection_preview_data,
+				tab.selection,
 				tab.sz,
 				vec2i_new(x, bottom_right.y),
 				pallete_index,
@@ -165,8 +168,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 				continue;
 			}
 
-			draw_tool_px(
-				tab.tool_preview_data,
+			draw_tool_px_no_selection(
+				tab.selection_preview_data,
+				tab.selection,
 				tab.sz,
 				vec2i_new(top_left.x, y),
 				pallete_index,
@@ -186,8 +190,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 		}
 
 		SelectPoint point = tab.selection.point_list[i];
-		draw_tool_px(
-			tab.tool_preview_data,
+		draw_tool_px_no_selection(
+			tab.selection_preview_data,
+			tab.selection,
 			tab.sz,
 			to_vec2i(point.pos),
 			pallete_index,
@@ -206,8 +211,9 @@ const GameTime &game_time, unsigned char pallete_index) {
 		}
 
 		SelectPoint point = tab.selection.point_list_2[i];
-		draw_tool_px(
-			tab.tool_preview_data,
+		draw_tool_px_no_selection(
+			tab.selection_preview_data,
+			tab.selection,
 			tab.sz,
 			to_vec2i(point.pos),
 			pallete_index,
@@ -521,8 +527,8 @@ const Input &input, const GameTime &game_time, bool subtract, Vec2 parent_pos){
 void select_tool_preview_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time) {
 	preview_update(tab, gs, game_time, 1);
-	texture_data_red(gs, tab.tool_preview_texture_index,
-		tab.sz, tab.tool_preview_data);
+	texture_data_red(gs, tab.selection_preview_texture_index,
+		tab.sz, tab.selection_preview_data);
 	preview_update(tab, gs, game_time, 0);
 }
 

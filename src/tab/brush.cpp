@@ -24,14 +24,14 @@ GraphicStuff &gs, const Input &input, Vec2 parent_pos) {
 
 	if (input.left_click) {
 		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
-		draw_tool_px(layer.data, tab.sz,
+		draw_tool_px(layer.data, tab.selection, tab.sz,
 			to_vec2i(tex_draw_mouse_pos), pallete_index, brush_sz);
 
 		drawn = true;
 	}
 
 	if (input.left_down && input.mouse_move) {
-		draw_tool_line(layer.data, tab.sz, tab.tex_draw_tag_pos,
+		draw_tool_line(layer.data, tab.selection, tab.sz, tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos, pallete_index, brush_sz);
 		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
 

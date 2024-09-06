@@ -20,6 +20,7 @@ const Input &input, Vec2 parent_pos) {
 	if (input.left_down && input.mouse_move) {
 		draw_tool_line(
 			tab.tool_preview_data,
+			tab.selection,
 			tab.sz,
 			tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos,
@@ -30,6 +31,7 @@ const Input &input, Vec2 parent_pos) {
 			tab.sz, tab.tool_preview_data);
 		draw_tool_line(
 			tab.tool_preview_data,
+			tab.selection,
 			tab.sz,
 			tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos,
@@ -60,7 +62,7 @@ const Input &input, Vec2 parent_pos) {
 	}
 
 	if (input.left_release) {
-		draw_tool_line(layer.data, tab.sz, tab.tex_draw_tag_pos,
+		draw_tool_line(layer.data, tab.selection, tab.sz, tab.tex_draw_tag_pos,
 			tex_draw_mouse_pos, pallete_index, sz);
 		layer_set_texture_data(layer, gs);
 	}

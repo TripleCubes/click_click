@@ -4,8 +4,10 @@
 #include <vector>
 
 struct Vec2i;
+struct Selection;
 
-void draw_tool_fill(std::vector<unsigned char> &data, Vec2i data_sz,
+void draw_tool_fill(std::vector<unsigned char> &data,
+	const Selection &selection, Vec2i data_sz,
 	Vec2i pos, unsigned char pallete_index);
 
 #endif

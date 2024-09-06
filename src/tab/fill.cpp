@@ -22,6 +22,7 @@ const Input &input, Vec2 parent_pos) {
 	if (input.left_click) {
 		draw_tool_fill(
 			layer.data,
+			tab.selection,
 			tab.sz,
 			to_vec2i(tex_draw_mouse_pos),
 			pallete_index

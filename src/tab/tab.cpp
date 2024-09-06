@@ -108,6 +108,9 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 
 	layer_texture_draw(tab, gs, tab.tool_preview_texture_index,
 		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
+
+	layer_texture_draw(tab, gs, tab.selection_preview_texture_index,
+		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
 }
 
 int get_layer_index(const Tab &tab) {
@@ -173,6 +176,7 @@ const Input &input, Vec2 parent_pos) {
 	if (input.mouse_move || input.key_event) {
 		draw_tool_px(
 			tab.tool_preview_data,
+			tab.selection,
 			tab.sz,
 			to_vec2i(tex_draw_mouse_pos),
 			1,
@@ -182,6 +186,7 @@ const Input &input, Vec2 parent_pos) {
 			tab.sz, tab.tool_preview_data);
 		draw_tool_px(
 			tab.tool_preview_data,
+			tab.selection,
 			tab.sz,
 			to_vec2i(tex_draw_mouse_pos),
 			0,
@@ -203,17 +208,15 @@ const GameTime &game_time, Vec2 parent_pos) {
 
 	if (!tab.clicked_and_hold_on_ui) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
-			if (!b_cursor_on_ui) {
-				px_tool_preview_update(tab,
-					tab.tool_picker.brush_selected_index,
-					gs, input, parent_pos);
-			}
+			px_tool_preview_update(tab,
+				tab.tool_picker.brush_selected_index,
+				gs, input, parent_pos);
 			brush_tool_update(tab, get_layer_index(tab),
 				tab.tool_picker.brush_selected_index, gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_CURVE) {
-			if (!b_cursor_on_ui && !input.left_down && !input.left_release) {
+			if (!input.left_down && !input.left_release) {
 				px_tool_preview_update(tab,
 					tab.tool_picker.curve_selected_index,
 					gs, input, parent_pos);
@@ -227,22 +230,17 @@ const GameTime &game_time, Vec2 parent_pos) {
 		else if (tab.tool_picker.selected_index == TOOL_FILL) {
 			if (!b_cursor_on_ui) {
 				gs.cursor_icon = CURSOR_FILL;
-				px_tool_preview_update(tab, 0, gs, input, parent_pos);
 			}
+			px_tool_preview_update(tab, 0, gs, input, parent_pos);
 			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
+			px_tool_preview_update(tab, 0, gs, input, parent_pos);
 			select_tool_update(tab, get_layer_index(tab), gs, input,
 				game_time, tab.tool_picker.select_second_selected_index == 1,
 				tab.tool_picker.select_selected_index, parent_pos);
-			select_tool_preview_update(tab, gs, game_time);
 		}
-	}
-
-	if (b_cursor_on_ui) {
-		texture_data_red(gs, tab.tool_preview_texture_index,
-			tab.sz, tab.tool_preview_data);
 	}
 
 	if (input.left_release) {
@@ -480,9 +478,6 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
 	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 161, 6));
 
-	tab.selection.map.resize(tab.sz.x * tab.sz.y, 0);
-	tab.selection.map_2.resize(tab.sz.x * tab.sz.y, 0);
-
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
 	tab.pallete_texture_index = texture_blank_new(gs, 16, 16);
@@ -500,6 +495,11 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.tool_preview_texture_index = texture_blank_new_red(gs, sz.x, sz.y);
 	texture_data_red(gs, tab.tool_preview_texture_index, sz,
 		tab.tool_preview_data);
+
+	tab.selection.map.resize(tab.sz.x * tab.sz.y, 0);
+	tab.selection.map_2.resize(tab.sz.x * tab.sz.y, 0);
+	tab.selection_preview_data.resize(sz.x * sz.y, 0);
+	tab.selection_preview_texture_index= texture_blank_new_red(gs, sz.x, sz.y);
 
 	tab_layer_new(tab, 0, "bkg", gs);
 
@@ -552,6 +552,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	canvas_move_update(tab, gs, input, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
 	tool_update(tab, gs, input, game_time, parent_pos);
+	select_tool_preview_update(tab, gs, game_time);
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
@@ -683,11 +684,20 @@ void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	tab.tool_preview_pallete_data.clear();
 	texture_release(gs, tab.tool_preview_pallete_texture_index);
 
+	tab.tool_preview_data.clear();
+	texture_release(gs, tab.tool_preview_texture_index);
+	
+	tab.selection_preview_data.clear();
+	texture_release(gs, tab.selection_preview_texture_index);
+
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		if (tab.layer_list[i].running) {
 			layer_release(tab.layer_list, gs, i);
 		}
 	}
+
+	tab.layer_list.clear();
+	tab.layer_order_list.clear();
 
 	tab.running = false;
 }

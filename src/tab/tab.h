@@ -33,8 +33,6 @@ struct Tab {
 	ToolPicker tool_picker;
 	BtnPanel btn_panel;
 
-	Selection selection;
-
 	std::vector<unsigned char> pallete_data;
 	int pallete_texture_index = 0;
 	std::vector<unsigned char> tool_preview_pallete_data;
@@ -42,6 +40,10 @@ struct Tab {
 
 	std::vector<unsigned char> tool_preview_data;
 	int tool_preview_texture_index = 0;
+
+	Selection selection;
+	std::vector<unsigned char> selection_preview_data;
+	int selection_preview_texture_index = 0;
 
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;
