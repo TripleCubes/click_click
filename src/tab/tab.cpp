@@ -166,7 +166,31 @@ const Input &input, Vec2 parent_pos) {
 }
 
 void px_tool_preview_update(Tab &tab, int sz, GraphicStuff &gs,
-const Input &input, Vec2 parent_pos) {
+const Input &input, bool use_selection, Vec2 parent_pos) {
+	auto px = [&tab, sz, use_selection]
+	(Vec2i pos, unsigned char pallete_index) {
+		if (use_selection) {
+			draw_tool_px(
+				tab.tool_preview_data,
+				tab.selection,
+				tab.sz,
+				pos,
+				pallete_index,
+				sz
+			);
+		}
+		else {
+			draw_tool_px_no_selection(
+				tab.tool_preview_data,
+				tab.selection,
+				tab.sz,
+				pos,
+				pallete_index,
+				sz
+			);
+		}
+	};
+
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
@@ -174,24 +198,10 @@ const Input &input, Vec2 parent_pos) {
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
 	if (input.mouse_move || input.key_event) {
-		draw_tool_px(
-			tab.tool_preview_data,
-			tab.selection,
-			tab.sz,
-			to_vec2i(tex_draw_mouse_pos),
-			1,
-			sz
-		);
+		px(to_vec2i(tex_draw_mouse_pos), 1);
 		texture_data_red(gs, tab.tool_preview_texture_index,
 			tab.sz, tab.tool_preview_data);
-		draw_tool_px(
-			tab.tool_preview_data,
-			tab.selection,
-			tab.sz,
-			to_vec2i(tex_draw_mouse_pos),
-			0,
-			sz
-		);
+		px(to_vec2i(tex_draw_mouse_pos), 0);
 	}
 }
 
@@ -210,7 +220,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
 			px_tool_preview_update(tab,
 				tab.tool_picker.brush_selected_index,
-				gs, input, parent_pos);
+				gs, input, true, parent_pos);
 			brush_tool_update(tab, get_layer_index(tab),
 				tab.tool_picker.brush_selected_index, gs, input, parent_pos);
 		}
@@ -219,7 +229,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 			if (!input.left_down && !input.left_release) {
 				px_tool_preview_update(tab,
 					tab.tool_picker.curve_selected_index,
-					gs, input, parent_pos);
+					gs, input, true, parent_pos);
 			}
 			curve_tool_preview_update(tab,tab.tool_picker.curve_selected_index,
 				gs, input, parent_pos);
@@ -231,12 +241,12 @@ const GameTime &game_time, Vec2 parent_pos) {
 			if (!b_cursor_on_ui) {
 				gs.cursor_icon = CURSOR_FILL;
 			}
-			px_tool_preview_update(tab, 0, gs, input, parent_pos);
+			px_tool_preview_update(tab, 0, gs, input, true, parent_pos);
 			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
-			px_tool_preview_update(tab, 0, gs, input, parent_pos);
+			px_tool_preview_update(tab, 0, gs, input, false, parent_pos);
 			select_tool_update(tab, get_layer_index(tab), gs, input,
 				game_time, tab.tool_picker.select_second_selected_index == 1,
 				tab.tool_picker.select_selected_index, parent_pos);

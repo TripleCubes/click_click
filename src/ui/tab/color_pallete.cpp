@@ -175,7 +175,7 @@ GraphicStuff &gs, Vec2 parent_pos) {
 			click_sz + COLOR_PALLETE_SPACING * 2,
 			click_sz + COLOR_PALLETE_SPACING * 2
 		),
-		color_new(0, 0, 0, 1),
+		BTN_TEXTAREA_COLOR,
 		COLOR_PALLETE_SPACING * 2
 	);
 
