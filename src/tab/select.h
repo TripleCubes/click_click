@@ -14,22 +14,18 @@ struct GraphicStuff;
 struct GameTime;
 struct Input;
 
-struct SelectPoint {
-	Vec2 pos;
+struct Selection {
+	std::vector<Vec2> draw_preview_list;
+	std::vector<Vec2i> scan_list;
+
+	std::vector<Vec2i> full_preview_list;
+	std::vector<unsigned char> fill_checked_map;
+
+	std::vector<unsigned char> map;
+	std::vector<Vec2i> border_hint_list;
 };
 
-struct Selection {
-	Vec2i rect_top_left = vec2i_new(-1, -1);
-	Vec2i rect_bottom_right = vec2i_new(-1, -1);
-	std::vector<SelectPoint> point_list;
-	std::vector<SelectPoint> point_list_2;
-	std::vector<unsigned char> map;
-	std::vector<unsigned char> map_2;
-	Vec2 top_left = vec2_new(9999999, 9999999);
-	Vec2 bottom_right = vec2_new(-9999999, -9999999);
-	Vec2 top_left_all = vec2_new(9999999, 9999999);
-	Vec2 bottom_right_all = vec2_new(-9999999, -9999999);
-};
+void selection_init(Selection &selection, Vec2i canvas_sz);
 
 void select_tool_preview_update(Tab &tab, GraphicStuff &gs,
 	const GameTime &game_time);

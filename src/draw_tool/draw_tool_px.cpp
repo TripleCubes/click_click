@@ -16,7 +16,7 @@ Vec2i data_sz, Vec2i pos, unsigned char pallete_index, int sz) {
 
 		int data_index = data_sz.y * y + x;
 
-		if (use_selection && selection.point_list_2.size() != 0
+		if (use_selection && selection.full_preview_list.size() != 0
 		&& selection.map[data_index] == 0) {
 			return;
 		}

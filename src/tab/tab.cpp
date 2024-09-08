@@ -257,8 +257,8 @@ const GameTime &game_time, Vec2 parent_pos) {
 		tab.clicked_and_hold_on_ui = false;
 	}
 
-	if (tab.selection.point_list.size() != 0
-	|| tab.selection.point_list_2.size() != 0) {
+	if (tab.selection.draw_preview_list.size() != 0
+	|| tab.selection.full_preview_list.size() != 0) {
 		gs.redraw_requested = true;
 	}
 }
@@ -506,8 +506,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	texture_data_red(gs, tab.tool_preview_texture_index, sz,
 		tab.tool_preview_data);
 
-	tab.selection.map.resize(tab.sz.x * tab.sz.y, 0);
-	tab.selection.map_2.resize(tab.sz.x * tab.sz.y, 0);
+	selection_init(tab.selection, sz);
 	tab.selection_preview_data.resize(sz.x * sz.y, 0);
 	tab.selection_preview_texture_index= texture_blank_new_red(gs, sz.x, sz.y);
 

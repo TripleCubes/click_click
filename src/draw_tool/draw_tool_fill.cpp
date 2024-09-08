@@ -36,7 +36,7 @@ unsigned char replace_index, unsigned char pallete_index) {
 		}
 
 		int index = next_pos.y * data_sz.y + next_pos.x;
-		bool selection_cond = selection.point_list_2.size() == 0
+		bool selection_cond = selection.full_preview_list.size() == 0
 			|| selection.map[index] == 1;
 
 		if (px == replace_index && selection_cond) {
