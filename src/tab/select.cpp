@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <array>
 
-#include <iostream>
+//#include <iostream>
 
 namespace {
 
@@ -503,13 +503,13 @@ int select_type, Vec2 parent_pos){
 			subtract, parent_pos);
 	}
 
-	if (input.key_list[KEY_P].press) {
-		std::cout << "--------------------------------" << std::endl;
-		for (int y = 0; y < tab.sz.y; y++) {
-		for (int x = 0; x < tab.sz.x; x++) {
-			std::cout << (int)tab.selection.map[y * tab.sz.y + x];
-		}
-		std::cout << " " << y << std::endl;
-		}
-	}
+//	if (input.key_list[KEY_P].press) {
+//		std::cout << "--------------------------------" << std::endl;
+//		for (int y = 0; y < tab.sz.y; y++) {
+//		for (int x = 0; x < tab.sz.x; x++) {
+//			std::cout << (int)tab.selection.map[y * tab.sz.y + x];
+//		}
+//		std::cout << " " << y << std::endl;
+//		}
+//	}
 }

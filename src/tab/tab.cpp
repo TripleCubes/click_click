@@ -207,7 +207,7 @@ const Input &input, bool use_selection, Vec2 parent_pos) {
 
 void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
 const GameTime &game_time, Vec2 parent_pos) {
-	if (input.key_list[KEY_SPACE].down) { return; }
+	if (tab.panning || tab.after_panning_1_frame) { return; }
 
 	bool b_cursor_on_ui
 		= cursor_on_ui(tab, gs, input, parent_pos);
@@ -397,7 +397,20 @@ void layer_bar_event_handle(Tab &tab) {
 
 void canvas_move_update(Tab &tab, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
-	if (input.key_list[KEY_SPACE].down && input.left_down && input.mouse_move){
+	if (input.key_list[KEY_SPACE].down && input.left_down) {
+		tab.panning = true;
+		tab.after_panning_1_frame = true;
+	}
+
+	if (tab.panning == false) {
+		tab.after_panning_1_frame = false;
+	}
+
+	if (input.left_release) {
+		tab.panning = false;
+	}
+
+	if (tab.panning && input.left_down && input.mouse_move){
 		Vec2 pos = vec2_add(parent_pos, tab.pos);
 
 		Vec2 main_fb_mouse_pos

@@ -49,6 +49,8 @@ struct Tab {
 	std::vector<int> layer_order_list;
 	int layer_order_list_index = 0;
 	bool tab_name_editing = false;
+	bool panning = false;
+	bool after_panning_1_frame = false;
 };
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
