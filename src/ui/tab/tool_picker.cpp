@@ -141,7 +141,7 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 				}
 			}
 
-			if (input.key_list[KEY_M].press) {
+			if (input.key_list[KEY_D].press) {
 				tool_picker.select_second_selected_index += 1;
 				if (tool_picker.select_second_selected_index
 				>= NUM_SELECT_SECOND_BTN) {
@@ -244,7 +244,7 @@ Vec2 parent_pos) {
 	if (tool_picker.selected_index == 3) {
 		draw_text(
 			gs,
-			"m",
+			"d",
 			vec2_add(pos, vec2_new(4 + 13 * 4, 13 * 2 + 1)),
 			12,
 			1,
