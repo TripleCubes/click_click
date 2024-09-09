@@ -538,7 +538,8 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
 
 	color_picker_update(tab.color_picker, gs, input, bottom_pos, show);
-	color_pallete_update(tab.color_pallete, gs, input, parent_pos, show);
+	color_pallete_update(tab.color_pallete, gs, input, parent_pos, 
+		!tab.tab_name_editing, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
 		!tab.tab_name_editing && !input.left_down && !input.left_release,
@@ -682,7 +683,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 	layer_textarea_list_draw(tab, gs, game_time, parent_pos);
 
 	color_picker_draw(tab.color_picker, gs, bottom_pos);
-	color_pallete_draw(tab.color_pallete, gs, parent_pos);
+	color_pallete_draw(tab.color_pallete, gs, input, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, input, parent_pos);
 	btn_panel_draw(tab.btn_panel, gs, parent_pos);

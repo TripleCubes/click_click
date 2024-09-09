@@ -453,8 +453,12 @@ char key_get_char(int key, bool shift) {
 }
 
 char key_get_char_no_special(int key, bool shift) {
-	if (key >= KEY_A && key <= KEY_9) {
+	if (key >= KEY_A && key <= KEY_Z) {
 		return key_get_char(key, shift);
+	}
+
+	if (!shift && key >= KEY_0 && key <= KEY_9) {
+		return key_get_char(key, false);
 	}
 
 	if (shift && key == KEY_MINUS) {

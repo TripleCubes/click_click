@@ -26,22 +26,13 @@ const Input &input) {
 	char add = ' ';
 	bool text_input = false;
 
-	for (int key = KEY_A; key <= KEY_Z; key++) {
+	for (int key = KEY_A; key < KEY_COUNT; key++) {
 		if (input.key_list[key].press) {
-			char c = 'a' + (char)key - (char)KEY_A;
-			if (shift_down(input)) {
-				c -= 32;
+			char c = key_get_char_no_special(key, shift_down(input));
+			if (c != ' ') {
+				add = c;
+				text_input = true;
 			}
-			add = c;
-			text_input = true;
-		}
-	}
-
-	for (int key = KEY_0; key <= KEY_9; key++) {
-		if (input.key_list[key].press) {
-			char c = '0' + (char)key - (char)KEY_0;
-			add = c;
-			text_input = true;
 		}
 	}
 
@@ -49,7 +40,6 @@ const Input &input) {
 		add = ' ';
 		text_input = true;
 	}
-
 
 	if (text_input) {
 		const int TEXT_W_CHAR
@@ -68,7 +58,6 @@ const Input &input) {
 			textarea.cursor_moved_at = game_time.time_since_start;
 		}
 	}
-
 
 	if (input.key_list[KEY_BACKSPACE].press && textarea.cursor_at > 0) {
 		if (textarea.cursor_at == (int)textarea.text.length()) {

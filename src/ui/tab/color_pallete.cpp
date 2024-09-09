@@ -99,6 +99,17 @@ void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
 	}
 }
 
+std::string get_key_str(const Input &input, MappedKeyIndex index) {
+	int key = input.input_map.key_list[index].key;
+	int modifier = input.input_map.key_list[index].modifier;
+
+	bool shift = modifier == MODIFIER_LEFT_SHIFT
+		|| modifier == MODIFIER_RIGHT_SHIFT
+		|| modifier == MODIFIER_BOTH_SHIFT;
+
+	return std::string(1, key_get_char(key, shift));
+}
+
 }
 
 ColorPallete color_pallete_new(Vec2 pos) {
@@ -121,13 +132,17 @@ ColorPallete color_pallete_new(Vec2 pos) {
 }
 
 void color_pallete_update(ColorPallete &color_pallete,
-const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
+const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool kb_allowed,
+bool show) {
 	mouse_update(color_pallete, gs, input, parent_pos, show);
-	kb_update(color_pallete, input, show);
+	
+	if (kb_allowed) {
+		kb_update(color_pallete, input, show);
+	}
 }
 
 void color_pallete_draw(const ColorPallete &color_pallete,
-GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, const Input &input, Vec2 parent_pos) {
 	Vec2 cp_pos = vec2_add(parent_pos, color_pallete.pos);
 	float click_sz = COLOR_PALLETE_COLOR_CLICK_SZ;
 
@@ -179,7 +194,7 @@ GraphicStuff &gs, Vec2 parent_pos) {
 	for (int i = 1; i <= COLOR_PALLETE_NUM_COLUMN; i++) {
 		draw_text(
 			gs,
-			std::to_string(i),
+			get_key_str(input, (MappedKeyIndex)(MAP_COLOR_1 + i - 1)),
 			vec2_new(
 				cp_pos.x - 8,
 				cp_pos.y + (COLOR_PALLETE_COLOR_CLICK_SZ) * (i - 1) + 2
