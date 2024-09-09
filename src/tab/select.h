@@ -23,6 +23,9 @@ struct Selection {
 
 	std::vector<unsigned char> map;
 	std::vector<Vec2i> border_hint_list;
+
+	Vec2i rect_point_1 = vec2i_new(-1, -1);
+	Vec2i rect_point_2 = vec2i_new(-1, -1);
 };
 
 void selection_init(Selection &selection, Vec2i canvas_sz);

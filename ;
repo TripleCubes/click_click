@@ -94,8 +94,8 @@ unsigned char get_px(const std::vector<unsigned char> &map,Vec2i sz,Vec2i pos){
 }
 
 void update_map_rect(Selection &selection, Vec2i sz, bool subtract) {
-	Vec2i tl = selection.rect_point_1;
-	Vec2i br = selection.rect_point_2;
+	Vec2i tl = tab.rect_point_1;
+	Vec2i br = tab.rect_point_2;
 
 	if (tl.x > br.x) {
 		int swap = tl.x;
@@ -109,9 +109,9 @@ void update_map_rect(Selection &selection, Vec2i sz, bool subtract) {
 		br.y = swap;
 	}
 
-	for (int y = tl.y; y <= br.y; y++) {
+	for (int y = tl.y; y <= bt.y; y++) {
 	for (int x = tl.x; x <= br.x; x++) {
-		px(selection.map, sz, vec2i_new(x, y), subtract? 0 : 1);
+		px(selection.map, sz, pos, subtract? 0 : 1);
 	}
 	}
 }
@@ -345,27 +345,25 @@ Vec2 parent_pos) {
 	}
 
 	if (input.left_release) {
-		Vec2i pos = tab.selection.rect_point_1;
-
 		if (!subtract) {
-			tab.selection.border_hint_list.push_back(pos);
+			tab.border_hint_list.push_back(rect_point_1);
 		}
 		else {
-			tab.selection.border_hint_list.push_back(vec2i_new(pos.x,
-			                                                   pos.y + 1));
-			tab.selection.border_hint_list.push_back(vec2i_new(pos.x,
-			                                                   pos.y - 1));
-			tab.selection.border_hint_list.push_back(vec2i_new(pos.x + 1,
-			                                                   pos.y));
-			tab.selection.border_hint_list.push_back(vec2i_new(pos.x - 1,
-			                                                   pos.y));
+			tab.border_hint_list.push_back(vec2_new(rect_point_1.x,
+			                                        rect_point_1.y + 1));
+			tab.border_hint_list.push_back(vec2_new(rect_point_1.x,
+			                                        rect_point_1.y - 1));
+			tab.border_hint_list.push_back(vec2_new(rect_point_1.x + 1,
+			                                        rect_point_1.y));
+			tab.border_hint_list.push_back(vec2_new(rect_point_1.x - 1,
+			                                        rect_point_1.y));
 		}
 
 		update_map_rect(tab.selection, tab.sz, subtract);
 		set_full_preview_list(tab.selection, tab.sz);
 
-		tab.selection.rect_point_1 = vec2i_new(-1, -1);
-		tab.selection.rect_point_2 = vec2i_new(-1, -1);
+		tab.rect_point_1 = vec2i_new(-1, -1);
+		tab.rect_point_2 = vec2i_new(-1, -1);
 	}
 }
 
@@ -373,60 +371,11 @@ bool ink_cond(int ink) {
 	return ink % 10 < 4;
 }
 
-void rect_preview_update(Tab &tab,
+void rect_preview_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time, unsigned char pallete_index) {
-	if (tab.selection.rect_point_1.x == -1) {
-		return;
-	}
-
-	int ink = game_time.time_since_start * 10;
-
-	auto draw = [&tab, &ink, pallete_index](int x, int y){
-		ink++;
-		if (!ink_cond(ink)) {
-			return;
-		}
-
-		draw_tool_px_no_selection(
-			tab.selection_preview_data,
-			tab.selection,
-			tab.sz,
-			vec2i_new(x, y),
-			pallete_index,
-			0
-		);
-	};
-
-	Vec2i tl = tab.selection.rect_point_1;
-	Vec2i br = tab.selection.rect_point_2;
-
-	if (tl.x > br.x) {
-		int swap = tl.x;
-		tl.x = br.x;
-		br.x = swap;
-	}
-
-	if (tl.y > br.y) {
-		int swap = tl.y;
-		tl.y = br.y;
-		br.y = swap;
-	}
-
-	for (int x = tl.x; x <= br.x; x++) {
-		draw(x, tl.y);
-	}
-	for (int y = tl.y; y <= br.y; y++) {
-		draw(br.x, y);
-	}
-	for (int x = br.x; x >= tl.x; x--) {
-		draw(x, br.y);
-	}
-	for (int y = br.y; y >= tl.y; y--) {
-		draw(tl.x, y);
-	}
 }
 
-void free_preview_update(Tab &tab,
+void preview_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time, unsigned char pallete_index) {
 	int ink = game_time.time_since_start * 10;
 	for (int i = 0; i < (int)tab.selection.draw_preview_list.size(); i++) {
@@ -445,11 +394,8 @@ const GameTime &game_time, unsigned char pallete_index) {
 			0
 		);
 	}
-}
 
-void full_preview_update(Tab &tab,
-const GameTime &game_time, unsigned char pallete_index) {
-	int ink = game_time.time_since_start * 10;
+	ink = game_time.time_since_start * 10;
 	for (int i = 0; i < (int)tab.selection.full_preview_list.size(); i++) {
 		ink++;
 		if (!ink_cond(ink)) {
@@ -468,13 +414,6 @@ const GameTime &game_time, unsigned char pallete_index) {
 	}
 }
 
-void preview_update(Tab &tab,
-const GameTime &game_time, unsigned char pallete_index) {
-	rect_preview_update(tab, game_time, pallete_index);
-	free_preview_update(tab, game_time, pallete_index);
-	full_preview_update(tab, game_time, pallete_index);
-}
-
 }
 
 void selection_init(Selection &selection, Vec2i canvas_sz) {
@@ -484,10 +423,10 @@ void selection_init(Selection &selection, Vec2i canvas_sz) {
 
 void select_tool_preview_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time) {
-	preview_update(tab, game_time, 1);
+	preview_update(tab, gs, game_time, 1);
 	texture_data_red(gs, tab.selection_preview_texture_index,
 		tab.sz, tab.selection_preview_data);
-	preview_update(tab, game_time, 0);
+	preview_update(tab, gs, game_time, 0);
 }
 
 void select_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
