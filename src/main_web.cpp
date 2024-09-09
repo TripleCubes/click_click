@@ -95,6 +95,8 @@ int main() {
 	double window_h = 0;
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 
+	input_init(input);
+
 	graphic_stuff.current_window_sz.x = window_w;
 	graphic_stuff.current_window_sz.y = window_h;
 	graphic_stuff.px_scale = 2;

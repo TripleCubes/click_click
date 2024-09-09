@@ -3,6 +3,7 @@
 #include "../../consts.h"
 #include "../../graphic_types/graphic_types.h"
 #include "../../input.h"
+#include "../../input_map.h"
 #include "../../graphic/draw_text.h"
 
 namespace {
@@ -25,16 +26,16 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	}
 
 	if (tool_key_allowed) {
-		if (input.key_list[KEY_B].press) {
+		if (map_press(input, MAP_TOOL_BRUSH)) {
 			tool_picker.selected_index = 0;
 		}
-		else if (input.key_list[KEY_C].press) {
+		else if (map_press(input, MAP_TOOL_CURVE)) {
 			tool_picker.selected_index = 1;
 		}
-		else if (input.key_list[KEY_F].press) {
+		else if (map_press(input, MAP_TOOL_FILL)) {
 			tool_picker.selected_index = 2;
 		}
-		else if (input.key_list[KEY_S].press) {
+		else if (map_press(input, MAP_TOOL_SELECT)) {
 			tool_picker.selected_index = 3;
 		}
 	}
@@ -77,7 +78,7 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		}
 
 		if (tool_key_allowed) {
-			if (input.key_list[KEY_B].press) {
+			if (map_press(input, MAP_TOOL_BRUSH)) {
 				tool_picker.brush_selected_index += 1;
 				if (tool_picker.brush_selected_index >= NUM_SZ_BTN) {
 					tool_picker.brush_selected_index = 0;
@@ -94,7 +95,7 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		}
 
 		if (tool_key_allowed) {
-			if (input.key_list[KEY_C].press) {
+			if (map_press(input, MAP_TOOL_CURVE)) {
 				tool_picker.curve_selected_index += 1;
 				if (tool_picker.curve_selected_index >= NUM_SZ_BTN) {
 					tool_picker.curve_selected_index = 0;
@@ -111,7 +112,7 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		}
 
 		if (tool_key_allowed) {
-			if (input.key_list[KEY_F].press) {
+			if (map_press(input, MAP_TOOL_FILL)) {
 				tool_picker.fill_selected_index += 1;
 				if (tool_picker.fill_selected_index >= NUM_FILL_BTN) {
 					tool_picker.fill_selected_index = 0;
@@ -134,14 +135,14 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		}
 
 		if (tool_key_allowed) {
-			if (input.key_list[KEY_S].press) {
+			if (map_press(input, MAP_TOOL_SELECT)) {
 				tool_picker.select_selected_index += 1;
 				if (tool_picker.select_selected_index >= NUM_SELECT_BTN) {
 					tool_picker.select_selected_index = 0;
 				}
 			}
 
-			if (input.key_list[KEY_D].press) {
+			if (map_press(input, MAP_TOOL_SELECT_MODE)) {
 				tool_picker.select_second_selected_index += 1;
 				if (tool_picker.select_second_selected_index
 				>= NUM_SELECT_SECOND_BTN) {
@@ -152,8 +153,20 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	}
 }
 
+std::string get_key_str(const Input &input, MappedKeyIndex index) {
+	int key = input.input_map.key_list[index].key;
+	int modifier = input.input_map.key_list[index].modifier;
+
+	bool shift = modifier == MODIFIER_LEFT_SHIFT
+		|| modifier == MODIFIER_RIGHT_SHIFT
+		|| modifier == MODIFIER_BOTH_SHIFT;
+
+	return std::string(1, key_get_char(key, shift));
+}
+
 void main_btns_draw(const ToolPicker &tool_picker, GraphicStuff &gs,
-Vec2 parent_pos) {
+const Input &input, Vec2 parent_pos) {
+
 	Vec2 pos = vec2_add(parent_pos, tool_picker.pos);
 
 	for (int i = 0; i < NUM_BTN; i++) {
@@ -162,7 +175,10 @@ Vec2 parent_pos) {
 	}
 
 	std::array<std::string, NUM_BTN> tool_key_list = {
-		"b", "c", "f", "s"
+		get_key_str(input, MAP_TOOL_BRUSH),
+		get_key_str(input, MAP_TOOL_CURVE),
+		get_key_str(input, MAP_TOOL_FILL),
+		get_key_str(input, MAP_TOOL_SELECT),
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		draw_text(
@@ -179,7 +195,7 @@ Vec2 parent_pos) {
 }
 
 void other_btns_draw(const ToolPicker &tool_picker, GraphicStuff &gs,
-Vec2 parent_pos) {
+const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tool_picker.pos);
 	std::string tool_key_str;
 
@@ -219,16 +235,16 @@ Vec2 parent_pos) {
 	}
 
 	if (tool_picker.selected_index == 0) {
-		tool_key_str = "b";
+		tool_key_str = get_key_str(input, MAP_TOOL_BRUSH);
 	}
 	else if (tool_picker.selected_index == 1) {
-		tool_key_str = "c";
+		tool_key_str = get_key_str(input, MAP_TOOL_CURVE);
 	}
 	else if (tool_picker.selected_index == 2) {
-		tool_key_str = "f";
+		tool_key_str = get_key_str(input, MAP_TOOL_FILL);
 	}
 	else if (tool_picker.selected_index == 3) {
-		tool_key_str = "s";
+		tool_key_str = get_key_str(input, MAP_TOOL_SELECT);
 	}
 	draw_text(
 		gs,
@@ -244,7 +260,7 @@ Vec2 parent_pos) {
 	if (tool_picker.selected_index == 3) {
 		draw_text(
 			gs,
-			"d",
+			get_key_str(input, MAP_TOOL_SELECT_MODE),
 			vec2_add(pos, vec2_new(4 + 13 * 4, 13 * 2 + 1)),
 			12,
 			1,
@@ -335,7 +351,7 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 }
 
 void tool_picker_draw(const ToolPicker &tool_picker, GraphicStuff &gs,
-Vec2 parent_pos) {
-	main_btns_draw(tool_picker, gs, parent_pos);
-	other_btns_draw(tool_picker, gs, parent_pos);
+const Input &input, Vec2 parent_pos) {
+	main_btns_draw(tool_picker, gs, input, parent_pos);
+	other_btns_draw(tool_picker, gs, input, parent_pos);
 }

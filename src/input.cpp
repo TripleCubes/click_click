@@ -6,12 +6,10 @@
 #include <GL/glfw.h>
 #endif
 
-#include <vector>
-
 namespace {
 
 #ifndef __EMSCRIPTEN__
-const std::vector<int> KEY_GLFW_LIST = {
+const std::array<int, KEY_COUNT> KEY_GLFW_LIST = {
 	GLFW_KEY_A,
 	GLFW_KEY_B,
 	GLFW_KEY_C,
@@ -54,6 +52,9 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_RIGHT_SHIFT,
 	GLFW_KEY_LEFT_CONTROL,
 	GLFW_KEY_RIGHT_CONTROL,
+	GLFW_KEY_LEFT_ALT,
+	GLFW_KEY_RIGHT_ALT,
+
 	GLFW_KEY_SPACE,
 	GLFW_KEY_ENTER,
 	GLFW_KEY_ESCAPE,
@@ -73,13 +74,14 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_LEFT_BRACKET,
 	GLFW_KEY_RIGHT_BRACKET,
 	GLFW_KEY_SEMICOLON,
+	GLFW_KEY_BACKSLASH,
 	GLFW_KEY_APOSTROPHE,
 	GLFW_KEY_COMMA,
 	GLFW_KEY_PERIOD,
 	GLFW_KEY_SLASH,
 };
 #else
-const std::vector<int> KEY_GLFW_LIST = {
+const std::array<int, KEY_COUNT> KEY_GLFW_LIST = {
 	'A',
 	'B',
 	'C',
@@ -122,6 +124,9 @@ const std::vector<int> KEY_GLFW_LIST = {
 	GLFW_KEY_RSHIFT,
 	GLFW_KEY_LCTRL,
 	GLFW_KEY_RCTRL,
+	GLFW_KEY_LALT,
+	GLFW_KEY_RALT,
+
 	GLFW_KEY_SPACE,
 	GLFW_KEY_ENTER,
 	GLFW_KEY_ESC,
@@ -141,6 +146,7 @@ const std::vector<int> KEY_GLFW_LIST = {
 	'[',
 	']',
 	';',
+	'\\',
 	'\'',
 	',',
 	'.',
@@ -186,6 +192,133 @@ void key_list_update(Input &input) {
 	}
 }
 
+char key_get_char_no_shift(int key) {
+	if (key >= KEY_A && key <= KEY_Z) {
+		return 'a' + key;
+	}
+
+	if (key >= KEY_0 && key <= KEY_9) {
+		return '0' + key - KEY_0;
+	}
+
+	switch (key) {
+		case KEY_MINUS:
+			return '-';
+			break;
+		case KEY_EQUAL:
+			return '=';
+			break;
+		case KEY_LEFT_SQUARE_BRACKET:
+			return '[';
+			break;
+		case KEY_RIGHT_SQUARE_BRACKET:
+			return ']';
+			break;
+		case KEY_SEMICOLON:
+			return ';';
+			break;
+		case KEY_BACKSLASH:
+			return '\\';
+			break;
+		case KEY_TICK:
+			return '\'';
+			break;
+		case KEY_COMMA:
+			return ',';
+			break;
+		case KEY_DOT:
+			return '.';
+			break;
+		case KEY_FORWARD_SLASH:
+			return '/';
+			break;
+		default:
+			return ' ';
+			break;
+	}
+
+	return ' ';
+}
+
+char key_get_char_shift(int key) {
+	if (key >= KEY_A && key <= KEY_Z) {
+		return 'A' + key;
+	}
+
+	switch (key) {
+		case KEY_0:
+			return ')';
+			break;
+		case KEY_1:
+			return '!';
+			break;
+		case KEY_2:
+			return '@';
+			break;
+		case KEY_3:
+			return '#';
+			break;
+		case KEY_4:
+			return '$';
+			break;
+		case KEY_5:
+			return '%';
+			break;
+		case KEY_6:
+			return '^';
+			break;
+		case KEY_7:
+			return '&';
+			break;
+		case KEY_8:
+			return '*';
+			break;
+		case KEY_9:
+			return '(';
+			break;
+
+		case KEY_MINUS:
+			return '_';
+			break;
+		case KEY_EQUAL:
+			return '+';
+			break;
+		case KEY_LEFT_SQUARE_BRACKET:
+			return '{';
+			break;
+		case KEY_RIGHT_SQUARE_BRACKET:
+			return '}';
+			break;
+		case KEY_SEMICOLON:
+			return ':';
+			break;
+		case KEY_BACKSLASH:
+			return '|';
+			break;
+		case KEY_TICK:
+			return '\'';
+			break;
+		case KEY_COMMA:
+			return '<';
+			break;
+		case KEY_DOT:
+			return '>';
+			break;
+		case KEY_FORWARD_SLASH:
+			return '?';
+			break;
+		default:
+			return ' ';
+			break;
+	}
+
+	return ' ';
+}
+
+}
+
+void input_init(Input &input) {
+	input_map_init(input.input_map);
 }
 
 #ifndef __EMSCRIPTEN__
@@ -308,4 +441,25 @@ bool ctrl_down(const Input &input) {
 bool shift_down(const Input &input) {
 	return input.key_list[KEY_LEFT_SHIFT].down
 		|| input.key_list[KEY_RIGHT_SHIFT].down;
+}
+
+char key_get_char(int key, bool shift) {
+	if (!shift) {
+		return key_get_char_no_shift(key);
+	}
+	else {
+		return key_get_char_shift(key);
+	}
+}
+
+char key_get_char_no_special(int key, bool shift) {
+	if (key >= KEY_A && key <= KEY_9) {
+		return key_get_char(key, shift);
+	}
+
+	if (shift && key == KEY_MINUS) {
+		return '_';
+	}
+
+	return ' ';
 }

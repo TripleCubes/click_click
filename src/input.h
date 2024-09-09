@@ -10,6 +10,7 @@
 #endif
 
 #include <array>
+#include "input_map.h"
 
 const int KEY_A = 0;
 const int KEY_B = 1;
@@ -53,31 +54,35 @@ const int KEY_LEFT_SHIFT = 36;
 const int KEY_RIGHT_SHIFT = 37;
 const int KEY_LEFT_CTRL = 38;
 const int KEY_RIGHT_CTRL = 39;
-const int KEY_SPACE = 40;
-const int KEY_ENTER = 41;
-const int KEY_ESC = 42;
-const int KEY_TAB = 43;
-const int KEY_BACKSPACE = 44;
-const int KEY_DEL = 45;
-const int KEY_HOME = 46;
-const int KEY_END = 47;
+const int KEY_LEFT_ALT = 40;
+const int KEY_RIGHT_ALT = 41;
 
-const int KEY_UP = 48;
-const int KEY_DOWN = 49;
-const int KEY_LEFT = 50;
-const int KEY_RIGHT = 51;
+const int KEY_SPACE = 42;
+const int KEY_ENTER = 43;
+const int KEY_ESC = 44;
+const int KEY_TAB = 45;
+const int KEY_BACKSPACE = 46;
+const int KEY_DEL = 47;
+const int KEY_HOME = 48;
+const int KEY_END = 49;
 
-const int KEY_MINUS = 52;
-const int KEY_EQUAL = 53;
-const int KEY_LEFT_SQUARE_BRACKET = 54;
-const int KEY_RIGHT_SQUARE_BRACKET = 55;
-const int KEY_SEMICOLON = 56;
-const int KEY_BACKSLASH = 57;
-const int KEY_COMMA = 58;
-const int KEY_DOT = 59;
-const int KEY_FORWARD_SLASH = 60;
+const int KEY_UP = 50;
+const int KEY_DOWN = 51;
+const int KEY_LEFT = 52;
+const int KEY_RIGHT = 53;
 
-const int KEY_COUNT = 61;
+const int KEY_MINUS = 54;
+const int KEY_EQUAL = 55;
+const int KEY_LEFT_SQUARE_BRACKET = 56;
+const int KEY_RIGHT_SQUARE_BRACKET = 57;
+const int KEY_SEMICOLON = 58;
+const int KEY_BACKSLASH = 59;
+const int KEY_TICK = 60;
+const int KEY_COMMA = 61;
+const int KEY_DOT = 62;
+const int KEY_FORWARD_SLASH = 63;
+
+const int KEY_COUNT = 64;
 
 struct KeyState {
 	bool press = false;
@@ -103,9 +108,12 @@ struct Input {
 
 	bool mouse_event = false;
 	bool key_event = false;
+
+	InputMap input_map;
 };
 
 #ifndef __EMSCRIPTEN__
+void input_init(Input &input);
 void input_update(Input &input, GLFWwindow *glfw_window);
 #else
 void input_update(Input &input);
@@ -113,5 +121,7 @@ void input_update(Input &input);
 
 bool ctrl_down(const Input &input);
 bool shift_down(const Input &input);
+char key_get_char(int key, bool shift);
+char key_get_char_no_special(int key, bool shift);
 
 #endif

@@ -68,6 +68,7 @@ void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
 void draw_ui(
 GraphicStuff &gs,
 const Tab &tab,
+const Input &input,
 const GameTime &game_time
 ) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
@@ -75,7 +76,7 @@ const GameTime &game_time
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
-	tab_ui_draw(tab, gs, game_time, TAB_OFFSET);
+	tab_ui_draw(tab, gs, input, game_time, TAB_OFFSET);
 
 	draw_text(
 		gs,
@@ -254,7 +255,7 @@ const Input &input) {
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 			BLUR_COLOR, true);
 		draw_blurred_rects(gs, tab_list[0]);
-		draw_ui(gs, tab_list[0], game_time);
+		draw_ui(gs, tab_list[0], input, game_time);
 		draw_cursor(gs, input);
 	}
 

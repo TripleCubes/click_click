@@ -46,6 +46,6 @@ void tool_picker_update(ToolPicker &tool_picker, const GraphicStuff &gs,
 	const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show);
 
 void tool_picker_draw(const ToolPicker &tool_picker, GraphicStuff &gs,
-	Vec2 parent_pos);
+	const Input &input, Vec2 parent_pos);
 
 #endif

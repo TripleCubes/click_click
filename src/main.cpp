@@ -78,6 +78,7 @@ int main () {
 	GameTime game_time;
 
 	Input input;
+	input_init(input);
 
 	GraphicStuff graphic_stuff;
 	graphic_stuff.current_window_sz.x = window_w;

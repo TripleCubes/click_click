@@ -6,6 +6,7 @@
 #include "../../graphic/draw_rect.h"
 #include "../../graphic/draw_text.h"
 #include "../../input.h"
+#include "../../input_map.h"
 
 #include "../../basic_math.h"
 #include "../../pos_convert.h"
@@ -79,25 +80,21 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
-	if (!shift_down(input)) {
-		for (int i = KEY_1; i <= KEY_8; i++) {
-			if (input.key_list[i].press) {
-				int next_index = i - KEY_1;
-				if (next_index == color_pallete.selected_index) {
-					color_pallete.selected_index = next_index + 8;
-				}
-				else {
-					color_pallete.selected_index = next_index;
-				}
+	for (int i = MAP_COLOR_1; i <= MAP_COLOR_8; i++) {
+		if (map_press(input, (MappedKeyIndex)i)) {
+			int next_index = i - MAP_COLOR_1;
+			if (next_index == color_pallete.selected_index) {
+				color_pallete.selected_index = next_index + 8;
+			}
+			else {
+				color_pallete.selected_index = next_index;
 			}
 		}
 	}
 
-	if (shift_down(input)) {
-		for (int i = KEY_1; i <= KEY_4; i++) {
-			if (input.key_list[i].press) {
-				color_pallete.at_page = i - KEY_1;
-			}
+	for (int i = MAP_COLOR_PAGE_1; i <= MAP_COLOR_PAGE_4; i++) {
+		if (map_press(input, (MappedKeyIndex)i)) {
+			color_pallete.at_page = i - MAP_COLOR_PAGE_1;
 		}
 	}
 }

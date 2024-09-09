@@ -13,6 +13,7 @@
 
 #include "../graphic_types/graphic_types.h"
 #include "../input.h"
+#include "../input_map.h"
 #include "../game_time.h"
 #include "../pos_convert.h"
 #include "../basic_math.h"
@@ -397,7 +398,7 @@ void layer_bar_event_handle(Tab &tab) {
 
 void canvas_move_update(Tab &tab, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
-	if (input.key_list[KEY_SPACE].down && input.left_down) {
+	if (map_down(input, MAP_PAN) && input.left_down) {
 		tab.panning = true;
 		tab.after_panning_1_frame = true;
 	}
@@ -431,15 +432,15 @@ const Input &input, Vec2 parent_pos) {
 }
 
 bool kb_zoom_out(const Input &input) {
-	return ctrl_down(input) && input.key_list[KEY_MINUS].press;
+	return map_press(input, MAP_ZOOM_OUT);
 }
 
 bool kb_zoom_in(const Input &input) {
-	return ctrl_down(input) && input.key_list[KEY_EQUAL].press;
+	return map_press(input, MAP_ZOOM_IN);
 }
 
 bool kb_zoom_0(const Input &input) {
-	return ctrl_down(input) && input.key_list[KEY_0].press;
+	return map_press(input, MAP_ZOOM_0);
 }
 
 void canvas_zoom_move(Tab &tab, Vec2 sz_diff) {
@@ -672,8 +673,8 @@ Vec2 parent_pos) {
 	layer_list_draw(tab, gs, pos);
 }
 
-void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const GameTime &game_time,
-Vec2 parent_pos) {
+void tab_ui_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
+const GameTime &game_time, Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 bottom_pos
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
@@ -683,7 +684,7 @@ Vec2 parent_pos) {
 	color_picker_draw(tab.color_picker, gs, bottom_pos);
 	color_pallete_draw(tab.color_pallete, gs, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
-	tool_picker_draw(tab.tool_picker, gs, parent_pos);
+	tool_picker_draw(tab.tool_picker, gs, input, parent_pos);
 	btn_panel_draw(tab.btn_panel, gs, parent_pos);
 	
 	draw_text(

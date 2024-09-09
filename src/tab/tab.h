@@ -67,7 +67,7 @@ void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 	Vec2 parent_pos);
 
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs,
-	const GameTime &game_time, Vec2 parent_pos);
+	const Input &input, const GameTime &game_time, Vec2 parent_pos);
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
