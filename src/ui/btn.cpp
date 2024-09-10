@@ -14,6 +14,8 @@
 #include "../pos_convert.h"
 #include "../consts.h"
 
+#include <array>
+
 Btn btn_new(Vec2 pos, Vec2 sz, Color color, const std::string &text) {
 	Btn btn;
 	btn.pos = pos;
@@ -75,76 +77,51 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 		);
 	};
 
-	if (btn.text == "ICON_PLUS") {
-		_draw_icon(ICON_PLUS);
+	std::array<std::string, ICON_COUNT> icon_str_list = {
+		"ICON_PLUS",
+        "ICON_X",
+        "ICON_MINUS",
+        "ICON_CURVE",
+        "ICON_FILL",
+        "ICON_PEN",
+        "ICON_SELECT",
+        "ICON_UP",
+        "ICON_DOWN",
+        "ICON_SZ_1",
+
+        "ICON_SZ_2",
+        "ICON_SZ_3",
+        "ICON_SZ_3_5",
+        "ICON_SZ_4",
+        "ICON_FILL_ALL",
+        "ICON_FILL_DITHERED",
+        "ICON_FREE_SELECT",
+        "ICON_MAGIC_WAND",
+        "ICON_SELECT_ADD",
+        "ICON_SELECT_SUBTRACT",
+
+        "ICON_ARROW_UP",
+        "ICON_ARROW_DOWN",
+        "ICON_ARROW_LEFT",
+        "ICON_ARROW_RIGHT",
+        "ICON_SZ_4_5",
+	};
+
+	for (int i = 0; i < ICON_COUNT; i++) {
+		if (btn.text == icon_str_list[i]) {
+			_draw_icon(i);
+			return;
+		}
 	}
-	else if (btn.text == "ICON_X") {
-		_draw_icon(ICON_X);
-	}
-	else if (btn.text == "ICON_MINUS") {
-		_draw_icon(ICON_MINUS);
-	}
-	else if (btn.text == "ICON_CURVE") {
-		_draw_icon(ICON_CURVE);
-	}
-	else if (btn.text == "ICON_FILL") {
-		_draw_icon(ICON_FILL);
-	}
-	else if (btn.text == "ICON_PEN") {
-		_draw_icon(ICON_PEN);
-	}
-	else if (btn.text == "ICON_SELECT") {
-		_draw_icon(ICON_SELECT);
-	}
-	else if (btn.text == "ICON_UP") {
-		_draw_icon(ICON_UP);
-	}
-	else if (btn.text == "ICON_DOWN") {
-		_draw_icon(ICON_DOWN);
-	}
-	else if (btn.text == "ICON_SZ_1") {
-		_draw_icon(ICON_SZ_1);
-	}
-	else if (btn.text == "ICON_SZ_2") {
-		_draw_icon(ICON_SZ_2);
-	}
-	else if (btn.text == "ICON_SZ_3") {
-		_draw_icon(ICON_SZ_3);
-	}
-	else if (btn.text == "ICON_SZ_3_5") {
-		_draw_icon(ICON_SZ_3_5);
-	}
-	else if (btn.text == "ICON_SZ_4") {
-		_draw_icon(ICON_SZ_4);
-	}
-	else if (btn.text == "ICON_FILL_ALL") {
-		_draw_icon(ICON_FILL_ALL);
-	}
-	else if (btn.text == "ICON_FILL_DITHERED") {
-		_draw_icon(ICON_FILL_DITHERED);
-	}
-	else if (btn.text == "ICON_FREE_SELECT") {
-		_draw_icon(ICON_FREE_SELECT);
-	}
-	else if (btn.text == "ICON_MAGIC_WAND") {
-		_draw_icon(ICON_MAGIC_WAND);
-	}
-	else if (btn.text == "ICON_SELECT_ADD") {
-		_draw_icon(ICON_SELECT_ADD);
-	}
-	else if (btn.text == "ICON_SELECT_SUBTRACT") {
-		_draw_icon(ICON_SELECT_SUBTRACT);
-	}
-	else {
-		draw_text(
-			gs,
-			btn.text,
-			vec2_add(pos, vec2_new(4, 3)),
-			btn.sz.x - 8,
-			TEXT_SCALE,
-			color,
-			vec2_new(4, 3),
-			flip_color
-		);
-	}
+
+	draw_text(
+		gs,
+		btn.text,
+		vec2_add(pos, vec2_new(4, 3)),
+		btn.sz.x - 8,
+		TEXT_SCALE,
+		color,
+		vec2_new(4, 3),
+		flip_color
+	);
 }

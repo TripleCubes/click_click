@@ -220,8 +220,11 @@ int icon, Vec2 pos, int scale, Color color, bool flip_color) {
 	if (icon < 10) {
 		icon_pos = vec2_new(icon * 6, 48);
 	}
-	else {
+	else if (icon < 20) {
 		icon_pos = vec2_new((icon - 10) * 6, 54);
+	}
+	else {
+		icon_pos = vec2_new((icon - 20) * 6 + 24, 42);
 	}
 
 	draw_texture(

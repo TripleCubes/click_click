@@ -42,7 +42,7 @@ enum MappedKeyIndex: int {
 	MAP_COLOR_PAGE_3,
 	MAP_COLOR_PAGE_4,
 
-	MAP_SZ,
+	MAP_COUNT,
 };
 
 struct MappedKey {
@@ -52,7 +52,7 @@ struct MappedKey {
 };
 
 struct InputMap {
-	std::array<MappedKey, MAP_SZ> key_list;
+	std::array<MappedKey, MAP_COUNT> key_list;
 };
 
 void input_map_init(InputMap &input_map);

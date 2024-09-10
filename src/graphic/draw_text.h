@@ -18,6 +18,7 @@ const int ICON_SELECT          = 6;
 const int ICON_UP              = 7;
 const int ICON_DOWN            = 8;
 const int ICON_SZ_1            = 9;
+
 const int ICON_SZ_2            = 10;
 const int ICON_SZ_3            = 11;
 const int ICON_SZ_3_5          = 12;
@@ -28,6 +29,14 @@ const int ICON_FREE_SELECT     = 16;
 const int ICON_MAGIC_WAND      = 17;
 const int ICON_SELECT_ADD      = 18;
 const int ICON_SELECT_SUBTRACT = 19;
+
+const int ICON_ARROW_UP        = 20;
+const int ICON_ARROW_DOWN      = 21;
+const int ICON_ARROW_LEFT      = 22;
+const int ICON_ARROW_RIGHT     = 23;
+const int ICON_SZ_4_5          = 24;
+
+const int ICON_COUNT           = 25;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;

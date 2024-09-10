@@ -292,6 +292,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 
 	std::array<std::string, NUM_SZ_BTN> sz_icon_str_list = {
 		"ICON_SZ_1", "ICON_SZ_2", "ICON_SZ_3", "ICON_SZ_3_5", "ICON_SZ_4",
+		"ICON_SZ_4_5",
 	};
 	for (int i = 0; i < NUM_SZ_BTN; i++) {
 		tool_picker.sz_btn_list[i] = btn_new(

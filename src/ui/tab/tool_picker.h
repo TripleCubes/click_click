@@ -14,7 +14,7 @@ const Vec2 TOOL_PICKER_SZ = vec2_new(12*7 + 6, 22 + 13);
 
 const int NUM_BTN = 4;
 
-const int NUM_SZ_BTN = 5;
+const int NUM_SZ_BTN = 6;
 const int NUM_FILL_BTN = 2;
 const int NUM_SELECT_BTN = 3;
 const int NUM_SELECT_SECOND_BTN = 2;
