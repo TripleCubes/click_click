@@ -91,17 +91,14 @@ Vec2i data_sz, Vec2i pos, unsigned char pallete_index, int sz) {
 
 	else if (sz == 5) {
 		draw(pos.x, pos.y);
-		
+
 		draw(pos.x - 1, pos.y    );
 		draw(pos.x    , pos.y - 1);
 		draw(pos.x - 1, pos.y - 1);
 
-		draw(pos.x - 1, pos.y - 2);
-		draw(pos.x    , pos.y - 2);
-		draw(pos.x - 2, pos.y - 1);
-		draw(pos.x - 2, pos.y    );
 		draw(pos.x + 1, pos.y - 1);
 		draw(pos.x + 1, pos.y    );
+		draw(pos.x + 1, pos.y + 1);
 		draw(pos.x - 1, pos.y + 1);
 		draw(pos.x    , pos.y + 1);
 
