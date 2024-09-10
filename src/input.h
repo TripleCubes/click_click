@@ -76,13 +76,14 @@ const int KEY_EQUAL = 55;
 const int KEY_LEFT_SQUARE_BRACKET = 56;
 const int KEY_RIGHT_SQUARE_BRACKET = 57;
 const int KEY_SEMICOLON = 58;
-const int KEY_BACKSLASH = 59;
+const int KEY_BACK_SLASH = 59;
 const int KEY_TICK = 60;
 const int KEY_COMMA = 61;
 const int KEY_DOT = 62;
 const int KEY_FORWARD_SLASH = 63;
+const int KEY_BACK_TICK = 64;
 
-const int KEY_COUNT = 64;
+const int KEY_COUNT = 65;
 
 struct KeyState {
 	bool press = false;

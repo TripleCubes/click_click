@@ -79,6 +79,7 @@ const std::array<int, KEY_COUNT> KEY_GLFW_LIST = {
 	GLFW_KEY_COMMA,
 	GLFW_KEY_PERIOD,
 	GLFW_KEY_SLASH,
+	GLFW_KEY_GRAVE_ACCENT,
 };
 #else
 const std::array<int, KEY_COUNT> KEY_GLFW_LIST = {
@@ -151,6 +152,7 @@ const std::array<int, KEY_COUNT> KEY_GLFW_LIST = {
 	',',
 	'.',
 	'/',
+	'`',
 };
 #endif
 
@@ -217,7 +219,7 @@ char key_get_char_no_shift(int key) {
 		case KEY_SEMICOLON:
 			return ';';
 			break;
-		case KEY_BACKSLASH:
+		case KEY_BACK_SLASH:
 			return '\\';
 			break;
 		case KEY_TICK:
@@ -231,6 +233,9 @@ char key_get_char_no_shift(int key) {
 			break;
 		case KEY_FORWARD_SLASH:
 			return '/';
+			break;
+		case KEY_BACK_TICK:
+			return '`';
 			break;
 		default:
 			return ' ';
@@ -292,7 +297,7 @@ char key_get_char_shift(int key) {
 		case KEY_SEMICOLON:
 			return ':';
 			break;
-		case KEY_BACKSLASH:
+		case KEY_BACK_SLASH:
 			return '|';
 			break;
 		case KEY_TICK:
@@ -306,6 +311,9 @@ char key_get_char_shift(int key) {
 			break;
 		case KEY_FORWARD_SLASH:
 			return '?';
+			break;
+		case KEY_BACK_TICK:
+			return '~';
 			break;
 		default:
 			return ' ';

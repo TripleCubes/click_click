@@ -247,6 +247,10 @@ const GameTime &game_time, Vec2 parent_pos) {
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
+			if (!b_cursor_on_ui
+			&& tab.tool_picker.select_selected_index == 2) {
+				gs.cursor_icon = CURSOR_MAGIC_WAND;
+			}
 			px_tool_preview_update(tab, 0, gs, input, false, parent_pos);
 			select_tool_update(tab, get_layer_index(tab), gs, input,
 				game_time, tab.tool_picker.select_second_selected_index == 1,

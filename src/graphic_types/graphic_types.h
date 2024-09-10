@@ -7,6 +7,7 @@
 const int CURSOR_POINTER = 0;
 const int CURSOR_TEXT = 1;
 const int CURSOR_FILL = 2;
+const int CURSOR_MAGIC_WAND = 3;
 
 struct Mesh {
 	bool running = true;
