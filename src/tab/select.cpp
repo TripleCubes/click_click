@@ -4,6 +4,7 @@
 #include "../graphic_types/texture.h"
 #include "../input.h"
 #include "../game_time.h"
+#include "../basic_math.h"
 #include "tab.h"
 #include "../pos_convert.h"
 #include "../draw_tool/draw_tool_px.h"
@@ -21,7 +22,8 @@ struct QueuePos {
 	unsigned char n = 0;
 };
 
-std::vector<QueuePos> queue;
+std::vector<QueuePos> border_queue;
+std::vector<Vec2i> magic_wand_queue;
 
 void point(Selection &selection, Vec2i sz, Vec2 pos, bool subtract) {
 	if (pos.x < 0) { pos.x = 0; }
@@ -147,6 +149,63 @@ void update_map_free(Selection &selection, Vec2i sz, bool subtract) {
 	}
 }
 
+const std::array<Vec2i, 4> DIRS4 = {
+	vec2i_new( 0, -1),
+	vec2i_new( 0,  1),
+	vec2i_new( 1,  0),
+	vec2i_new(-1,  0),
+};
+
+unsigned char get_data_px(const std::vector<unsigned char> &data,
+Vec2i data_sz, Vec2i pos) {
+	int data_index = data_sz.y * pos.y + pos.x;
+	return data[data_index];
+}
+
+void magic_wand_fill(Selection &selection, Vec2i sz,
+const std::vector<unsigned char> &data, Vec2i pos, unsigned char replace_index,
+bool subtract) {
+	magic_wand_queue.clear();
+	int i = 0;
+	magic_wand_queue.push_back(pos);
+
+	while (i < (int)magic_wand_queue.size()) {
+		Vec2i current_pos = magic_wand_queue[i];
+		
+		for (int j = 0; j < (int)DIRS4.size(); j++) {
+			Vec2i next_pos = vec2i_add(current_pos, DIRS4[j]);
+			
+			if (next_pos.x < 0 || next_pos.y < 0
+			|| next_pos.x >= sz.x || next_pos.y >= sz.y) {
+				selection.border_hint_list.push_back(next_pos);
+				continue;
+			}
+			
+			if (get_data_px(data, sz, next_pos) != replace_index) {
+				selection.border_hint_list.push_back(next_pos);
+				continue;
+			}
+
+			unsigned char set_to = subtract? 0 : 1;
+			if (get_px(selection.map, sz, next_pos) == set_to) {
+				selection.border_hint_list.push_back(next_pos);
+				continue;
+			}
+
+			px(selection.map, sz, next_pos, set_to);
+			magic_wand_queue.push_back(next_pos);
+		}
+
+		i++;
+	}
+}
+
+void update_map_magic_wand(Selection &selection, Vec2i sz,
+const std::vector<unsigned char> &data, Vec2i pos, bool subtract) {
+	unsigned char replace_index = get_px(data, sz, pos);
+	magic_wand_fill(selection, sz, data, pos, replace_index, subtract);
+}
+
 const std::array<Vec2i, 8> DIRS8 = {
 	vec2i_new( 0, -1),
 	vec2i_new( 1, -1),
@@ -199,14 +258,14 @@ bool is_border(Selection &selection, Vec2i sz, Vec2i pos) {
 }
 
 void border_fill(Selection &selection, Vec2i sz, Vec2i pos) {
-	queue.clear();
+	border_queue.clear();
 
 	QueuePos queue_pos;
 	queue_pos.pos = pos;
-	queue.push_back(queue_pos);
+	border_queue.push_back(queue_pos);
 
-	while (queue.size() > 0) {
-		QueuePos current = queue[queue.size() - 1];
+	while (border_queue.size() > 0) {
+		QueuePos current = border_queue[border_queue.size() - 1];
 		bool skip = false;
 
 		for (int i = current.n; i < (int)DIRS8.size(); i++) {
@@ -235,7 +294,7 @@ void border_fill(Selection &selection, Vec2i sz, Vec2i pos) {
 			
 			QueuePos queue_pos;
 			queue_pos.pos = next_pos;
-			queue.push_back(queue_pos);
+			border_queue.push_back(queue_pos);
 			
 			skip = true;
 		}
@@ -244,7 +303,7 @@ void border_fill(Selection &selection, Vec2i sz, Vec2i pos) {
 			continue;
 		}
 
-		queue.pop_back();
+		border_queue.pop_back();
 	}
 }
 
@@ -272,60 +331,6 @@ void set_full_preview_list(Selection &selection, Vec2i sz) {
 		}
 
 		border_fill(selection, sz, pos);
-	}
-}
-
-void select_tool_free_update(Tab &tab, int layer_index, GraphicStuff &gs,
-const Input &input, const GameTime &game_time, bool subtract,
-Vec2 parent_pos) {
-	Vec2 pos = vec2_add(parent_pos, tab.pos);
-	
-	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
-	Vec2 tex_draw_mouse_pos
-		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
-
-	if (input.left_click) {
-		Vec2 pos = tex_draw_mouse_pos;
-		if (pos.x < 0) { pos.x = 0; }
-		if (pos.y < 0) { pos.y = 0; }
-		if (pos.x >= tab.sz.x) { pos.x = tab.sz.x - 1; }
-		if (pos.y >= tab.sz.y) { pos.y = tab.sz.y - 1; }
-		tab.selection.draw_preview_list.push_back(pos);
-	}
-
-	if (input.left_down && input.mouse_move) {
-		int list_sz = (int)tab.selection.draw_preview_list.size();
-		Vec2 prev_pos = tab.selection.draw_preview_list[list_sz - 1];
-		line(tab.selection, tab.sz, prev_pos, tex_draw_mouse_pos,
-			subtract);
-	}
-
-	if (input.left_release) {
-		Vec2 first_pos = tab.selection.draw_preview_list[0];
-		int list_sz = (int)tab.selection.draw_preview_list.size();
-		Vec2 prev_pos = tab.selection.draw_preview_list[list_sz - 1];
-		line(tab.selection, tab.sz, prev_pos, first_pos,
-			subtract);
-
-		auto sort = [](Vec2i a, Vec2i b) {
-			if (a.y == b.y) {
-				return a.x < b.x;
-			}
-
-			return a.y < b.y;
-		};
-
-		std::sort(
-			tab.selection.scan_list.begin(),
-			tab.selection.scan_list.end(),
-			sort
-		);
-
-		update_map_free(tab.selection, tab.sz, subtract);
-		set_full_preview_list(tab.selection, tab.sz);
-
-		tab.selection.draw_preview_list.clear();
-		tab.selection.scan_list.clear();
 	}
 }
 
@@ -383,6 +388,82 @@ Vec2 parent_pos) {
 
 		tab.selection.rect_point_1 = vec2i_new(-1, -1);
 		tab.selection.rect_point_2 = vec2i_new(-1, -1);
+	}
+}
+
+void select_tool_free_update(Tab &tab, int layer_index, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, bool subtract,
+Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+
+	if (input.left_click) {
+		Vec2 pos = tex_draw_mouse_pos;
+		if (pos.x < 0) { pos.x = 0; }
+		if (pos.y < 0) { pos.y = 0; }
+		if (pos.x >= tab.sz.x) { pos.x = tab.sz.x - 1; }
+		if (pos.y >= tab.sz.y) { pos.y = tab.sz.y - 1; }
+		tab.selection.draw_preview_list.push_back(pos);
+	}
+
+	if (input.left_down && input.mouse_move) {
+		int list_sz = (int)tab.selection.draw_preview_list.size();
+		Vec2 prev_pos = tab.selection.draw_preview_list[list_sz - 1];
+		line(tab.selection, tab.sz, prev_pos, tex_draw_mouse_pos,
+			subtract);
+	}
+
+	if (input.left_release) {
+		Vec2 first_pos = tab.selection.draw_preview_list[0];
+		int list_sz = (int)tab.selection.draw_preview_list.size();
+		Vec2 prev_pos = tab.selection.draw_preview_list[list_sz - 1];
+		line(tab.selection, tab.sz, prev_pos, first_pos,
+			subtract);
+
+		auto sort = [](Vec2i a, Vec2i b) {
+			if (a.y == b.y) {
+				return a.x < b.x;
+			}
+
+			return a.y < b.y;
+		};
+
+		std::sort(
+			tab.selection.scan_list.begin(),
+			tab.selection.scan_list.end(),
+			sort
+		);
+
+		update_map_free(tab.selection, tab.sz, subtract);
+		set_full_preview_list(tab.selection, tab.sz);
+
+		tab.selection.draw_preview_list.clear();
+		tab.selection.scan_list.clear();
+	}
+}
+
+void select_tool_magic_wand_update(Tab &tab, int layer_index, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, bool subtract,
+Vec2 parent_pos) {
+	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	
+	Layer &layer = tab.layer_list[layer_index];
+
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+
+	if (!in_rect(tex_draw_mouse_pos, vec2_new(0, 0), to_vec2(tab.sz))) {
+		return;
+	}
+
+	if (input.left_click) {
+		update_map_magic_wand(tab.selection, tab.sz,
+			layer.data, to_vec2i(tex_draw_mouse_pos), subtract);
+		set_full_preview_list(tab.selection, tab.sz);
 	}
 }
 
@@ -515,8 +596,13 @@ int select_type, Vec2 parent_pos){
 			subtract, parent_pos);
 	}
 
-	if (select_type == SELECT_FREE) {
+	else if (select_type == SELECT_FREE) {
 		select_tool_free_update(tab, layer_index, gs, input, game_time,
+			subtract, parent_pos);
+	}
+
+	else if (select_type == SELECT_MAGIC_WAND) {
+		select_tool_magic_wand_update(tab, layer_index, gs, input, game_time,
 			subtract, parent_pos);
 	}
 

@@ -106,7 +106,7 @@ int main() {
 		return 0;
 	}
 
-	tab_new(tab_list, graphic_stuff, vec2_new(10, 200), vec2i_new(512, 512), 2);
+	tab_new(tab_list, graphic_stuff, vec2_new(10, 200), vec2i_new(64, 64), 2);
 
 	emscripten_set_main_loop(main_loop, 0, true);
 
