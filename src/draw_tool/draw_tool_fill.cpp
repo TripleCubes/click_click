@@ -34,8 +34,8 @@ unsigned char replace_index, unsigned char pallete_index) {
 	while (i < (int)queue.size()) {
 		Vec2i current_pos = queue[i];
 
-		for (int i = 0; i < (int)dirs.size(); i++) {
-			Vec2i next_pos = vec2i_add(current_pos, dirs[i]);
+		for (int j = 0; j < (int)dirs.size(); j++) {
+			Vec2i next_pos = vec2i_add(current_pos, dirs[j]);
 
 			if (next_pos.x < 0 || next_pos.y < 0
 			|| next_pos.x >= data_sz.x || next_pos.y >= data_sz.y) {

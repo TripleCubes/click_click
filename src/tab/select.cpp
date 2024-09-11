@@ -16,6 +16,13 @@
 
 namespace {
 
+struct QueuePos {
+	Vec2i pos;
+	unsigned char n = 0;
+};
+
+std::vector<QueuePos> queue;
+
 void point(Selection &selection, Vec2i sz, Vec2 pos, bool subtract) {
 	if (pos.x < 0) { pos.x = 0; }
 	if (pos.y < 0) { pos.y = 0; }
@@ -192,17 +199,20 @@ bool is_border(Selection &selection, Vec2i sz, Vec2i pos) {
 }
 
 void border_fill(Selection &selection, Vec2i sz, Vec2i pos) {
-	Vec2i current_pos = pos;
+	queue.clear();
 
-	while (true) {
-		selection.full_preview_list.push_back(current_pos);
-		px(selection.fill_checked_map, sz, current_pos, 1);
+	QueuePos queue_pos;
+	queue_pos.pos = pos;
+	queue.push_back(queue_pos);
 
-		bool found = false;
+	while (queue.size() > 0) {
+		QueuePos current = queue[queue.size() - 1];
+		bool skip = false;
 
-		for (int j = 0; j < (int)DIRS8.size(); j++) {
-			Vec2i next_pos = vec2i_add(current_pos, DIRS8[j]);
-		
+		for (int i = current.n; i < (int)DIRS8.size(); i++) {
+			Vec2i next_pos = vec2i_add(current.pos, DIRS8[i]);
+			current.n++;
+
 			if (next_pos.x < 0 || next_pos.y < 0
 			|| next_pos.x >= sz.x || next_pos.y >= sz.y) {
 				continue;
@@ -220,14 +230,21 @@ void border_fill(Selection &selection, Vec2i sz, Vec2i pos) {
 				continue;
 			}
 
-			current_pos = next_pos;
-			found = true;
-			break;
+			selection.full_preview_list.push_back(next_pos);
+			px(selection.fill_checked_map, sz, next_pos, 1);
+			
+			QueuePos queue_pos;
+			queue_pos.pos = next_pos;
+			queue.push_back(queue_pos);
+			
+			skip = true;
 		}
 
-		if (!found) {
-			break;
+		if (skip) {
+			continue;
 		}
+
+		queue.pop_back();
 	}
 }
 
