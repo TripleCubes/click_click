@@ -208,12 +208,12 @@ const std::vector<unsigned char> &data, Vec2i pos, bool subtract) {
 
 const std::array<Vec2i, 8> DIRS8 = {
 	vec2i_new( 0, -1),
-	vec2i_new( 1, -1),
-	vec2i_new( 1,  0),
-	vec2i_new( 1,  1),
 	vec2i_new( 0,  1),
-	vec2i_new(-1,  1),
 	vec2i_new(-1,  0),
+	vec2i_new( 1,  0),
+	vec2i_new( 1, -1),
+	vec2i_new( 1,  1),
+	vec2i_new(-1,  1),
 	vec2i_new(-1, -1),
 };
 
@@ -578,6 +578,27 @@ const GameTime &game_time, unsigned char pallete_index) {
 void selection_init(Selection &selection, Vec2i canvas_sz) {
 	selection.map.resize(canvas_sz.x * canvas_sz.y, 0);
 	selection.fill_checked_map.resize(canvas_sz.x * canvas_sz.y, 0);
+}
+
+void selection_all(Selection &selection, Vec2i sz) {
+	std::fill(
+		selection.map.begin(),
+		selection.map.end(),
+		1
+	);
+	selection.border_hint_list.clear();
+	selection.border_hint_list.push_back(vec2i_new(0, 0));
+	set_full_preview_list(selection, sz);
+}
+
+void selection_clear(Selection &selection, Vec2i sz) {
+	std::fill(
+		selection.map.begin(),
+		selection.map.end(),
+		0
+	);
+	selection.border_hint_list.clear();
+	set_full_preview_list(selection, sz);
 }
 
 void select_tool_preview_update(Tab &tab, GraphicStuff &gs,

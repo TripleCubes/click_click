@@ -258,6 +258,14 @@ const GameTime &game_time, Vec2 parent_pos) {
 		}
 	}
 
+	if (map_press(input, MAP_SELECT_ALL)) {
+		selection_all(tab.selection, tab.sz);
+	}
+
+	if (map_press(input, MAP_DESELECT_ALL) || map_press(input, MAP_ESC)) {
+		selection_clear(tab.selection, tab.sz);
+	}
+
 	if (input.left_release) {
 		tab.clicked_and_hold_on_ui = false;
 	}

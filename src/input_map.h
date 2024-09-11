@@ -16,6 +16,7 @@ const int MODIFIER_RIGHT_ALT = 7;
 const int MODIFIER_BOTH_ALT = 8;
 
 enum MappedKeyIndex: int {
+	MAP_ESC,
 	MAP_PAN,
 	
 	MAP_ZOOM_IN,
@@ -41,6 +42,9 @@ enum MappedKeyIndex: int {
 	MAP_COLOR_PAGE_2,
 	MAP_COLOR_PAGE_3,
 	MAP_COLOR_PAGE_4,
+
+	MAP_SELECT_ALL,
+	MAP_DESELECT_ALL,
 
 	MAP_COUNT,
 };

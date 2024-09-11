@@ -108,6 +108,7 @@ void input_map_init(InputMap &input_map) {
 		input_map.key_list[index].sec_modifier = sec_modifier;
 	};
 
+	set(MAP_ESC             , KEY_ESC                       );
 	set(MAP_PAN             , KEY_SPACE                     );
 	
 	set(MAP_ZOOM_IN         , KEY_EQUAL, MODIFIER_BOTH_CTRL );
@@ -133,6 +134,10 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_COLOR_PAGE_2    , KEY_2    , MODIFIER_BOTH_SHIFT);
 	set(MAP_COLOR_PAGE_3    , KEY_3    , MODIFIER_BOTH_SHIFT);
 	set(MAP_COLOR_PAGE_4    , KEY_4    , MODIFIER_BOTH_SHIFT);
+
+	set(MAP_SELECT_ALL      , KEY_A    , MODIFIER_BOTH_CTRL);
+	set(MAP_DESELECT_ALL    , KEY_A    , MODIFIER_BOTH_SHIFT,
+	                                     MODIFIER_BOTH_CTRL);
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {

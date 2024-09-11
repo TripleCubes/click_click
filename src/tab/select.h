@@ -30,6 +30,9 @@ struct Selection {
 
 void selection_init(Selection &selection, Vec2i canvas_sz);
 
+void selection_all(Selection &selection, Vec2i sz);
+void selection_clear(Selection &selection, Vec2i sz);
+
 void select_tool_preview_update(Tab &tab, GraphicStuff &gs,
 	const GameTime &game_time);
 
