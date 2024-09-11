@@ -113,8 +113,9 @@ struct Input {
 	InputMap input_map;
 };
 
-#ifndef __EMSCRIPTEN__
 void input_init(Input &input);
+
+#ifndef __EMSCRIPTEN__
 void input_update(Input &input, GLFWwindow *glfw_window);
 #else
 void input_update(Input &input);
