@@ -6,14 +6,14 @@
 struct GraphicStuff;
 struct GameTime;
 struct Input;
-struct Tab;
+struct TabBar;
 
 void update(GraphicStuff &gs,
-	std::vector<Tab> &tab_list,
+	TabBar &tab_bar,
 	const GameTime &game_time,
 	const Input &input);
 void draw(GraphicStuff &gs,
-	const std::vector<Tab> &tab_list,
+	const TabBar &tab_bar,
 	const GameTime &game_time,
 	const Input &input);
 

@@ -129,8 +129,18 @@ const Input &input, Vec2 parent_pos) {
 
 	bool on_ui = false;
 	
-	on_ui = in_rect(mouse_pos,
-		vec2_new(0, 0), vec2_new(SIDE_BAR_W, main_fb_sz.y));
+	on_ui = in_rect(
+		mouse_pos,
+		vec2_new(0, 0),
+		vec2_new(SIDE_BAR_W, main_fb_sz.y)
+	);
+	if (on_ui) { return true; }
+
+	on_ui = in_rect(
+		mouse_pos,
+		vec2_new(SIDE_BAR_W + 4, 4),
+		vec2_new(main_fb_sz.x - SIDE_BAR_W - 4 * 2, TOP_BAR_H - 4)
+	);
 	if (on_ui) { return true; }
 
 	on_ui = check(
@@ -503,16 +513,33 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	}
 	Tab &tab = tab_list[index];
 
+	tab.btn = btn_new(
+		vec2_new(0, 0), vec2_new(4 * 5 + 1, 12), BTN_TEXTAREA_COLOR, "tab"
+	);
+	tab.close_btn = btn_new(
+		vec2_new(4 * 5 + 1, 0), vec2_new(12, 12),
+		BTN_TEXTAREA_COLOR, "ICON_X"
+	);
+
 	tab.pos = pos;
 	tab.sz = sz;
 	tab.px_scale = px_scale;
 
-	tab.color_picker = color_picker_new(vec2_new(SIDE_BAR_W + 9, -93));
-	tab.color_pallete = color_pallete_new(vec2_new(SIDE_BAR_W + 32, 8));
-	tab.layer_bar = layer_bar_new(vec2_new(4, -100 - 3),
-	                              vec2_new(100, 100));
-	tab.tool_picker = tool_picker_new(vec2_new(SIDE_BAR_W + 63, 8));
-	tab.btn_panel = btn_panel_new(vec2_new(SIDE_BAR_W + 161, 6));
+	tab.color_picker = color_picker_new(
+		vec2_new(SIDE_BAR_W + 4 + 4, -88 - 4)
+	);
+	tab.color_pallete = color_pallete_new(
+		vec2_new(SIDE_BAR_W + 27 + 4, TOP_BAR_H + 3 + 4)
+	);
+	tab.layer_bar = layer_bar_new(
+		vec2_new(4, -100 - 3), vec2_new(100, 100)
+	);
+	tab.tool_picker = tool_picker_new(
+		vec2_new(SIDE_BAR_W + 57 + 4, TOP_BAR_H + 3 + 4)
+	);
+	tab.btn_panel = btn_panel_new(
+		vec2_new(SIDE_BAR_W + 154 + 4, TOP_BAR_H + 1 + 4)
+	);
 
 	tab.pallete_data.resize(16 * 16, 1);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));

@@ -9,6 +9,7 @@
 #include "../ui/tab/layer_bar.h"
 #include "../ui/tab/tool_picker.h"
 #include "../ui/tab/btn_panel.h"
+#include "../ui/btn.h"
 #include "layer.h"
 #include "select.h"
 
@@ -18,6 +19,9 @@ struct Input;
 struct GameTime;
 
 struct Tab {
+	Btn btn;
+	Btn close_btn;
+
 	bool running = true;
 	Vec2 pos;
 	Vec2i sz;

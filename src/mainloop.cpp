@@ -11,6 +11,7 @@
 #include "game_time.h"
 #include "input.h"
 #include "tab/tab.h"
+#include "ui/tab_bar.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -67,6 +68,7 @@ void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
 
 void draw_ui(
 GraphicStuff &gs,
+const TabBar &tab_bar,
 const Tab &tab,
 const Input &input,
 const GameTime &game_time
@@ -76,12 +78,13 @@ const GameTime &game_time
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
+	tab_bar_draw(tab_bar, gs);
 	tab_ui_draw(tab, gs, input, game_time, TAB_OFFSET);
 
 	draw_text(
 		gs,
 		std::to_string((int)(1/game_time.delta)),
-		vec2_new(main_fb_sz.x - 30, 10),
+		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 8),
 		20,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -92,7 +95,7 @@ const GameTime &game_time
 	draw_text(
 		gs,
 		std::to_string((int)(1/game_time.frame_time)),
-		vec2_new(main_fb_sz.x - 30, 22),
+		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 20),
 		20,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -153,6 +156,10 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 	bind_framebuffer(gs, FB_MAIN);
 
 	draw(vec2_new(0, 0), vec2_new(SIDE_BAR_W, main_fb_sz.y));
+	draw(
+		vec2_new(SIDE_BAR_W + 4, 4),
+		vec2_new(main_fb_sz.x - SIDE_BAR_W - 4 * 2, TOP_BAR_H - 4)
+	);
 	tab_blur_rects_draw(tab, gs, TAB_OFFSET);
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -232,14 +239,17 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 }
 
 void update(GraphicStuff &gs,
-std::vector<Tab> &tab_list,
+TabBar &tab_bar,
 const GameTime &game_time,
 const Input &input) {
-	tab_update(tab_list[0], gs, input, game_time, TAB_OFFSET, true);
+	tab_bar_update(tab_bar, gs, input, true);
+
+	Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
+	tab_update(tab, gs, input, game_time, TAB_OFFSET, true);
 }
 
 void draw(GraphicStuff &gs,
-const std::vector<Tab> &tab_list,
+const TabBar &tab_bar,
 const GameTime &game_time,
 const Input &input) {
 	bool mouse_in_window = in_rect(
@@ -248,14 +258,16 @@ const Input &input) {
 	if ((input.mouse_event && mouse_in_window) || input.left_down
 	|| input.left_release || input.key_event || game_time.frame_passed == 0
 	|| gs.just_resized || gs.redraw_requested) {
-		draw_canvas_bkg(gs, tab_list[0]);
-		draw_canvas(gs, tab_list[0], input);
+		const Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
+
+		draw_canvas_bkg(gs, tab);
+		draw_canvas(gs, tab, input);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 			BLUR_COLOR, true);
-		draw_blurred_rects(gs, tab_list[0]);
-		draw_ui(gs, tab_list[0], input, game_time);
+		draw_blurred_rects(gs, tab);
+		draw_ui(gs, tab_bar, tab, input, game_time);
 		draw_cursor(gs, input);
 	}
 

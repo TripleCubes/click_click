@@ -9,14 +9,15 @@
 #include "graphic/graphic.h"
 #include "game_time.h"
 #include "input.h"
-#include "tab/tab.h"
+#include "consts.h"
+#include "ui/tab_bar.h"
 #include "mainloop.h"
 
 #include "types/vec2i.h"
 
 namespace {
-const int INIT_W = 1000;
-const int INIT_H = 600;
+const int INIT_W = 1060;
+const int INIT_H = 640;
 
 int window_w = INIT_W;
 int window_h = INIT_H;
@@ -90,8 +91,9 @@ int main () {
 		return 0;
 	}
 
-	std::vector<Tab> tab_list;
-	tab_new(tab_list, graphic_stuff, vec2_new(200, 100), vec2i_new(128, 128),2);
+	TabBar tab_bar;
+	tab_bar_init(tab_bar, graphic_stuff,
+		vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
 
 	const float REDRAW_REQUEST_WAIT = 0.5;
 	int redraw_request_count = 0;
@@ -111,7 +113,7 @@ int main () {
 
 		input_update(input, glfw_window);
 
-		update(graphic_stuff, tab_list, game_time, input);
+		update(graphic_stuff, tab_bar, game_time, input);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
 		                                        < game_time.time_since_start) {
@@ -119,7 +121,7 @@ int main () {
 			graphic_stuff.redraw_requested = true;
 		}
 
-		draw(graphic_stuff, tab_list, game_time, input);
+		draw(graphic_stuff, tab_bar, game_time, input);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
 		game_time.frame_passed++;
@@ -127,6 +129,7 @@ int main () {
 		glfwSwapBuffers(glfw_window);
 	}
 
+	tab_bar_release(tab_bar, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;
