@@ -11,13 +11,15 @@
 #include "input.h"
 #include "consts.h"
 #include "ui/tab_bar.h"
+#include "ui/file_picker/file_picker.h"
 #include "mainloop.h"
 
 #include "types/vec2i.h"
+#include "types/vec2.h"
 
 namespace {
-const int INIT_W = 1060;
-const int INIT_H = 640;
+const int INIT_W = 1000;
+const int INIT_H = 600;
 
 int window_w = INIT_W;
 int window_h = INIT_H;
@@ -92,8 +94,10 @@ int main () {
 	}
 
 	TabBar tab_bar;
-	tab_bar_init(tab_bar, graphic_stuff,
-		vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
+	tab_bar_init(tab_bar, graphic_stuff, vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
+
+	FilePicker file_picker;
+	file_picker_init(file_picker);
 
 	const float REDRAW_REQUEST_WAIT = 0.5;
 	int redraw_request_count = 0;
@@ -105,6 +109,7 @@ int main () {
 
 		graphic_stuff.just_resized = false;
 		graphic_stuff.redraw_requested = false;
+		graphic_stuff.draw_secondlayer_ui = false;
 		graphic_stuff.cursor_icon = CURSOR_POINTER;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 		
@@ -113,7 +118,7 @@ int main () {
 
 		input_update(input, glfw_window);
 
-		update(graphic_stuff, tab_bar, game_time, input);
+		update(graphic_stuff, tab_bar, file_picker, game_time, input);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
 		                                        < game_time.time_since_start) {
@@ -121,7 +126,7 @@ int main () {
 			graphic_stuff.redraw_requested = true;
 		}
 
-		draw(graphic_stuff, tab_bar, game_time, input);
+		draw(graphic_stuff, tab_bar, file_picker, game_time, input);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
 		game_time.frame_passed++;

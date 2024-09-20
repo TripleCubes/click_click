@@ -11,19 +11,22 @@
 #include "game_time.h"
 #include "input.h"
 #include "tab/tab.h"
+#include "ui/tab_bar.h"
+#include "ui/file_picker/file_picker.h"
 #include "graphic/graphic.h"
 #include "mainloop.h"
+#include "consts.h"
 
-//TEST
-#include "types/vec2.h"
 #include "types/vec2i.h"
+#include "types/vec2.h"
 
 namespace {
 
 GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
-std::vector<Tab> tab_list;
+TabBar tab_bar;
+FilePicker file_picker;
 float game_start_time = 0;
 float frame_start_time = 0;
 
@@ -58,13 +61,14 @@ void main_loop() {
 	emscripten_get_element_css_size("#canvas", &window_w, &window_h);
 	graphic_stuff.just_resized = false;
 	graphic_stuff.redraw_requested = false;
+	graphic_stuff.draw_secondlayer_ui = false;
 	graphic_stuff.cursor_icon = CURSOR_POINTER;
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	
 	glfwPollEvents();
 
 	input_update(input);
-	update(graphic_stuff, tab_list, game_time, input);
+	update(graphic_stuff, tab_bar, file_picker, game_time, input);
 
 	if (redraw_request_count * REDRAW_REQUEST_WAIT
 											< game_time.time_since_start) {
@@ -72,7 +76,7 @@ void main_loop() {
 		graphic_stuff.redraw_requested = true;
 	}
 
-	draw(graphic_stuff, tab_list, game_time, input);
+	draw(graphic_stuff, tab_bar, file_picker, game_time, input);
 	
 	game_time.frame_time = glfwGetTime() - frame_start_time;
 	game_time.frame_passed++;
@@ -106,10 +110,12 @@ int main() {
 		return 0;
 	}
 
-	tab_new(tab_list, graphic_stuff, vec2_new(10, 200), vec2i_new(64, 64), 2);
+	tab_bar_init(tab_bar, graphic_stuff, vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
+	file_picker_init(file_picker);
 
 	emscripten_set_main_loop(main_loop, 0, true);
 
+	tab_bar_release(tab_bar, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;

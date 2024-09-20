@@ -12,6 +12,7 @@
 #include "input.h"
 #include "tab/tab.h"
 #include "ui/tab_bar.h"
+#include "ui/file_picker/file_picker.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -38,6 +39,7 @@ namespace {
 
 const Color BLUR_COLOR = color_new(1, 1, 1, 1);
 const Vec2 TAB_OFFSET = vec2_new(0, 0);
+const Vec2 FILE_PICKER_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -58,50 +60,6 @@ void draw_canvas(GraphicStuff &gs, const Tab &tab, const Input &input) {
 	bind_framebuffer(gs, FB_MAIN);
 
 	tab_canvas_draw(tab, gs, input, TAB_OFFSET);
-
-	use_shader(gs, SHADER_BASIC_DRAW);
-	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
-		texture_get_id(gs, TEXTURE_FONT));
-	mesh_set(gs, MESH_BASIC_DRAW);
-	mesh_draw(gs, MESH_BASIC_DRAW);
-}
-
-void draw_ui(
-GraphicStuff &gs,
-const TabBar &tab_bar,
-const Tab &tab,
-const Input &input,
-const GameTime &game_time
-) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-
-	mesh_clear(gs, MESH_BASIC_DRAW);
-	bind_framebuffer(gs, FB_MAIN);
-
-	tab_bar_draw(tab_bar, gs);
-	tab_ui_draw(tab, gs, input, game_time, TAB_OFFSET);
-
-	draw_text(
-		gs,
-		std::to_string((int)(1/game_time.delta)),
-		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 8),
-		20,
-		1,
-		BTN_TEXTAREA_COLOR,
-		vec2_new(4, 3),
-		true
-	);
-
-	draw_text(
-		gs,
-		std::to_string((int)(1/game_time.frame_time)),
-		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 20),
-		20,
-		1,
-		BTN_TEXTAREA_COLOR,
-		vec2_new(4, 3),
-		true
-	);
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
@@ -165,6 +123,100 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
 		fb_get_texture_id(gs, FB_BLUR_1));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_blurred_rects_1(GraphicStuff &gs, const Tab &tab) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
+//	auto draw = [&gs, main_fb_sz](Vec2 pos, Vec2 sz) -> void {
+//		draw_texture(
+//			gs,
+//			main_fb_sz,
+//			pos,
+//			sz,
+//			pos,
+//			sz,
+//			color_new(0, 0, 0, 0),
+//			false
+//		);
+//	};
+
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+	
+	file_picker_bkg_draw(gs, FILE_PICKER_OFFSET);
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		fb_get_texture_id(gs, FB_BLUR_1));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_ui(
+GraphicStuff &gs,
+const TabBar &tab_bar,
+const Tab &tab,
+const Input &input,
+const GameTime &game_time
+) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+
+	tab_bar_draw(tab_bar, gs);
+	tab_ui_draw(tab, gs, input, game_time, TAB_OFFSET);
+
+	draw_text(
+		gs,
+		std::to_string((int)(1/game_time.delta)),
+		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 8),
+		20,
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(4, 3),
+		true
+	);
+
+	draw_text(
+		gs,
+		std::to_string((int)(1/game_time.frame_time)),
+		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 20),
+		20,
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(4, 3),
+		true
+	);
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_FONT));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_ui_1(
+GraphicStuff &gs,
+const TabBar &tab_bar,
+const FilePicker &file_picker,
+const Tab &tab,
+const Input &input,
+const GameTime &game_time
+) {
+//	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+
+	file_picker_ui_draw(file_picker, gs, input, game_time, FILE_PICKER_OFFSET);
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_FONT));
 	mesh_set(gs, MESH_BASIC_DRAW);
 	mesh_draw(gs, MESH_BASIC_DRAW);
 }
@@ -240,16 +292,21 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 
 void update(GraphicStuff &gs,
 TabBar &tab_bar,
+FilePicker &file_picker,
 const GameTime &game_time,
 const Input &input) {
 	tab_bar_update(tab_bar, gs, input, true);
 
 	Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
 	tab_update(tab, gs, input, game_time, TAB_OFFSET, true);
+
+	file_picker_update(file_picker, gs, input, game_time,
+		FILE_PICKER_OFFSET, true);
 }
 
 void draw(GraphicStuff &gs,
 const TabBar &tab_bar,
+const FilePicker &file_picker,
 const GameTime &game_time,
 const Input &input) {
 	bool mouse_in_window = in_rect(
@@ -262,12 +319,25 @@ const Input &input) {
 
 		draw_canvas_bkg(gs, tab);
 		draw_canvas(gs, tab, input);
+
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 			BLUR_COLOR, false);
 		draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 			BLUR_COLOR, true);
+	
 		draw_blurred_rects(gs, tab);
 		draw_ui(gs, tab_bar, tab, input, game_time);
+
+		if (gs.draw_secondlayer_ui) {
+			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
+				BLUR_COLOR, false);
+			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
+				BLUR_COLOR, true);
+		
+			draw_blurred_rects_1(gs, tab);
+			draw_ui_1(gs, tab_bar, file_picker, tab, input, game_time);
+		}
+
 		draw_cursor(gs, input);
 	}
 

@@ -26,9 +26,13 @@ void window_resize_handle(TabBar &tab_bar, const GraphicStuff &gs) {
 	reset_btn_pos(tab_bar, gs);
 }
 
-void _tab_new(TabBar &tab_bar, GraphicStuff &gs, Vec2 pos, Vec2i sz,int scale){
+void _tab_new(TabBar &tab_bar, GraphicStuff &gs, int at,
+Vec2 pos, Vec2i sz, int scale){
 	int index = tab_new(tab_bar.tab_list, gs, pos, sz, scale);
-	tab_bar.tab_order_list.push_back(index);
+	tab_bar.tab_order_list.insert(
+		tab_bar.tab_order_list.begin() + at,
+		index
+	);
 }
 
 }
@@ -38,7 +42,7 @@ void tab_bar_init(TabBar &tab_bar, GraphicStuff &gs, Vec2 pos) {
 
 	reset_btn_pos(tab_bar, gs);
 
-	_tab_new(tab_bar, gs, vec2_new(200, 50), vec2i_new(128, 128), 2);
+	_tab_new(tab_bar, gs, 0, vec2_new(200, 50), vec2i_new(128, 128), 2);
 }
 
 void tab_bar_update(TabBar &tab_bar, GraphicStuff &gs,
@@ -50,7 +54,9 @@ const Input &input, bool show) {
 	btn_update(tab_bar.new_tab_btn, gs, input, tab_bar.pos, show);
 
 	if (tab_bar.new_tab_btn.clicked) {
-		_tab_new(tab_bar, gs, vec2_new(200, 50), vec2i_new(128, 128), 2);
+		_tab_new(tab_bar, gs, tab_bar.order_index + 1,
+			vec2_new(200, 50), vec2i_new(128, 128), 2);
+		tab_bar.order_index++;
 	}
 	
 	Vec2 cursor = tab_bar.pos;
