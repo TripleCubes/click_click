@@ -80,6 +80,10 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
+	if (!show) {
+		return;
+	}
+
 	for (int i = MAP_COLOR_1; i <= MAP_COLOR_8; i++) {
 		if (map_press(input, (MappedKeyIndex)i)) {
 			int next_index = i - MAP_COLOR_1;

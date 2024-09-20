@@ -10,6 +10,7 @@
 #include "game_time.h"
 #include "input.h"
 #include "consts.h"
+#include "states.h"
 #include "ui/tab_bar.h"
 #include "ui/file_picker/file_picker.h"
 #include "mainloop.h"
@@ -76,6 +77,8 @@ int main () {
 		return 0;
 	}
 
+	States states;
+
 	float game_start_time = glfwGetTime();
 	float frame_start_time = game_start_time;
 	GameTime game_time;
@@ -118,7 +121,7 @@ int main () {
 
 		input_update(input, glfw_window);
 
-		update(graphic_stuff, tab_bar, file_picker, game_time, input);
+		update(states, graphic_stuff, tab_bar, file_picker, game_time, input);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
 		                                        < game_time.time_since_start) {
@@ -126,7 +129,7 @@ int main () {
 			graphic_stuff.redraw_requested = true;
 		}
 
-		draw(graphic_stuff, tab_bar, file_picker, game_time, input);
+		draw(states, graphic_stuff, tab_bar, file_picker, game_time, input);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
 		game_time.frame_passed++;

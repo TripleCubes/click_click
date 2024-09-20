@@ -46,6 +46,10 @@ enum MappedKeyIndex: int {
 	MAP_SELECT_ALL,
 	MAP_DESELECT_ALL,
 
+	MAP_OPEN_FILE,
+	MAP_SAVE_FILE,
+
+
 	MAP_COUNT,
 };
 

@@ -138,6 +138,9 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_SELECT_ALL      , KEY_A    , MODIFIER_BOTH_CTRL);
 	set(MAP_DESELECT_ALL    , KEY_A    , MODIFIER_BOTH_SHIFT,
 	                                     MODIFIER_BOTH_CTRL);
+
+	set(MAP_OPEN_FILE       , KEY_O    , MODIFIER_BOTH_CTRL);
+	set(MAP_SAVE_FILE       , KEY_S    , MODIFIER_BOTH_CTRL);
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {

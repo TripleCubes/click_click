@@ -10,6 +10,7 @@
 
 #include "game_time.h"
 #include "input.h"
+#include "input_map.h"
 #include "tab/tab.h"
 #include "ui/tab_bar.h"
 #include "ui/file_picker/file_picker.h"
@@ -31,6 +32,7 @@
 #include "basic_math.h"
 #include "pos_convert.h"
 #include "consts.h"
+#include "states.h"
 
 // TEST
 #include <iostream>
@@ -128,7 +130,7 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 }
 
 void draw_blurred_rects_1(GraphicStuff &gs, const Tab &tab) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+//	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 
 //	auto draw = [&gs, main_fb_sz](Vec2 pos, Vec2 sz) -> void {
 //		draw_texture(
@@ -200,6 +202,7 @@ const GameTime &game_time
 }
 
 void draw_ui_1(
+const States &states,
 GraphicStuff &gs,
 const TabBar &tab_bar,
 const FilePicker &file_picker,
@@ -212,7 +215,10 @@ const GameTime &game_time
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
-	file_picker_ui_draw(file_picker, gs, input, game_time, FILE_PICKER_OFFSET);
+	if (states.file_picker_opening) {
+		file_picker_ui_draw(file_picker, gs, input, game_time,
+			FILE_PICKER_OFFSET);
+	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
@@ -288,27 +294,59 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 	mesh_draw(gs, MESH_BASIC_DRAW);
 }
 
+bool menu_opening(const States &states) {
+	return states.file_picker_opening;
 }
 
-void update(GraphicStuff &gs,
+}
+
+void update(
+States &states,
+GraphicStuff &gs,
 TabBar &tab_bar,
 FilePicker &file_picker,
 const GameTime &game_time,
-const Input &input) {
-	tab_bar_update(tab_bar, gs, input, true);
-
+const Input &input
+) {
 	Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
-	tab_update(tab, gs, input, game_time, TAB_OFFSET, true);
+
+	if (!states.file_picker_opening && map_press(input, MAP_OPEN_FILE)) {
+		states.file_picker_opening = true;
+		
+		file_picker.is_save_picker = false;
+		
+		tab.layer_name_editing = false;
+	}
+	if (!states.file_picker_opening && map_press(input, MAP_SAVE_FILE)) {
+		states.file_picker_opening = true;
+		
+		file_picker.save_name_textarea.text
+			= file_picker.save_name_textarea.defl_text;
+		file_picker.is_save_picker = true;
+
+		tab.layer_name_editing = false;
+	}
+	if (states.file_picker_opening
+	&& (file_picker.close_btn.clicked || map_press(input, MAP_ESC))) {
+		states.file_picker_opening = false;
+	}
+
+	tab_bar_update(tab_bar, gs, input, !menu_opening(states));
+
+	tab_update(tab, gs, input, game_time, TAB_OFFSET, !menu_opening(states));
 
 	file_picker_update(file_picker, gs, input, game_time,
-		FILE_PICKER_OFFSET, true);
+		FILE_PICKER_OFFSET, states.file_picker_opening);
 }
 
-void draw(GraphicStuff &gs,
+void draw(
+const States &states,
+GraphicStuff &gs,
 const TabBar &tab_bar,
 const FilePicker &file_picker,
 const GameTime &game_time,
-const Input &input) {
+const Input &input
+) {
 	bool mouse_in_window = in_rect(
 		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
 	);
@@ -335,7 +373,7 @@ const Input &input) {
 				BLUR_COLOR, true);
 		
 			draw_blurred_rects_1(gs, tab);
-			draw_ui_1(gs, tab_bar, file_picker, tab, input, game_time);
+			draw_ui_1(states, gs, tab_bar, file_picker, tab, input, game_time);
 		}
 
 		draw_cursor(gs, input);

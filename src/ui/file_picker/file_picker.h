@@ -2,6 +2,7 @@
 #define UI__FILE_PICKER__FILE_PICKER_H
 
 #include "../btn.h"
+#include "../textarea.h"
 #include <vector>
 #include <string>
 
@@ -28,11 +29,23 @@ struct FilePickerFolderFile {
 };
 
 struct FilePicker {
+	bool is_image_view = false;
+	bool is_project_save = false;
+	bool is_save_picker = false;
+	bool file_name_editing = false;
+	
+	Btn close_btn;
+
 	Btn up_btn;
 	Btn recent_btn;
 	Btn list_view_btn;
 	Btn image_view_btn;
-	bool is_image_view = false;
+
+	TextArea save_name_textarea;
+	Btn save_btn;
+	Btn png_save_btn;
+	Btn project_save_btn;
+
 	std::vector<FilePickerSideItem> pinned_folder_list;
 	std::vector<FilePickerSideItem> quick_access_folder_list;
 	std::vector<std::string> current_path_list;

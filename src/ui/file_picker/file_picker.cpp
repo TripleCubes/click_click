@@ -34,7 +34,9 @@ const std::vector<std::string> SYSTEM_PATH_LIST = {
 };
 const char SLASH = '\\';
 const Vec2 SIDE_BTN_SZ = vec2_new(80, 12);
-const Vec2 VIEW_BTN_SZ = vec2_new(30, 12);
+const Vec2 VIEW_BTN_SZ = vec2_new(29, 12);
+const Vec2 SAVE_FORMAT_BTN_SZ = vec2_new(32, 12);
+const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
 const float H = 220;
@@ -131,7 +133,7 @@ void draw_path_bar(const FilePicker &file_picker, GraphicStuff &gs, Vec2 pos) {
 
 	draw_text(
 		gs,
-		trim_path(path_str, W - SIDE_PADDING.x * 2 - 12, false),
+		trim_path(path_str, W - SIDE_PADDING.x * 2 - 12 - 8, false),
 		vec2_add(pos, vec2_new(SIDE_PADDING.x + 13 + 3, SIDE_PADDING.y + 3)),
 		W - 18 - SIDE_PADDING.x * 2,
 		1,
@@ -219,7 +221,7 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 
 		btn_pair.btn = btn_new(
 			vec2_new(12, 0),
-			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 11 - 12, 12),
+			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 12 - 12, 12),
 			BTN_TEXTAREA_COLOR,
 			trim_path(
 				folder_file.name,
@@ -230,7 +232,7 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 		if (folder_file.is_folder) {
 			btn_pair.sec_btn_used = true;
 			btn_pair.btn_1 = btn_new(
-				vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 15, 0),
+				vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 16, 0),
 				vec2_new(12, 12),
 				BTN_TEXTAREA_COLOR,
 				"ICON_PIN"
@@ -258,6 +260,13 @@ int pinned_i(const FilePicker &file_picker, const std::string &folder_name) {
 }
 
 void file_picker_init(FilePicker &file_picker) {
+	file_picker.close_btn = btn_new(
+		vec2_new(W - 11 - SIDE_PADDING.x, SIDE_PADDING.y),
+		vec2_new(12, 12),
+		BTN_TEXTAREA_COLOR,
+		"ICON_X"
+	);
+
 	file_picker.up_btn = btn_new(
 		SIDE_PADDING,
 		vec2_new(12, 12),
@@ -273,19 +282,52 @@ void file_picker_init(FilePicker &file_picker) {
 	);
 
 	file_picker.list_view_btn = btn_new(
-		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x * 2 + 2,
-		         H - SIDE_PADDING.y - VIEW_BTN_SZ.y + 1),
+		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x * 2 + 1,
+		         H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 11),
 		VIEW_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		"list"
 	);
 
 	file_picker.image_view_btn = btn_new(
-		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x + 2,
-		          H - SIDE_PADDING.y - VIEW_BTN_SZ.y + 1),
+		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x + 1,
+		          H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 11),
 		VIEW_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		"image"
+	);
+
+	file_picker.save_name_textarea = textarea_new(
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
+		         H - SIDE_PADDING.y - 11),
+		vec2_new(W - SAVE_BTN_SZ.x - SIDE_PADDING.x * 2
+		         - SIDE_BTN_SZ.x, 12),
+		BTN_TEXTAREA_COLOR,
+		"file_name"
+	);
+
+	file_picker.save_btn = btn_new(
+		vec2_new(W - SAVE_BTN_SZ.x - SIDE_PADDING.x + 1,
+		         H - SIDE_PADDING.y - 11),
+		SAVE_BTN_SZ,
+		BTN_TEXTAREA_COLOR,
+		"save"
+	);
+
+	file_picker.png_save_btn = btn_new(
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
+		         H - SIDE_PADDING.y - 10 - 13),
+		SAVE_FORMAT_BTN_SZ,
+		BTN_TEXTAREA_COLOR,
+		".png"
+	);
+
+	file_picker.project_save_btn = btn_new(
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
+		         H - SIDE_PADDING.y - 10 - 13),
+		SAVE_FORMAT_BTN_SZ,
+		BTN_TEXTAREA_COLOR,
+		".click"
 	);
 
 	if (std::filesystem::exists("C:\\")) {
@@ -331,10 +373,21 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	const float Y = (main_fb_sz.y - H) / 2;
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
+	btn_update(file_picker.close_btn, gs, input, pos, show);
 	btn_update(file_picker.recent_btn, gs, input, pos, show);
 	btn_update(file_picker.up_btn, gs, input, pos, show);
-	btn_update(file_picker.list_view_btn, gs, input, pos, show);
-	btn_update(file_picker.image_view_btn, gs, input, pos, show);
+
+	btn_update(file_picker.list_view_btn, gs, input,
+		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)), show);
+	btn_update(file_picker.image_view_btn, gs, input,
+		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)), show);
+
+	bool show_1 = show && file_picker.is_save_picker;
+	textarea_update(file_picker.save_name_textarea, gs, game_time, input, pos,
+		file_picker.file_name_editing, show_1);
+	btn_update(file_picker.save_btn, gs, input, pos, show_1);
+	btn_update(file_picker.png_save_btn, gs, input, pos, show_1);
+	btn_update(file_picker.project_save_btn, gs, input, pos, show_1);
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
 	pos_1.y += 25;
@@ -396,7 +449,28 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	if (file_picker.image_view_btn.clicked) {
 		file_picker.is_image_view = true;
 	}
-	
+
+	if (file_picker.png_save_btn.clicked) {
+		file_picker.is_project_save = false;
+	}
+	if (file_picker.project_save_btn.clicked) {
+		file_picker.is_project_save = true;
+	}
+
+	if (file_picker.is_save_picker) {
+		if (input.left_click || input.key_list[KEY_ENTER].press
+		|| map_press(input, MAP_ESC)) {
+			file_picker.file_name_editing = false;
+		}
+		if (file_picker.save_name_textarea.clicked) {
+			file_picker.file_name_editing = true;
+		}
+		if (file_picker.save_name_textarea.hovered) {
+			gs.cursor_icon = CURSOR_TEXT;
+		}
+	}
+
+
 	for (int i = (int)file_picker.pinned_folder_list.size() - 1; i >= 0; i--) {
 		FilePickerSideItem &item = file_picker.pinned_folder_list[i];
 		if (item.btn_pair.btn.clicked) {
@@ -480,12 +554,28 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	const float Y = (main_fb_sz.y - H) / 2;
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
+	btn_draw(file_picker.close_btn, gs, pos, false);
 	btn_draw(file_picker.up_btn, gs, pos, false);
 	draw_path_bar(file_picker, gs, pos);
 	btn_draw(file_picker.recent_btn, gs, pos,
 		file_picker.current_path_list.size() == 0);
-	btn_draw(file_picker.list_view_btn, gs, pos, !file_picker.is_image_view);
-	btn_draw(file_picker.image_view_btn, gs, pos, file_picker.is_image_view);
+
+	btn_draw(file_picker.list_view_btn, gs,
+		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)),
+		!file_picker.is_image_view);
+	btn_draw(file_picker.image_view_btn, gs,
+		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)),
+		file_picker.is_image_view);
+
+	if (file_picker.is_save_picker) {
+		textarea_draw(file_picker.save_name_textarea, gs, game_time, pos,
+			file_picker.file_name_editing, true);
+		btn_draw(file_picker.save_btn, gs, pos, false);
+		btn_draw(file_picker.png_save_btn, gs, pos,
+			!file_picker.is_project_save);
+		btn_draw(file_picker.project_save_btn, gs, pos,
+			file_picker.is_project_save);
+	}
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
 	pos_1.y += 25;

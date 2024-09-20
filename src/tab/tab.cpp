@@ -331,13 +331,14 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 			game_time,
 			input,
 			vec2_add(bottom_pos, add),
-			i == tab.layer_order_list_index && tab.tab_name_editing,
+			i == tab.layer_order_list_index && tab.layer_name_editing,
 			show
 		);
 	}
 
-	if (input.left_click || input.key_list[KEY_ENTER].press) {
-		tab.tab_name_editing = false;
+	if (input.left_click || input.key_list[KEY_ENTER].press
+	|| map_press(input, MAP_ESC)) {
+		tab.layer_name_editing = false;
 	}
 
 	for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
@@ -346,7 +347,7 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 	
 		if (layer.textarea.clicked) {
 			if (tab.layer_order_list_index == i) {
-				tab.tab_name_editing = true;
+				tab.layer_name_editing = true;
 				gs.cursor_icon = CURSOR_TEXT;
 				return;
 			}
@@ -392,7 +393,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 			tab.layer_bar.pos.y + LAYER_TEXTAREA_LIST_LINE_HEIGHT * i);
 		layer_textarea_draw(layer, gs, game_time,
 			vec2_add(bottom_pos, add),
-			i == tab.layer_order_list_index && tab.tab_name_editing,
+			i == tab.layer_order_list_index && tab.layer_name_editing,
 			i == tab.layer_order_list_index);
 	}
 }
@@ -578,10 +579,10 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 
 	color_picker_update(tab.color_picker, gs, input, bottom_pos, show);
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos, 
-		!tab.tab_name_editing, show);
+		!tab.layer_name_editing, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
-		!tab.tab_name_editing && !input.left_down && !input.left_release,
+		!tab.layer_name_editing && !input.left_down && !input.left_release,
 		show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
 
