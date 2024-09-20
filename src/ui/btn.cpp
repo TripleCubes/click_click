@@ -70,7 +70,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 			gs,
 			icon,
 			vec2_add(pos, vec2_new(3, 3)),
-			TEXT_SCALE,
+			1,
 			color,
 			vec2_new(3, 3),
 			flip_color
@@ -120,7 +120,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 		btn.text,
 		vec2_add(pos, vec2_new(4, 3)),
 		btn.sz.x - 8,
-		TEXT_SCALE,
+		1,
 		color,
 		vec2_new(4, 3),
 		flip_color

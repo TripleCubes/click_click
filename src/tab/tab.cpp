@@ -733,7 +733,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 		"x" + std::to_string(tab.px_scale),
 		vec2_add(tab.btn_panel.pos, vec2_new(45, 3)),
 		100,
-		TEXT_SCALE,
+		1,
 		BTN_TEXTAREA_COLOR,
 		vec2_new(0, 0),
 		false

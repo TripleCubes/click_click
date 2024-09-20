@@ -43,7 +43,7 @@ const Input &input) {
 
 	if (text_input) {
 		const int TEXT_W_CHAR
-			= std::floor(textarea.sz.x / (TEXT_SCALE * CHAR_W)) - 2;
+			= std::floor(textarea.sz.x / (1 * CHAR_W)) - 2;
 
 		if (textarea.cursor_at < TEXT_W_CHAR) {
 			if (textarea.cursor_at == (int)textarea.text.length()) {
@@ -146,7 +146,7 @@ bool active, bool show) {
 
 		Vec2 clicked_pos = vec2_sub(mouse_pos, pos);
 		int click_x_char
-			= std::floor((clicked_pos.x - TEXT_MARGIN.x + 2) / CHAR_W /TEXT_SCALE);
+			= std::floor((clicked_pos.x - TEXT_MARGIN.x + 2) / CHAR_W /1);
 		click_x_char = clampi(click_x_char, 0, (int)textarea.text.length());
 		textarea.cursor_at = click_x_char;
 	}
@@ -168,7 +168,7 @@ const GameTime &game_time, Vec2 parent_pos, bool active, bool selected) {
 		textarea.text,
 		vec2_add(pos, TEXT_MARGIN),
 		textarea.sz.x - TEXT_MARGIN.x * 2,
-		TEXT_SCALE,
+		1,
 		color,
 		TEXT_MARGIN,
 		flip_color
