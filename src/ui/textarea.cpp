@@ -43,7 +43,7 @@ const Input &input) {
 
 	if (text_input) {
 		const int TEXT_W_CHAR
-			= std::floor(textarea.sz.x / (1 * CHAR_W)) - 2;
+			= std::floor(textarea.sz.x / (1 * CHAR_W)) - 3;
 
 		if (textarea.cursor_at < TEXT_W_CHAR) {
 			if (textarea.cursor_at == (int)textarea.text.length()) {

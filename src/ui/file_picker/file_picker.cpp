@@ -34,7 +34,7 @@ const std::vector<std::string> SYSTEM_PATH_LIST = {
 };
 const char SLASH = '\\';
 const Vec2 SIDE_BTN_SZ = vec2_new(80, 12);
-const Vec2 VIEW_BTN_SZ = vec2_new(29, 12);
+const Vec2 VIEW_BTN_SZ = vec2_new(28, 12);
 const Vec2 SAVE_FORMAT_BTN_SZ = vec2_new(32, 12);
 const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
@@ -283,7 +283,7 @@ void file_picker_init(FilePicker &file_picker) {
 
 	file_picker.list_view_btn = btn_new(
 		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x * 2 + 1,
-		         H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 11),
+		         H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 12),
 		VIEW_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		"list"
@@ -291,7 +291,7 @@ void file_picker_init(FilePicker &file_picker) {
 
 	file_picker.image_view_btn = btn_new(
 		vec2_new(W - SIDE_PADDING.x - VIEW_BTN_SZ.x + 1,
-		          H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 11),
+		          H - SIDE_PADDING.y - VIEW_BTN_SZ.y - 12),
 		VIEW_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		"image"
@@ -316,7 +316,7 @@ void file_picker_init(FilePicker &file_picker) {
 
 	file_picker.png_save_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
-		         H - SIDE_PADDING.y - 10 - 13),
+		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		".png"
@@ -324,7 +324,7 @@ void file_picker_init(FilePicker &file_picker) {
 
 	file_picker.project_save_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
-		         H - SIDE_PADDING.y - 10 - 13),
+		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		".click"

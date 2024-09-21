@@ -17,6 +17,10 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		btn_update(btn, gs, input, pos, show);
 	}
 
+	if (!show) {
+		return;
+	}
+
 	for (int i = 0; i < NUM_BTN; i++) {
 		const Btn &btn = tool_picker.btn_list[i];
 
