@@ -121,7 +121,14 @@ int main () {
 
 		input_update(input, glfw_window);
 
-		update(states, graphic_stuff, tab_bar, file_picker, game_time, input);
+		update(
+			states,
+			graphic_stuff,
+			tab_bar,
+			file_picker,
+			game_time,
+			input
+		);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
 		                                        < game_time.time_since_start) {
@@ -129,7 +136,14 @@ int main () {
 			graphic_stuff.redraw_requested = true;
 		}
 
-		draw(states, graphic_stuff, tab_bar, file_picker, game_time, input);
+		draw(
+			states,
+			graphic_stuff,
+			tab_bar,
+			file_picker,
+			game_time,
+			input
+		);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
 		game_time.frame_passed++;

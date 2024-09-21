@@ -10,6 +10,7 @@
 #include "graphic_types/graphic_types.h"
 #include "game_time.h"
 #include "input.h"
+#include "states.h"
 #include "tab/tab.h"
 #include "ui/tab_bar.h"
 #include "ui/file_picker/file_picker.h"
@@ -22,6 +23,7 @@
 
 namespace {
 
+States states;
 GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
@@ -68,7 +70,14 @@ void main_loop() {
 	glfwPollEvents();
 
 	input_update(input);
-	update(graphic_stuff, tab_bar, file_picker, game_time, input);
+	update(
+		states,
+		graphic_stuff,
+		tab_bar,
+		file_picker,
+		game_time,
+		input
+	);
 
 	if (redraw_request_count * REDRAW_REQUEST_WAIT
 											< game_time.time_since_start) {
@@ -76,7 +85,14 @@ void main_loop() {
 		graphic_stuff.redraw_requested = true;
 	}
 
-	draw(graphic_stuff, tab_bar, file_picker, game_time, input);
+	draw(
+		states,
+		graphic_stuff,
+		tab_bar,
+		file_picker,
+		game_time,
+		input
+	);
 	
 	game_time.frame_time = glfwGetTime() - frame_start_time;
 	game_time.frame_passed++;
