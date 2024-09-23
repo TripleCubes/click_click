@@ -14,7 +14,7 @@ Vec2i data_sz, Vec2i pos, unsigned char pallete_index, int sz) {
 			return;
 		}
 
-		int data_index = data_sz.y * y + x;
+		int data_index = data_sz.x * y + x;
 
 		if (use_selection && selection.full_preview_list.size() != 0
 		&& selection.map[data_index] == 0) {

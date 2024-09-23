@@ -73,6 +73,14 @@ void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, Vec2 parent_pos);
 
-void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
+void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
+	GraphicStuff &gs);
+
+void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+	GraphicStuff &gs, const std::vector<unsigned char> &data);
+
+void tab_center_canvas(Tab &tab, const GraphicStuff &gs);
+
+	void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
 #endif

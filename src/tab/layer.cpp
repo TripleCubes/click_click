@@ -41,6 +41,7 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 	layer.sz = sz;
 	layer.data = data;
 	layer.texture_index = texture_blank_new_red(gs, sz.x, sz.y);
+	texture_data_red(gs, layer.texture_index, sz, layer.data);
 
 	layer.textarea = textarea_new(
 		vec2_new(0, 0),

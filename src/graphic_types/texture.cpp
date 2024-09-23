@@ -53,6 +53,8 @@ int texture_blank_new_format(GraphicStuff &gs, int w, int h, bool red) {
 		#else
 		format = GL_ALPHA;
 		#endif
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	}
 	std::vector<unsigned char> blank_data;
 	if (red) {

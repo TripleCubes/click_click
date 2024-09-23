@@ -34,6 +34,9 @@
 #include "consts.h"
 #include "states.h"
 
+#include "file/save_project.h"
+#include "file/open_project.h"
+
 // TEST
 #include <iostream>
 
@@ -298,6 +301,98 @@ bool menu_opening(const States &states) {
 	return states.file_picker_opening;
 }
 
+void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
+	tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
+		data.pos, data.sz, data.px_scale);
+	tab_bar.order_index++;
+
+	int index = tab_bar.tab_order_list[tab_bar.order_index];
+	Tab &tab = tab_bar.tab_list[index];
+
+	tab.pallete_data.clear();
+	tab.layer_list.clear();
+	tab.layer_order_list.clear();
+
+	for (int i = 0; i < 64; i++) {
+		tab.color_pallete.color_list[i].r
+			= (float)data.pallete_data[i*4    ] / 255;
+		tab.color_pallete.color_list[i].g
+			= (float)data.pallete_data[i*4 + 1] / 255;
+		tab.color_pallete.color_list[i].b
+			= (float)data.pallete_data[i*4 + 2] / 255;
+		tab.color_pallete.color_list[i].a
+			= (float)data.pallete_data[i*4 + 3] / 255;
+	}
+	tab.pallete_data.insert(
+		tab.pallete_data.end(),
+		data.pallete_data.begin(),
+		data.pallete_data.end()
+	);
+	texture_data(gs, tab.pallete_texture_index,
+		vec2i_new(16, 16), tab.pallete_data);
+
+	for (int i = 0; i < (int)data.layer_list.size(); i++) {
+		const OpenProjectLayerData &layer_data = data.layer_list[i];
+
+		tab_layer_new_data(
+			tab,
+			tab.layer_order_list.size(),
+			layer_data.layer_name,
+			gs,
+			layer_data.data
+		);
+	}
+}
+
+void file_picker_handling(States &states, FilePicker &file_picker,
+TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
+	if (!states.file_picker_opening && map_press(input, MAP_OPEN_FILE)) {
+		states.file_picker_opening = true;
+		
+		file_picker.is_save_picker = false;
+		
+		tab.layer_name_editing = false;
+	}
+
+	if (!states.file_picker_opening && map_press(input, MAP_SAVE_FILE)) {
+		states.file_picker_opening = true;
+		
+		file_picker.save_name_textarea.text
+			= file_picker.save_name_textarea.defl_text;
+		file_picker.is_save_picker = true;
+
+		tab.layer_name_editing = false;
+	}
+
+	if (states.file_picker_opening
+	&& (file_picker.close_btn.clicked || map_press(input, MAP_ESC))) {
+		states.file_picker_opening = false;
+	}
+
+	if (states.file_picker_opening && file_picker.save_btn.clicked) {
+		states.file_picker_opening = false;
+
+		std::string save_link;
+		file_picker_get_save_link(save_link, file_picker);
+		
+		save_project(save_link, tab);
+	}
+
+	if (states.file_picker_opening) {
+		std::string open_path;
+		file_picker_open_file(open_path, file_picker);
+
+		if (open_path.size() != 0) {
+			states.file_picker_opening = false;
+
+			OpenProjectData data;
+			if (file_to_project_data(data, open_path)) {
+				_tab_new(tab_bar, gs, data);
+			}
+		}
+	}
+}
+
 }
 
 void update(
@@ -310,33 +405,14 @@ const Input &input
 ) {
 	Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
 
-	if (!states.file_picker_opening && map_press(input, MAP_OPEN_FILE)) {
-		states.file_picker_opening = true;
-		
-		file_picker.is_save_picker = false;
-		
-		tab.layer_name_editing = false;
-	}
-	if (!states.file_picker_opening && map_press(input, MAP_SAVE_FILE)) {
-		states.file_picker_opening = true;
-		
-		file_picker.save_name_textarea.text
-			= file_picker.save_name_textarea.defl_text;
-		file_picker.is_save_picker = true;
-
-		tab.layer_name_editing = false;
-	}
-	if (states.file_picker_opening
-	&& (file_picker.close_btn.clicked || map_press(input, MAP_ESC))) {
-		states.file_picker_opening = false;
-	}
-
 	tab_bar_update(tab_bar, gs, input, !menu_opening(states));
 
 	tab_update(tab, gs, input, game_time, TAB_OFFSET, !menu_opening(states));
 
 	file_picker_update(file_picker, gs, input, game_time,
 		FILE_PICKER_OFFSET, states.file_picker_opening);
+
+	file_picker_handling(states, file_picker, tab_bar, tab, gs, input);
 }
 
 void draw(

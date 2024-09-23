@@ -30,7 +30,7 @@ struct FilePickerFolderFile {
 
 struct FilePicker {
 	bool is_image_view = false;
-	bool is_project_save = false;
+	bool is_project_save = true;
 	bool is_save_picker = false;
 	bool file_name_editing = false;
 	
@@ -62,5 +62,11 @@ void file_picker_bkg_draw(GraphicStuff &gs, Vec2 parent_pos);
 
 void file_picker_ui_draw(const FilePicker &file_picker, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, Vec2 parent_pos);
+
+void file_picker_get_save_link(std::string &resulr,
+	const FilePicker &file_picker);
+
+void file_picker_open_file(std::string &file_name,
+	const FilePicker &file_picker);
 
 #endif

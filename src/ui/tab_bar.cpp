@@ -10,6 +10,7 @@
 namespace {
 
 const float BTN_SPACING = 2;
+const Vec2i DEFL_CANVAS_SZ = vec2i_new(64, 64);
 
 void reset_btn_pos(TabBar &tab_bar, const GraphicStuff &gs) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
@@ -26,15 +27,6 @@ void window_resize_handle(TabBar &tab_bar, const GraphicStuff &gs) {
 	reset_btn_pos(tab_bar, gs);
 }
 
-void _tab_new(TabBar &tab_bar, GraphicStuff &gs, int at,
-Vec2 pos, Vec2i sz, int scale){
-	int index = tab_new(tab_bar.tab_list, gs, pos, sz, scale);
-	tab_bar.tab_order_list.insert(
-		tab_bar.tab_order_list.begin() + at,
-		index
-	);
-}
-
 }
 
 void tab_bar_init(TabBar &tab_bar, GraphicStuff &gs, Vec2 pos) {
@@ -42,7 +34,8 @@ void tab_bar_init(TabBar &tab_bar, GraphicStuff &gs, Vec2 pos) {
 
 	reset_btn_pos(tab_bar, gs);
 
-	_tab_new(tab_bar, gs, 0, vec2_new(200, 50), vec2i_new(128, 128), 2);
+	tab_bar_tab_new(tab_bar, gs, 0, vec2_new(0, 0), DEFL_CANVAS_SZ, 2);
+	tab_center_canvas(tab_bar.tab_list[0], gs);
 }
 
 void tab_bar_update(TabBar &tab_bar, GraphicStuff &gs,
@@ -54,9 +47,12 @@ const Input &input, bool show) {
 	btn_update(tab_bar.new_tab_btn, gs, input, tab_bar.pos, show);
 
 	if (tab_bar.new_tab_btn.clicked) {
-		_tab_new(tab_bar, gs, tab_bar.order_index + 1,
-			vec2_new(200, 50), vec2i_new(128, 128), 2);
+		tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
+			vec2_new(0, 0), DEFL_CANVAS_SZ, 2);
 		tab_bar.order_index++;
+
+		int index = tab_bar.tab_order_list[tab_bar.order_index];
+		tab_center_canvas(tab_bar.tab_list[index], gs);
 	}
 	
 	Vec2 cursor = tab_bar.pos;
@@ -113,6 +109,15 @@ void tab_bar_draw(const TabBar &tab_bar, GraphicStuff &gs) {
 	}
 }
 
+void tab_bar_tab_new(TabBar &tab_bar, GraphicStuff &gs, int at,
+Vec2 pos, Vec2i sz, int scale){
+	int index = tab_new(tab_bar.tab_list, gs, pos, sz, scale);
+	tab_bar.tab_order_list.insert(
+		tab_bar.tab_order_list.begin() + at,
+		index
+	);
+}
+
 void tab_bar_release(TabBar &tab_bar, GraphicStuff &gs) {
 	for (int i = 0; i < (int)tab_bar.tab_list.size(); i++) {
 		if (!tab_bar.tab_list[i].running) {
@@ -126,4 +131,3 @@ void tab_bar_release(TabBar &tab_bar, GraphicStuff &gs) {
 int tab_bar_get_tab_index(const TabBar& tab_bar) {
 	return tab_bar.tab_order_list[tab_bar.order_index];
 }
-

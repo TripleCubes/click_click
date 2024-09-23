@@ -304,16 +304,6 @@ void color_picker_color_pallete_data_update(Tab &tab, GraphicStuff &gs) {
 	}
 }
 
-void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
-GraphicStuff &gs) {
-	std::vector<unsigned char> data;
-	data.resize(tab.sz.x * tab.sz.y, 0);
-	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
-	
-	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
-	tab.num_layer_created++;
-}
-
 void layer_textarea_list_update(Tab &tab, GraphicStuff &gs,
 const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
@@ -487,20 +477,6 @@ void canvas_zoom_in(Tab &tab) {
 	canvas_zoom_move(tab, vec2_sub(after_sz, before_sz));
 }
 
-void center_canvas(Tab &tab, const GraphicStuff &gs) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-	Vec2 view_sz = vec2_new(main_fb_sz.x - SIDE_BAR_W, main_fb_sz.y);
-
-	const float MARGIN = 30;
-	int px_scale_max_x = (view_sz.x - MARGIN*2) / tab.sz.x;
-	int px_scale_max_y = (view_sz.y - MARGIN*2) / tab.sz.y;
-
-	tab.px_scale = std::min(px_scale_max_x, px_scale_max_y);
-	tab.px_scale = clampi(tab.px_scale, 1, ZOOM_MAX);
-	tab.pos.x = view_sz.x / 2 - tab.sz.x * tab.px_scale / 2 + SIDE_BAR_W;
-	tab.pos.y = view_sz.y / 2 - tab.sz.y * tab.px_scale / 2;
-}
-
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -542,7 +518,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 		vec2_new(SIDE_BAR_W + 154 + 4, TOP_BAR_H + 1 + 4)
 	);
 
-	tab.pallete_data.resize(16 * 16, 1);
+	tab.pallete_data.resize(16 * 16, 255);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
 	tab.pallete_texture_index = texture_blank_new(gs, 16, 16);
 	texture_data(gs, tab.pallete_texture_index,
@@ -609,7 +585,7 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 		canvas_zoom_in(tab);
 	}
 	else if (tab.btn_panel.zoom_0_btn.clicked || kb_zoom_0(input)) {
-		center_canvas(tab, gs);
+		tab_center_canvas(tab, gs);
 	}
 
 	layer_bar_event_handle(tab);
@@ -738,6 +714,38 @@ const GameTime &game_time, Vec2 parent_pos) {
 		vec2_new(0, 0),
 		false
 	);
+}
+
+void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
+GraphicStuff &gs) {
+	std::vector<unsigned char> data;
+	data.resize(tab.sz.x * tab.sz.y, 0);
+	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
+	
+	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
+	tab.num_layer_created++;
+}
+
+void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+GraphicStuff &gs, const std::vector<unsigned char> &data) {
+	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
+	
+	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
+	tab.num_layer_created++;
+}
+
+void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
+	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
+	Vec2 view_sz = vec2_new(main_fb_sz.x - SIDE_BAR_W, main_fb_sz.y);
+
+	const float MARGIN = 30;
+	int px_scale_max_x = (view_sz.x - MARGIN*2) / tab.sz.x;
+	int px_scale_max_y = (view_sz.y - MARGIN*2) / tab.sz.y;
+
+	tab.px_scale = std::min(px_scale_max_x, px_scale_max_y);
+	tab.px_scale = clampi(tab.px_scale, 1, ZOOM_MAX);
+	tab.pos.x = view_sz.x / 2 - tab.sz.x * tab.px_scale / 2 + SIDE_BAR_W;
+	tab.pos.y = view_sz.y / 2 - tab.sz.y * tab.px_scale / 2;
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

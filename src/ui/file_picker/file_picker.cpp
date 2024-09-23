@@ -40,6 +40,7 @@ const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
 const float H = 220;
+const std::string DOT_CLICK = ".click";
 
 void rm_parent_path(std::string &path) {
 	int last_slash_pos = 0;
@@ -632,5 +633,58 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		);
 
 		pos_2.y += 12;
+	}
+}
+
+void file_picker_get_save_link(std::string &result,
+const FilePicker &file_picker) {
+	for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
+		result += file_picker.current_path_list[i] + SLASH;
+	}
+
+	result += file_picker.save_name_textarea.text;
+
+	if (file_picker.is_project_save) {
+		result += ".click";
+	}
+	else {
+		result += ".png";
+	}
+}
+
+void file_picker_open_file(std::string &file_name,
+const FilePicker &file_picker) {
+	auto get_file_name = [&file_picker](std::string &file_name, int index) {
+		const FilePickerFolderFile &folder_file
+			= file_picker.folder_file_list[index];
+
+		for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
+			file_name += file_picker.current_path_list[i] + SLASH;
+		}
+
+		file_name += folder_file.name;
+	};
+
+	auto is_dot_click = [](const std::string &str) {
+		for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
+			if (str[str.length() - DOT_CLICK.length() + i] != DOT_CLICK[i]) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	for (int i = 0; i < (int)file_picker.folder_file_btn_list.size(); i++) {
+		const FilePickerBtnPair &btn_pair
+			= file_picker.folder_file_btn_list[i];
+		const FilePickerFolderFile &folder_file
+			= file_picker.folder_file_list[i];
+
+		if (!folder_file.is_folder && btn_pair.btn.clicked
+		&& is_dot_click(folder_file.name)) {
+			get_file_name(file_name, i);
+			break;
+		}
 	}
 }

@@ -19,7 +19,7 @@ const std::array<Vec2i, 4> dirs = {
 
 unsigned char get_px(const std::vector<unsigned char> &data, Vec2i data_sz,
 Vec2i pos) {
-	int data_index = data_sz.y * pos.y + pos.x;
+	int data_index = data_sz.x * pos.y + pos.x;
 	return data[data_index];
 }
 
@@ -42,7 +42,7 @@ unsigned char replace_index, unsigned char pallete_index) {
 				continue;
 			}
 			
-			int index = next_pos.y * data_sz.y + next_pos.x;
+			int index = next_pos.x * data_sz.y + next_pos.x;
 			bool selection_cond = selection.full_preview_list.size() == 0
 				|| selection.map[index] == 1;
 

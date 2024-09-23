@@ -120,6 +120,8 @@ ColorPallete color_pallete_new(Vec2 pos) {
 	ColorPallete color_pallete;
 	color_pallete.pos = pos;
 
+	color_pallete.color_list[0] = color_new(0, 0, 0, 0);
+
 	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
 		color_pallete.page_btn_list[i] = btn_new(
 			vec2_new(

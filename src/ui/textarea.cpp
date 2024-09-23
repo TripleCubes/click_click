@@ -21,8 +21,12 @@ namespace {
 
 const Vec2 TEXT_MARGIN = vec2_new(4, 3);
 
-void text_input_handling(TextArea &textarea, const GameTime &game_time,
+void az09_keys_handling(TextArea &textarea, const GameTime &game_time,
 const Input &input) {
+	if (ctrl_down(input)) {
+		return;
+	}
+
 	char add = ' ';
 	bool text_input = false;
 
@@ -58,6 +62,11 @@ const Input &input) {
 			textarea.cursor_moved_at = game_time.time_since_start;
 		}
 	}
+}
+
+void text_input_handling(TextArea &textarea, const GameTime &game_time,
+const Input &input) {
+	az09_keys_handling(textarea, game_time, input);
 
 	if (input.key_list[KEY_BACKSPACE].press && textarea.cursor_at > 0) {
 		if (textarea.cursor_at == (int)textarea.text.length()) {

@@ -95,11 +95,11 @@ bool subtract) {
 }
 
 void px(std::vector<unsigned char> &map, Vec2i sz, Vec2i pos, unsigned char n){
-	map[pos.y * sz.y + pos.x] = n;
+	map[pos.y * sz.x + pos.x] = n;
 }
 
 unsigned char get_px(const std::vector<unsigned char> &map,Vec2i sz,Vec2i pos){
-	return map[pos.y * sz.y + pos.x];
+	return map[pos.y * sz.x + pos.x];
 }
 
 void update_map_rect(Selection &selection, Vec2i sz, bool subtract) {
@@ -158,7 +158,7 @@ const std::array<Vec2i, 4> DIRS4 = {
 
 unsigned char get_data_px(const std::vector<unsigned char> &data,
 Vec2i data_sz, Vec2i pos) {
-	int data_index = data_sz.y * pos.y + pos.x;
+	int data_index = data_sz.x * pos.y + pos.x;
 	return data[data_index];
 }
 
