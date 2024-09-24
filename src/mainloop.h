@@ -7,24 +7,21 @@ struct States;
 struct GraphicStuff;
 struct GameTime;
 struct Input;
-struct TabBar;
-struct FilePicker;
+struct AppUI;
 
 void update(
 	States &states,
 	GraphicStuff &gs,
-	TabBar &tab_bar,
-	FilePicker &file_picker,
 	const GameTime &game_time,
-	const Input &input
+	const Input &input,
+	AppUI &app_ui
 );
 void draw(
 	const States &states,
 	GraphicStuff &gs,
-	const TabBar &tab_bar,
-	const FilePicker &file_picker,
 	const GameTime &game_time,
-	const Input &input
+	const Input &input,
+	const AppUI &app_ui
 );
 
 #endif

@@ -12,8 +12,7 @@
 #include "input.h"
 #include "input_map.h"
 #include "tab/tab.h"
-#include "ui/tab_bar.h"
-#include "ui/file_picker/file_picker.h"
+#include "ui/app_ui.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -207,8 +206,7 @@ const GameTime &game_time
 void draw_ui_1(
 const States &states,
 GraphicStuff &gs,
-const TabBar &tab_bar,
-const FilePicker &file_picker,
+const AppUI &app_ui,
 const Tab &tab,
 const Input &input,
 const GameTime &game_time
@@ -219,7 +217,7 @@ const GameTime &game_time
 	bind_framebuffer(gs, FB_MAIN);
 
 	if (states.file_picker_opening) {
-		file_picker_ui_draw(file_picker, gs, input, game_time,
+		file_picker_ui_draw(app_ui.file_picker, gs, input, game_time,
 			FILE_PICKER_OFFSET);
 	}
 
@@ -398,30 +396,29 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 void update(
 States &states,
 GraphicStuff &gs,
-TabBar &tab_bar,
-FilePicker &file_picker,
 const GameTime &game_time,
-const Input &input
+const Input &input,
+AppUI &app_ui
 ) {
-	Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
+	Tab &tab = app_ui.tab_bar.tab_list[tab_bar_get_tab_index(app_ui.tab_bar)];
 
-	tab_bar_update(tab_bar, gs, input, !menu_opening(states));
+	tab_bar_update(app_ui.tab_bar, gs, input, !menu_opening(states));
 
 	tab_update(tab, gs, input, game_time, TAB_OFFSET, !menu_opening(states));
 
-	file_picker_update(file_picker, gs, input, game_time,
+	file_picker_update(app_ui.file_picker, gs, input, game_time,
 		FILE_PICKER_OFFSET, states.file_picker_opening);
 
-	file_picker_handling(states, file_picker, tab_bar, tab, gs, input);
+	file_picker_handling(states, app_ui.file_picker, app_ui.tab_bar,
+		tab, gs, input);
 }
 
 void draw(
 const States &states,
 GraphicStuff &gs,
-const TabBar &tab_bar,
-const FilePicker &file_picker,
 const GameTime &game_time,
-const Input &input
+const Input &input,
+const AppUI &app_ui
 ) {
 	bool mouse_in_window = in_rect(
 		input.mouse_pos, vec2_new(0, 0), to_vec2(gs.current_window_sz)
@@ -429,7 +426,8 @@ const Input &input
 	if ((input.mouse_event && mouse_in_window) || input.left_down
 	|| input.left_release || input.key_event || game_time.frame_passed == 0
 	|| gs.just_resized || gs.redraw_requested) {
-		const Tab &tab = tab_bar.tab_list[tab_bar_get_tab_index(tab_bar)];
+		const Tab &tab
+			= app_ui.tab_bar.tab_list[tab_bar_get_tab_index(app_ui.tab_bar)];
 
 		draw_canvas_bkg(gs, tab);
 		draw_canvas(gs, tab, input);
@@ -440,7 +438,7 @@ const Input &input
 			BLUR_COLOR, true);
 	
 		draw_blurred_rects(gs, tab);
-		draw_ui(gs, tab_bar, tab, input, game_time);
+		draw_ui(gs, app_ui.tab_bar, tab, input, game_time);
 
 		if (gs.draw_secondlayer_ui) {
 			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
@@ -449,7 +447,7 @@ const Input &input
 				BLUR_COLOR, true);
 		
 			draw_blurred_rects_1(gs, tab);
-			draw_ui_1(states, gs, tab_bar, file_picker, tab, input, game_time);
+			draw_ui_1(states, gs, app_ui, tab, input, game_time);
 		}
 
 		draw_cursor(gs, input);

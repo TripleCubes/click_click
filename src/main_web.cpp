@@ -12,8 +12,7 @@
 #include "input.h"
 #include "states.h"
 #include "tab/tab.h"
-#include "ui/tab_bar.h"
-#include "ui/file_picker/file_picker.h"
+#include "ui/app_ui.h"
 #include "graphic/graphic.h"
 #include "mainloop.h"
 #include "consts.h"
@@ -27,8 +26,7 @@ States states;
 GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
-TabBar tab_bar;
-FilePicker file_picker;
+AppUI app_ui;
 float game_start_time = 0;
 float frame_start_time = 0;
 
@@ -126,12 +124,11 @@ int main() {
 		return 0;
 	}
 
-	tab_bar_init(tab_bar, graphic_stuff, vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
-	file_picker_init(file_picker);
+	app_ui_init(app_ui, graphic_stuff);
 
 	emscripten_set_main_loop(main_loop, 0, true);
 
-	tab_bar_release(tab_bar, graphic_stuff);
+	app_ui_release(app_ui, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;

@@ -11,9 +11,8 @@
 #include "input.h"
 #include "consts.h"
 #include "states.h"
-#include "ui/tab_bar.h"
-#include "ui/file_picker/file_picker.h"
 #include "mainloop.h"
+#include "ui/app_ui.h"
 
 #include "types/vec2i.h"
 #include "types/vec2.h"
@@ -96,11 +95,8 @@ int main () {
 		return 0;
 	}
 
-	TabBar tab_bar;
-	tab_bar_init(tab_bar, graphic_stuff, vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
-
-	FilePicker file_picker;
-	file_picker_init(file_picker);
+	AppUI app_ui;
+	app_ui_init(app_ui, graphic_stuff);
 
 	const float REDRAW_REQUEST_WAIT = 0.5;
 	int redraw_request_count = 0;
@@ -124,10 +120,9 @@ int main () {
 		update(
 			states,
 			graphic_stuff,
-			tab_bar,
-			file_picker,
 			game_time,
-			input
+			input,
+			app_ui
 		);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
@@ -139,10 +134,9 @@ int main () {
 		draw(
 			states,
 			graphic_stuff,
-			tab_bar,
-			file_picker,
 			game_time,
-			input
+			input,
+			app_ui
 		);
 
 		game_time.frame_time = glfwGetTime() - frame_start_time;
@@ -151,7 +145,7 @@ int main () {
 		glfwSwapBuffers(glfw_window);
 	}
 
-	tab_bar_release(tab_bar, graphic_stuff);
+	app_ui_release(app_ui, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;
