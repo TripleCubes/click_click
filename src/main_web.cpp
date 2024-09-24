@@ -71,10 +71,9 @@ void main_loop() {
 	update(
 		states,
 		graphic_stuff,
-		tab_bar,
-		file_picker,
 		game_time,
-		input
+		input,
+		app_ui
 	);
 
 	if (redraw_request_count * REDRAW_REQUEST_WAIT
@@ -86,10 +85,9 @@ void main_loop() {
 	draw(
 		states,
 		graphic_stuff,
-		tab_bar,
-		file_picker,
 		game_time,
-		input
+		input,
+		app_ui
 	);
 	
 	game_time.frame_time = glfwGetTime() - frame_start_time;
