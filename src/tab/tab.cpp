@@ -29,6 +29,9 @@
 #include <string>
 #include <cmath>
 
+// TEST
+#include <iostream>
+
 namespace {
 
 const int PALLETE_DRAW = 0;
@@ -227,7 +230,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 		tab.clicked_and_hold_on_ui = true;
 	}
 
-	if (!tab.clicked_and_hold_on_ui) {
+	if (!tab.clicked_and_hold_on_ui && tab.layer_order_list.size() != 0) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
 			px_tool_preview_update(tab,
 				tab.tool_picker.brush_selected_index,

@@ -6,6 +6,7 @@
 #include "../graphic/graphic.h"
 #include "../types/vec2i.h"
 #include "../basic_math.h"
+#include "../input_map.h"
 
 namespace {
 
@@ -13,14 +14,7 @@ const float BTN_SPACING = 2;
 const Vec2i DEFL_CANVAS_SZ = vec2i_new(64, 64);
 
 void reset_btn_pos(TabBar &tab_bar, const GraphicStuff &gs) {
-	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-
-	tab_bar.new_tab_btn = btn_new(
-		vec2_new(main_fb_sz.x - SIDE_BAR_W - 25, 0),
-		vec2_new(12, 12),
-		BTN_TEXTAREA_COLOR,
-		"ICON_PLUS"
-	);
+//	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 }
 
 void window_resize_handle(TabBar &tab_bar, const GraphicStuff &gs) {
@@ -44,9 +38,7 @@ const Input &input, bool show) {
 		window_resize_handle(tab_bar, gs);
 	}
 
-	btn_update(tab_bar.new_tab_btn, gs, input, tab_bar.pos, show);
-
-	if (tab_bar.new_tab_btn.clicked) {
+	if (map_press(input, MAP_NEW_PROJECT)) {
 		tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
 			vec2_new(0, 0), DEFL_CANVAS_SZ, 2);
 		tab_bar.order_index++;
@@ -95,8 +87,6 @@ const Input &input, bool show) {
 }
 
 void tab_bar_draw(const TabBar &tab_bar, GraphicStuff &gs) {
-	btn_draw(tab_bar.new_tab_btn, gs, tab_bar.pos, false);
-
 	Vec2 cursor = tab_bar.pos;
 	for (int i = 0; i < (int)tab_bar.tab_order_list.size(); i++) {
 		int tab_index = tab_bar.tab_order_list[i];

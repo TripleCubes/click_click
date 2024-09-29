@@ -11,7 +11,6 @@ struct Input;
 
 struct TabBar {
 	Vec2 pos;
-	Btn new_tab_btn;
 	std::vector<Tab> tab_list;
 	std::vector<int> tab_order_list;
 	int order_index = 0;
