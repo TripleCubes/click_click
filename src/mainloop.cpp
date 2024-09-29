@@ -13,6 +13,8 @@
 #include "input_map.h"
 #include "tab/tab.h"
 #include "ui/app_ui.h"
+#include "ui/file_picker/file_picker.h"
+#include "ui/new_tab_menu/new_tab_menu.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -44,6 +46,7 @@ namespace {
 const Color BLUR_COLOR = color_new(1, 1, 1, 1);
 const Vec2 TAB_OFFSET = vec2_new(0, 0);
 const Vec2 FILE_PICKER_OFFSET = vec2_new(0, 0);
+const Vec2 NEW_TAB_MENU_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -131,26 +134,16 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 	mesh_draw(gs, MESH_BASIC_DRAW);
 }
 
-void draw_blurred_rects_1(GraphicStuff &gs, const Tab &tab) {
-//	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-
-//	auto draw = [&gs, main_fb_sz](Vec2 pos, Vec2 sz) -> void {
-//		draw_texture(
-//			gs,
-//			main_fb_sz,
-//			pos,
-//			sz,
-//			pos,
-//			sz,
-//			color_new(0, 0, 0, 0),
-//			false
-//		);
-//	};
-
+void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 	
-	file_picker_bkg_draw(gs, FILE_PICKER_OFFSET);
+	if (states.file_picker_opening) {
+		file_picker_bkg_draw(gs, FILE_PICKER_OFFSET);
+	}
+	if (states.new_tab_menu_opening) {
+		new_tab_menu_bkg_draw(gs, NEW_TAB_MENU_OFFSET);
+	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
@@ -219,6 +212,10 @@ const GameTime &game_time
 	if (states.file_picker_opening) {
 		file_picker_ui_draw(app_ui.file_picker, gs, input, game_time,
 			FILE_PICKER_OFFSET);
+	}
+	if (states.new_tab_menu_opening) {
+		new_tab_menu_ui_draw(app_ui.new_tab_menu, gs, input, game_time,
+			NEW_TAB_MENU_OFFSET);
 	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -296,7 +293,7 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 }
 
 bool menu_opening(const States &states) {
-	return states.file_picker_opening;
+	return states.file_picker_opening || states.new_tab_menu_opening;
 }
 
 void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
@@ -344,7 +341,7 @@ void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
 
 void file_picker_handling(States &states, FilePicker &file_picker,
 TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
-	if (!states.file_picker_opening && map_press(input, MAP_OPEN_FILE)) {
+	if (!menu_opening(states) && map_press(input, MAP_OPEN_FILE)) {
 		states.file_picker_opening = true;
 		
 		file_picker.is_save_picker = false;
@@ -352,7 +349,7 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		tab.layer_name_editing = false;
 	}
 
-	if (!states.file_picker_opening && map_press(input, MAP_SAVE_FILE)) {
+	if (!menu_opening(states) && map_press(input, MAP_SAVE_FILE)) {
 		states.file_picker_opening = true;
 		
 		file_picker.save_name_textarea.text
@@ -367,7 +364,8 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		states.file_picker_opening = false;
 	}
 
-	if (states.file_picker_opening && file_picker.save_btn.clicked) {
+	if (states.file_picker_opening
+	&& (file_picker.save_btn.clicked || map_press(input, MAP_ENTER))) {
 		states.file_picker_opening = false;
 
 		std::string save_link;
@@ -391,6 +389,34 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 	}
 }
 
+
+void new_tab_menu_handling(States &states, NewTabMenu &new_tab_menu,
+TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
+	if (!menu_opening(states), map_press(input, MAP_NEW_PROJECT)) {
+		states.new_tab_menu_opening = true;
+	}
+	
+	if (states.new_tab_menu_opening
+	&& (new_tab_menu.close_btn.clicked || map_press(input, MAP_ESC))) {
+		states.new_tab_menu_opening = false;
+	}
+
+	if (states.new_tab_menu_opening
+	&& (new_tab_menu.new_tab_btn.clicked || map_press(input, MAP_ENTER))
+	&& new_tab_menu_all_field_valid(new_tab_menu)) {
+		states.new_tab_menu_opening = false;
+
+		Vec2i canvas_sz = new_tab_menu_get_canvas_sz(new_tab_menu);
+
+		tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
+			vec2_new(0, 0), canvas_sz, 2);
+		tab_bar.order_index++;
+
+		int index = tab_bar.tab_order_list[tab_bar.order_index];
+		tab_center_canvas(tab_bar.tab_list[index], gs);
+	}
+}
+
 }
 
 void update(
@@ -406,11 +432,19 @@ AppUI &app_ui
 
 	tab_update(tab, gs, input, game_time, TAB_OFFSET, !menu_opening(states));
 
+
 	file_picker_update(app_ui.file_picker, gs, input, game_time,
 		FILE_PICKER_OFFSET, states.file_picker_opening);
 
 	file_picker_handling(states, app_ui.file_picker, app_ui.tab_bar,
 		tab, gs, input);
+
+
+	new_tab_menu_update(app_ui.new_tab_menu, gs, input, game_time,
+		NEW_TAB_MENU_OFFSET, states.new_tab_menu_opening);
+
+	new_tab_menu_handling(states, app_ui.new_tab_menu, app_ui.tab_bar,
+		gs, input);
 }
 
 void draw(
@@ -446,7 +480,7 @@ const AppUI &app_ui
 			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 				BLUR_COLOR, true);
 		
-			draw_blurred_rects_1(gs, tab);
+			draw_blurred_rects_1(gs, states);
 			draw_ui_1(states, gs, app_ui, tab, input, game_time);
 		}
 

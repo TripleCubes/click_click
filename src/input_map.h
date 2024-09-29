@@ -17,6 +17,10 @@ const int MODIFIER_BOTH_ALT = 8;
 
 enum MappedKeyIndex: int {
 	MAP_ESC,
+	MAP_ENTER,
+	MAP_TAB,
+	MAP_SHIFT_TAB,
+
 	MAP_PAN,
 	
 	MAP_ZOOM_IN,

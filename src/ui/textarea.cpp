@@ -32,7 +32,9 @@ const Input &input) {
 
 	for (int key = KEY_A; key < KEY_COUNT; key++) {
 		if (input.key_list[key].press) {
-			char c = key_get_char_no_special(key, shift_down(input));
+			char c = key_get_char_no_special(key, shift_down(input),
+				textarea.num_only);
+
 			if (c != ' ') {
 				add = c;
 				text_input = true;
@@ -40,7 +42,7 @@ const Input &input) {
 		}
 	}
 
-	if (input.key_list[KEY_SPACE].press) {
+	if (!textarea.num_only && input.key_list[KEY_SPACE].press) {
 		add = ' ';
 		text_input = true;
 	}
@@ -115,13 +117,15 @@ const Input &input) {
 }
 
 TextArea textarea_new(Vec2 pos, Vec2 sz, Color color,
-const std::string &defl_text) {
+const std::string &defl_text, bool num_only) {
 	TextArea textarea;
 	textarea.pos = pos;
 	textarea.sz = sz;
 	textarea.color = color;
 	textarea.defl_text = defl_text;
 	textarea.text = defl_text;
+	textarea.cursor_at = (int)textarea.text.length();
+	textarea.num_only = num_only;
 
 	return textarea;
 }
@@ -203,4 +207,8 @@ const GameTime &game_time, Vec2 parent_pos, bool active, bool selected) {
 		vec2_new(5, 1),
 		color_new(0.83, 1, 0.76, 1)
 	);
+}
+
+void textarea_cursor_reset(TextArea &textarea, const GameTime &game_time) {
+	textarea.cursor_moved_at = game_time.time_since_start;
 }

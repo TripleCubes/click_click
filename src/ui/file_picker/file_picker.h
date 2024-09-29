@@ -7,7 +7,7 @@
 #include <string>
 
 struct Tab;
-struct graphicStuff;
+struct GraphicStuff;
 struct Input;
 struct GameTime;
 struct Vec2;

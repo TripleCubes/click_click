@@ -109,6 +109,10 @@ void input_map_init(InputMap &input_map) {
 	};
 
 	set(MAP_ESC             , KEY_ESC                       );
+	set(MAP_ENTER           , KEY_ENTER                     );
+	set(MAP_TAB             , KEY_TAB                       );
+	set(MAP_SHIFT_TAB       , KEY_TAB  , MODIFIER_BOTH_SHIFT);
+
 	set(MAP_PAN             , KEY_SPACE                     );
 	
 	set(MAP_ZOOM_IN         , KEY_EQUAL, MODIFIER_BOTH_CTRL );

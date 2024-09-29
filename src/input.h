@@ -124,6 +124,6 @@ void input_update(Input &input);
 bool ctrl_down(const Input &input);
 bool shift_down(const Input &input);
 char key_get_char(int key, bool shift);
-char key_get_char_no_special(int key, bool shift);
+char key_get_char_no_special(int key, bool shift, bool num_only = false);
 
 #endif

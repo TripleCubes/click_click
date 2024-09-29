@@ -11,7 +11,6 @@
 namespace {
 
 const float BTN_SPACING = 2;
-const Vec2i DEFL_CANVAS_SZ = vec2i_new(64, 64);
 
 void reset_btn_pos(TabBar &tab_bar, const GraphicStuff &gs) {
 //	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
@@ -38,14 +37,14 @@ const Input &input, bool show) {
 		window_resize_handle(tab_bar, gs);
 	}
 
-	if (map_press(input, MAP_NEW_PROJECT)) {
-		tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
-			vec2_new(0, 0), DEFL_CANVAS_SZ, 2);
-		tab_bar.order_index++;
-
-		int index = tab_bar.tab_order_list[tab_bar.order_index];
-		tab_center_canvas(tab_bar.tab_list[index], gs);
-	}
+//	if (map_press(input, MAP_NEW_PROJECT)) {
+//		tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
+//			vec2_new(0, 0), DEFL_CANVAS_SZ, 2);
+//		tab_bar.order_index++;
+//
+//		int index = tab_bar.tab_order_list[tab_bar.order_index];
+//		tab_center_canvas(tab_bar.tab_list[index], gs);
+//	}
 	
 	Vec2 cursor = tab_bar.pos;
 	for (int i = 0; i < (int)tab_bar.tab_order_list.size(); i++) {
