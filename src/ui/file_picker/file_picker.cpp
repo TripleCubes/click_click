@@ -553,7 +553,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 
 	const float X = (main_fb_sz.x - W) / 2;
 	const float Y = (main_fb_sz.y - H) / 2;
-	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
+	Vec2 pos = vec2_add(parent_pos, vec2_floor(vec2_new(X, Y)));
 
 	btn_draw(file_picker.close_btn, gs, pos, false);
 	btn_draw(file_picker.up_btn, gs, pos, false);

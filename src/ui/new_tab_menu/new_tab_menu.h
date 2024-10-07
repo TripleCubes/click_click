@@ -23,7 +23,7 @@ struct NewTabMenu {
 	Btn new_tab_btn;
 	TextArea w_ta;
 	TextArea h_ta;
-	NewTabMenuTaActive ta_active = NEW_TAB_MENU_TA_ACTIVE_NONE;
+	NewTabMenuTaActive ta_active = NEW_TAB_MENU_TA_ACTIVE_W;
 };
 
 void new_tab_menu_init(NewTabMenu &new_tab_menu);
