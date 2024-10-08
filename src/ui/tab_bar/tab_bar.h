@@ -1,10 +1,10 @@
-#ifndef UI__TAB_BAR_H
-#define UI__TAB_BAR_H
+#ifndef UI__TAB_BAR__TAB_BAR_H
+#define UI__TAB_BAR__TAB_BAR_H
 
 #include <vector>
-#include "btn.h"
-#include "../tab/tab.h"
-#include "../types/vec2.h"
+#include "../btn.h"
+#include "../../tab/tab.h"
+#include "../../types/vec2.h"
 
 struct GraphicStuff;
 struct Input;

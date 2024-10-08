@@ -1,12 +1,12 @@
 #include "tab_bar.h"
 
-#include "../consts.h"
-#include "../graphic_types/graphic_types.h"
-#include "../graphic_types/framebuffer.h"
-#include "../graphic/graphic.h"
-#include "../types/vec2i.h"
-#include "../basic_math.h"
-#include "../input_map.h"
+#include "../../consts.h"
+#include "../../graphic_types/graphic_types.h"
+#include "../../graphic_types/framebuffer.h"
+#include "../../graphic/graphic.h"
+#include "../../types/vec2i.h"
+#include "../../basic_math.h"
+#include "../../input_map.h"
 
 namespace {
 

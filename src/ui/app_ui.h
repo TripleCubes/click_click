@@ -1,7 +1,7 @@
 #ifndef UI__APP_UI_H
 #define UI__APP_UI_H
 
-#include "tab_bar.h"
+#include "tab_bar/tab_bar.h"
 #include "file_picker/file_picker.h"
 #include "new_tab_menu/new_tab_menu.h"
 
