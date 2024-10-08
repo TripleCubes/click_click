@@ -63,39 +63,47 @@ bool modifier_down(const Input &input, int modifier) {
 	return false;
 }
 
-bool any_modifier_down(const Input &input) {
-	if (input.key_list[KEY_LEFT_SHIFT].down) {
-		return true;
-	}
-	if (input.key_list[KEY_RIGHT_SHIFT].down) {
+bool modifier_match(int modifier_0, int modifier_1) {
+	if (modifier_0 == modifier_1) {
 		return true;
 	}
 
-	if (input.key_list[KEY_LEFT_CTRL].down) {
-		return true;
-	}
-	if (input.key_list[KEY_RIGHT_CTRL].down) {
-		return true;
+	if (modifier_1 == MODIFIER_BOTH_CTRL
+	|| modifier_1 == MODIFIER_BOTH_SHIFT
+	|| modifier_1 == MODIFIER_BOTH_ALT) {
+		if (modifier_0 <= modifier_1 && modifier_0 >= modifier_1 - 2) {
+			return true;
+		}
 	}
 
-	if (input.key_list[KEY_LEFT_ALT].down) {
-		return true;
-	}
-	if (input.key_list[KEY_RIGHT_ALT].down) {
-		return true;
+	return false;
+}
+
+bool unneeded_modifier_down(const Input &input, int modifier, int sec_modifier){
+	for (int i = MODIFIER_LEFT_CTRL; i <= MODIFIER_BOTH_ALT; i++) {
+		if (i == MODIFIER_BOTH_CTRL
+		|| i == MODIFIER_BOTH_SHIFT
+		|| i == MODIFIER_BOTH_ALT) {
+			continue;
+		}
+
+		if (!modifier_down(input, i)) {
+			continue;
+		}
+
+		if (!modifier_match(i, modifier) && !modifier_match(i, sec_modifier)) {
+			return true;
+		}
 	}
 
 	return false;
 }
 
 bool modifier_cond(const Input &input, int modifier, int sec_modifier) {
-	if (modifier == -1 && sec_modifier == -1) {
-		return !any_modifier_down(input);
+	if (unneeded_modifier_down(input, modifier, sec_modifier)) {
+		return false;
 	}
-	else {
-		return modifier_down(input, modifier)
-		&& modifier_down(input, sec_modifier);
-	}
+	return modifier_down(input, modifier) && modifier_down(input, sec_modifier);
 }
 
 }
