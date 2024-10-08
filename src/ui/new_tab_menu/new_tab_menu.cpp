@@ -146,7 +146,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"width",
-		vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 15),
+		vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 15)),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -156,7 +156,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"height",
-		vec2_new(X + MARGIN.x + W / 2 + 1, Y + MARGIN.y + 15),
+		vec2_floor(vec2_new(X + MARGIN.x + W / 2 + 1, Y + MARGIN.y + 15)),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,

@@ -638,7 +638,7 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 }
 
 void tab_bkg_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
-	Vec2 pos = vec2_add(parent_pos, tab.pos);
+	Vec2 pos = vec2_floor(vec2_add(parent_pos, tab.pos));
 	Vec2 sz = vec2_mul(to_vec2(tab.sz), tab.px_scale);
 
 	const float TILE_SZ = 50;
