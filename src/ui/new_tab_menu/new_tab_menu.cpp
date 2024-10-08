@@ -95,14 +95,14 @@ void new_tab_menu_init(NewTabMenu &new_tab_menu) {
 		vec2_new(MARGIN.x + 1, MARGIN.y + 23),
 		WH_TA_SZ,
 		BTN_TEXTAREA_COLOR,
-		"32",
+		std::to_string(DEFL_CANVAS_SZ.x),
 		true
 	);
 	new_tab_menu.h_ta = textarea_new(
 		vec2_new(2 + W / 2, MARGIN.y + 23),
 		WH_TA_SZ,
 		BTN_TEXTAREA_COLOR,
-		"32",
+		std::to_string(DEFL_CANVAS_SZ.x),
 		true
 	);
 }

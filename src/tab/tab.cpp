@@ -480,6 +480,28 @@ void canvas_zoom_in(Tab &tab) {
 	canvas_zoom_move(tab, vec2_sub(after_sz, before_sz));
 }
 
+void layer_data_resize(std::vector<unsigned char> &data,
+Vec2i prev_sz, Vec2i new_pos, Vec2i new_sz) {
+	auto get_px = [&data, prev_sz](int x, int y) -> unsigned char {
+		if (x < 0 || y < 0 || x >= prev_sz.x || y >= prev_sz.y) {
+			return 0;
+		}
+
+		int index = prev_sz.x * y + x;
+		return data[index];
+	};
+
+	std::vector<unsigned char> data_1;
+
+	for (int y = new_pos.y; y < new_sz.y; y++) {
+	for (int x = new_pos.x; x < new_sz.x; x++) {
+		data_1.push_back(get_px(x, y));
+	}
+	}
+
+	data = data_1;
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -749,6 +771,31 @@ void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
 	tab.px_scale = clampi(tab.px_scale, 1, ZOOM_MAX);
 	tab.pos.x = view_sz.x / 2 - tab.sz.x * tab.px_scale / 2 + SIDE_BAR_W;
 	tab.pos.y = view_sz.y / 2 - tab.sz.y * tab.px_scale / 2;
+}
+
+void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
+	layer_data_resize(tab.tool_preview_data, tab.sz, new_pos, new_sz);
+	texture_data_red(gs, tab.tool_preview_texture_index, new_sz,
+		tab.tool_preview_data);
+	
+	layer_data_resize(tab.selection_preview_data, tab.sz, new_pos, new_sz);
+	texture_data_red(gs, tab.selection_preview_texture_index, new_sz,
+		tab.selection_preview_data);
+
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		Layer &layer = tab.layer_list[i];
+
+		if (!layer.running) {
+			continue;
+		}
+
+		layer_data_resize(layer.data, tab.sz, new_pos, new_sz);
+		texture_data_red(gs, layer.texture_index, new_sz, layer.data);
+		layer.sz = new_sz;
+	}
+
+	tab.sz = new_sz;
+	tab.pos = vec2_add(tab.pos, to_vec2(new_pos));
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

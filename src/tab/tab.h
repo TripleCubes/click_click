@@ -81,6 +81,8 @@ void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs);
 
-	void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
+void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz);
+
+void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
 #endif

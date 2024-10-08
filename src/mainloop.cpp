@@ -47,6 +47,7 @@ const Color BLUR_COLOR = color_new(1, 1, 1, 1);
 const Vec2 TAB_OFFSET = vec2_new(0, 0);
 const Vec2 FILE_PICKER_OFFSET = vec2_new(0, 0);
 const Vec2 NEW_TAB_MENU_OFFSET = vec2_new(0, 0);
+const Vec2 RESIZE_MENU_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -144,6 +145,9 @@ void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
 	if (states.new_tab_menu_opening) {
 		new_tab_menu_bkg_draw(gs, NEW_TAB_MENU_OFFSET);
 	}
+	if (states.resize_menu_opening) {
+		resize_menu_bkg_draw(gs, RESIZE_MENU_OFFSET);
+	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
@@ -216,6 +220,10 @@ const GameTime &game_time
 	if (states.new_tab_menu_opening) {
 		new_tab_menu_ui_draw(app_ui.new_tab_menu, gs, input, game_time,
 			NEW_TAB_MENU_OFFSET);
+	}
+	if (states.resize_menu_opening) {
+		resize_menu_ui_draw(app_ui.resize_menu, gs, input, game_time,
+			RESIZE_MENU_OFFSET);
 	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -293,7 +301,8 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 }
 
 bool menu_opening(const States &states) {
-	return states.file_picker_opening || states.new_tab_menu_opening;
+	return states.file_picker_opening || states.new_tab_menu_opening
+		|| states.resize_menu_opening;
 }
 
 void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
@@ -389,11 +398,11 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 	}
 }
 
-
 void new_tab_menu_handling(States &states, NewTabMenu &new_tab_menu,
 TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
 	if (!menu_opening(states), map_press(input, MAP_NEW_PROJECT)) {
 		states.new_tab_menu_opening = true;
+		new_tab_menu.ta_active = NEW_TAB_MENU_TA_ACTIVE_W;
 	}
 	
 	if (states.new_tab_menu_opening
@@ -414,6 +423,31 @@ TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
 
 		int index = tab_bar.tab_order_list[tab_bar.order_index];
 		tab_center_canvas(tab_bar.tab_list[index], gs);
+	}
+}
+
+void resize_menu_handling(States &states, ResizeMenu &resize_menu,
+Tab &tab, GraphicStuff &gs, const Input &input) {
+	if (!menu_opening(states), map_press(input, MAP_RESIZE_CANVAS)) {
+		states.resize_menu_opening = true;
+		resize_menu.ta_active = RESIZE_MENU_TA_ACTIVE_W;
+		resize_menu.w_ta.text = std::to_string(tab.sz.x);
+		resize_menu.h_ta.text = std::to_string(tab.sz.y);
+	}
+	
+	if (states.resize_menu_opening
+	&& (resize_menu.close_btn.clicked || map_press(input, MAP_ESC))) {
+		states.resize_menu_opening = false;
+	}
+
+	if (states.resize_menu_opening
+	&& (resize_menu.resize_btn.clicked || map_press(input, MAP_ENTER))
+	&& resize_menu_all_field_valid(resize_menu)) {
+		states.resize_menu_opening = false;
+
+		Vec2i canvas_sz = resize_menu_get_canvas_sz(resize_menu);
+
+		tab_resize(tab, gs, vec2i_new(0, 0), canvas_sz);
 	}
 }
 
@@ -445,6 +479,12 @@ AppUI &app_ui
 
 	new_tab_menu_handling(states, app_ui.new_tab_menu, app_ui.tab_bar,
 		gs, input);
+
+
+	resize_menu_update(app_ui.resize_menu, gs, input, game_time,
+		RESIZE_MENU_OFFSET, states.resize_menu_opening);
+
+	resize_menu_handling(states, app_ui.resize_menu, tab, gs, input);
 }
 
 void draw(
@@ -489,3 +529,4 @@ const AppUI &app_ui
 
 	draw_fb_main(gs);
 }
+ 

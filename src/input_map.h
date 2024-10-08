@@ -55,6 +55,8 @@ enum MappedKeyIndex: int {
 	
 	MAP_NEW_PROJECT,
 
+	MAP_RESIZE_CANVAS,
+
 
 	MAP_COUNT,
 };

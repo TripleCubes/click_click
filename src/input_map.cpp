@@ -156,6 +156,7 @@ void input_map_init(InputMap &input_map) {
 
 	set(MAP_NEW_PROJECT     , KEY_N    , MODIFIER_BOTH_CTRL,
 	                                     MODIFIER_BOTH_SHIFT);
+	set(MAP_RESIZE_CANVAS   , KEY_R    , MODIFIER_BOTH_CTRL );
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {
