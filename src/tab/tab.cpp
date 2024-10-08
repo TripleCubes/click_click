@@ -493,8 +493,8 @@ Vec2i prev_sz, Vec2i new_pos, Vec2i new_sz) {
 
 	std::vector<unsigned char> data_1;
 
-	for (int y = new_pos.y; y < new_sz.y; y++) {
-	for (int x = new_pos.x; x < new_sz.x; x++) {
+	for (int y = new_pos.y; y < new_pos.y + new_sz.y; y++) {
+	for (int x = new_pos.x; x < new_pos.x + new_sz.x; x++) {
 		data_1.push_back(get_px(x, y));
 	}
 	}

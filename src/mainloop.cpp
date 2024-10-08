@@ -445,9 +445,51 @@ Tab &tab, GraphicStuff &gs, const Input &input) {
 	&& resize_menu_all_field_valid(resize_menu)) {
 		states.resize_menu_opening = false;
 
-		Vec2i canvas_sz = resize_menu_get_canvas_sz(resize_menu);
+		Vec2i prev_sz = tab.sz;
+		Vec2i new_sz = resize_menu_get_canvas_sz(resize_menu);
+		Vec2i new_pos = vec2i_new(0, 0);
 
-		tab_resize(tab, gs, vec2i_new(0, 0), canvas_sz);
+		switch (resize_menu.align_btn_selected) {
+		case 0: 
+			new_pos.x = 0;
+			new_pos.y = 0;
+			break;
+		case 1:
+			new_pos.x = prev_sz.x / 2 - new_sz.x / 2;
+			new_pos.y = 0;
+			break;
+		case 2:
+			new_pos.x = prev_sz.x - new_sz.x;
+			new_pos.y = 0;
+			break;
+		case 3:
+			new_pos.x = 0;
+			new_pos.y = prev_sz.y / 2 - new_sz.y / 2;
+			break;
+		case 4:
+			new_pos.x = prev_sz.x / 2 - new_sz.x / 2;
+			new_pos.y = prev_sz.y / 2 - new_sz.y / 2;
+			break;
+		case 5:
+			new_pos.x = prev_sz.x - new_sz.x;
+			new_pos.y = prev_sz.y / 2 - new_sz.y / 2;
+			break;
+		case 6:
+			new_pos.x = 0;
+			new_pos.y = prev_sz.y - new_sz.y;
+			break;
+		case 7:
+			new_pos.x = prev_sz.x / 2 - new_sz.x / 2;
+			new_pos.y = prev_sz.y - new_sz.y;
+			break;
+		case 8:
+			new_pos.y = prev_sz.y - new_sz.y;
+			new_pos.x = prev_sz.x - new_sz.x;
+			break;
+		}
+		//new_pos = vec2i_new(0, 0);
+
+		tab_resize(tab, gs, new_pos, new_sz);
 	}
 }
 

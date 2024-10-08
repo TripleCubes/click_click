@@ -73,6 +73,16 @@ const GameTime &game_time) {
 	}
 }
 
+void align_btn_handle(ResizeMenu &resize_menu) {
+	for (int i = 0; i < (int)resize_menu.align_btn_list.size(); i++) {
+		const Btn &btn = resize_menu.align_btn_list[i];
+		
+		if (btn.clicked) {
+			resize_menu.align_btn_selected = i;
+		}
+	}
+}
+
 }
 
 void resize_menu_init(ResizeMenu &resize_menu) {
@@ -105,6 +115,21 @@ void resize_menu_init(ResizeMenu &resize_menu) {
 		"32",
 		true
 	);
+
+	const Vec2 ALIGN_BTN_POS = vec2_new(MARGIN.x + 32, MARGIN.y + 40);
+	for (int i = 0; i < (int)resize_menu.align_btn_list.size(); i++) {
+		Btn &btn = resize_menu.align_btn_list[i];
+
+		int x = i % 3;
+		int y = i / 3;
+
+		btn = btn_new(
+			vec2_new(ALIGN_BTN_POS.x + x * 13, ALIGN_BTN_POS.y + y * 13),
+			vec2_new(12, 12),
+			BTN_TEXTAREA_COLOR,
+			i == 4? "ICON_CIRCLE" : "ICON_FILL_ALL"
+		);
+	}
 }
 
 void resize_menu_update(ResizeMenu &resize_menu, GraphicStuff &gs,
@@ -122,8 +147,19 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	textarea_update(resize_menu.h_ta, gs, game_time, input, pos,
 		resize_menu.ta_active == RESIZE_MENU_TA_ACTIVE_H, show);
 
+	for (int i = 0; i < (int)resize_menu.align_btn_list.size(); i++) {
+		Btn &btn = resize_menu.align_btn_list[i];
+
+		btn_update(btn, gs, input, pos, show);
+	}
+
+	if (!show) {
+		return;
+	}
+
 	ta_hover_handle(resize_menu, gs);
 	ta_active_handle(resize_menu, input, game_time);
+	align_btn_handle(resize_menu);
 
 	gs.draw_secondlayer_ui = true;
 }
@@ -142,6 +178,12 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		resize_menu.ta_active == RESIZE_MENU_TA_ACTIVE_W, true);
 	textarea_draw(resize_menu.h_ta, gs, game_time, pos,
 		resize_menu.ta_active == RESIZE_MENU_TA_ACTIVE_H, true);
+
+	for (int i = 0; i < (int)resize_menu.align_btn_list.size(); i++) {
+		const Btn &btn = resize_menu.align_btn_list[i];
+
+		btn_draw(btn, gs, pos, resize_menu.align_btn_selected == i);
+	}
 
 	draw_text(
 		gs,
@@ -176,6 +218,17 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 			false
 		);
 	}
+
+	draw_text(
+		gs,
+		"anchor",
+		vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 42)),
+		100,
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(0, 0),
+		false
+	);
 }
 
 void resize_menu_bkg_draw(GraphicStuff &gs, Vec2 parent_pos) {

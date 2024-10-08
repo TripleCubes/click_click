@@ -122,6 +122,10 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	textarea_update(new_tab_menu.h_ta, gs, game_time, input, pos,
 		new_tab_menu.ta_active == NEW_TAB_MENU_TA_ACTIVE_H, show);
 
+	if (!show) {
+		return;
+	}
+
 	ta_hover_handle(new_tab_menu, gs);
 	ta_active_handle(new_tab_menu, input, game_time);
 

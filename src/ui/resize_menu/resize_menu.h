@@ -3,6 +3,7 @@
 
 #include "../btn.h"
 #include "../textarea.h"
+#include <array>
 
 struct GraphicStuff;
 struct Input;
@@ -24,6 +25,9 @@ struct ResizeMenu {
 	TextArea w_ta;
 	TextArea h_ta;
 	ResizeMenuTaActive ta_active = RESIZE_MENU_TA_ACTIVE_W;
+
+	std::array<Btn, 9> align_btn_list;
+	int align_btn_selected = 4;
 };
 
 void resize_menu_init(ResizeMenu &resize_menu);
