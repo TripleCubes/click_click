@@ -156,6 +156,9 @@ void input_map_init(InputMap &input_map) {
 
 	set(MAP_NEW_PROJECT     , KEY_N    , MODIFIER_BOTH_CTRL,
 	                                     MODIFIER_BOTH_SHIFT);
+	#ifndef __EMSCRIPTEN__
+	set(MAP_NEW_PROJECT_1   , KEY_N    , MODIFIER_BOTH_CTRL );
+	#endif
 	set(MAP_RESIZE_CANVAS   , KEY_R    , MODIFIER_BOTH_CTRL );
 }
 

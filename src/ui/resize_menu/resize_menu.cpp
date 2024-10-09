@@ -116,7 +116,7 @@ void resize_menu_init(ResizeMenu &resize_menu) {
 		true
 	);
 
-	const Vec2 ALIGN_BTN_POS = vec2_new(MARGIN.x + 32, MARGIN.y + 40);
+	const Vec2 ALIGN_BTN_POS = vec2_new(MARGIN.x + 32, MARGIN.y + 52);
 	for (int i = 0; i < (int)resize_menu.align_btn_list.size(); i++) {
 		Btn &btn = resize_menu.align_btn_list[i];
 
@@ -210,7 +210,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		draw_text(
 			gs,
 			"invalid canvas size",
-			vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40),
+			vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40)),
 			100,
 			1,
 			WARNING_TEXT_COLOR,
@@ -222,7 +222,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"anchor",
-		vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 42)),
+		vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 54)),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,

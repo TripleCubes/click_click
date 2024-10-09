@@ -172,7 +172,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		draw_text(
 			gs,
 			"invalid canvas size",
-			vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40),
+			vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40)),
 			100,
 			1,
 			WARNING_TEXT_COLOR,

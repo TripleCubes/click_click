@@ -400,7 +400,9 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 
 void new_tab_menu_handling(States &states, NewTabMenu &new_tab_menu,
 TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
-	if (!menu_opening(states), map_press(input, MAP_NEW_PROJECT)) {
+	if (!menu_opening(states)
+	&& (map_press(input, MAP_NEW_PROJECT)
+		|| map_press(input, MAP_NEW_PROJECT_1))) {
 		states.new_tab_menu_opening = true;
 		new_tab_menu.ta_active = NEW_TAB_MENU_TA_ACTIVE_W;
 	}
@@ -428,7 +430,7 @@ TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
 
 void resize_menu_handling(States &states, ResizeMenu &resize_menu,
 Tab &tab, GraphicStuff &gs, const Input &input) {
-	if (!menu_opening(states), map_press(input, MAP_RESIZE_CANVAS)) {
+	if (!menu_opening(states) && map_press(input, MAP_RESIZE_CANVAS)) {
 		states.resize_menu_opening = true;
 		resize_menu.ta_active = RESIZE_MENU_TA_ACTIVE_W;
 		resize_menu.w_ta.text = std::to_string(tab.sz.x);
@@ -487,8 +489,8 @@ Tab &tab, GraphicStuff &gs, const Input &input) {
 			new_pos.x = prev_sz.x - new_sz.x;
 			break;
 		}
-		//new_pos = vec2i_new(0, 0);
 
+		selection_clear(tab.selection, tab.sz);
 		tab_resize(tab, gs, new_pos, new_sz);
 	}
 }
@@ -564,6 +566,9 @@ const AppUI &app_ui
 		
 			draw_blurred_rects_1(gs, states);
 			draw_ui_1(states, gs, app_ui, tab, input, game_time);
+
+			// TEST
+			//std::cout << "drawing secondlayer ui" << std::endl;
 		}
 
 		draw_cursor(gs, input);
