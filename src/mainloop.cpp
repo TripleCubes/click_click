@@ -15,6 +15,7 @@
 #include "ui/app_ui.h"
 #include "ui/file_picker/file_picker.h"
 #include "ui/new_tab_menu/new_tab_menu.h"
+#include "ui/top_left_menu/top_left_menu.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -48,6 +49,7 @@ const Vec2 TAB_OFFSET = vec2_new(0, 0);
 const Vec2 FILE_PICKER_OFFSET = vec2_new(0, 0);
 const Vec2 NEW_TAB_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 RESIZE_MENU_OFFSET = vec2_new(0, 0);
+const Vec2 TOP_LEFT_MENU_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -158,7 +160,7 @@ void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
 
 void draw_ui(
 GraphicStuff &gs,
-const TabBar &tab_bar,
+const AppUI &app_ui,
 const Tab &tab,
 const Input &input,
 const GameTime &game_time
@@ -168,8 +170,11 @@ const GameTime &game_time
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
-	tab_bar_draw(tab_bar, gs);
+	tab_bar_draw(app_ui.tab_bar, gs);
 	tab_ui_draw(tab, gs, input, game_time, TAB_OFFSET);
+
+	top_left_menu_draw(app_ui.top_left_menu, gs, input, game_time,
+		TOP_LEFT_MENU_OFFSET);
 
 	draw_text(
 		gs,
@@ -529,6 +534,10 @@ AppUI &app_ui
 		RESIZE_MENU_OFFSET, states.resize_menu_opening);
 
 	resize_menu_handling(states, app_ui.resize_menu, tab, gs, input);
+
+
+	top_left_menu_update(app_ui.top_left_menu, gs, input, game_time,
+		TOP_LEFT_MENU_OFFSET, true);
 }
 
 void draw(
@@ -556,7 +565,7 @@ const AppUI &app_ui
 			BLUR_COLOR, true);
 	
 		draw_blurred_rects(gs, tab);
-		draw_ui(gs, app_ui.tab_bar, tab, input, game_time);
+		draw_ui(gs, app_ui, tab, input, game_time);
 
 		if (gs.draw_secondlayer_ui) {
 			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),

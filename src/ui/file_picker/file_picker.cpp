@@ -14,6 +14,7 @@
 
 #include <filesystem>
 #include <algorithm>
+#include <cmath>
 
 namespace {
 

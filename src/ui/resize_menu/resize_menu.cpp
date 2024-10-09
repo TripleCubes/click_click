@@ -14,6 +14,7 @@
 #include "../../consts.h"
 
 #include <string>
+#include <cmath>
 
 namespace {
 

@@ -106,7 +106,9 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 		"ICON_IMAGE",
 		"ICON_SZ_4_5",
 		"ICON_PIN",
-		"ICON_CIRCLE"
+		"ICON_CIRCLE",
+
+		"ICON_HAMBURGER",
 	};
 
 	for (int i = 0; i < ICON_COUNT; i++) {

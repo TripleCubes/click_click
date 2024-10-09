@@ -38,7 +38,9 @@ const int ICON_SZ_4_5          = 24;
 const int ICON_PIN             = 25;
 const int ICON_CIRCLE          = 26;
 
-const int ICON_COUNT           = 27;
+const int ICON_HAMBURGER       = 27;
+
+const int ICON_COUNT           = 28;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;
