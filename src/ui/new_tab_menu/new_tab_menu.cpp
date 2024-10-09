@@ -136,9 +136,9 @@ void new_tab_menu_ui_draw(const NewTabMenu &new_tab_menu, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 
-	const float X = (main_fb_sz.x - W) / 2;
-	const float Y = (main_fb_sz.y - H) / 2;
-	Vec2 pos = vec2_add(parent_pos, vec2_floor(vec2_new(X, Y)));
+	const float X = std::floor((main_fb_sz.x - W) / 2);
+	const float Y = std::floor((main_fb_sz.y - H) / 2);
+	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_draw(new_tab_menu.new_tab_btn, gs, pos, false);
 	btn_draw(new_tab_menu.close_btn, gs, pos, false);
@@ -150,7 +150,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"width",
-		vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 15)),
+		vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 15),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -160,7 +160,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"height",
-		vec2_floor(vec2_new(X + MARGIN.x + W / 2 + 1, Y + MARGIN.y + 15)),
+		vec2_new(X + MARGIN.x + W / 2 + 1, Y + MARGIN.y + 15),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -172,7 +172,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		draw_text(
 			gs,
 			"invalid canvas size",
-			vec2_floor(vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40)),
+			vec2_new(X + MARGIN.x + 3, Y + MARGIN.y + 40),
 			100,
 			1,
 			WARNING_TEXT_COLOR,
