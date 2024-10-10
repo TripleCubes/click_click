@@ -214,11 +214,11 @@ Vec2 parent_pos) {
 	if (app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED) {
 		text(
 			"> use hardware cursor",
-			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 1 + 4)
+			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 1 + 3)
 		);
 		text(
 			"> use pixel perfect brush",
-			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 3 + 4)
+			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 3 + 3)
 		);
 	}
 }
