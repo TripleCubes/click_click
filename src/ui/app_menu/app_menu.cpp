@@ -38,6 +38,9 @@ void per_settings_menu_handling(AppMenu &app_menu, Settings &settings
 		}
 		#endif
 	}
+	if (app_menu.use_px_perfect_brush_toggle.clicked) {
+		settings.use_px_perfect_brush = !settings.use_px_perfect_brush;
+	}
 }
 
 }
@@ -57,7 +60,7 @@ void app_menu_init(AppMenu &app_menu) {
 		"file"
 	);
 	app_menu.ui_settings_btn = btn_new(
-		vec2_new(MARGIN.x, MARGIN.y + 13 + 6 + 13 * 2),
+		vec2_new(MARGIN.x, MARGIN.y + 13 * 4),
 		SIDE_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
 		"ui"
@@ -102,6 +105,12 @@ void app_menu_init(AppMenu &app_menu) {
 		BTN_TEXTAREA_COLOR,
 		"_"
 	);
+	app_menu.use_px_perfect_brush_toggle = btn_new(
+		vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 1, MARGIN.y + 13 * 4),
+		TOGGLE_SZ,
+		BTN_TEXTAREA_COLOR,
+		"_"
+	);
 }
 
 void app_menu_update(AppMenu &app_menu, Settings &settings, GraphicStuff &gs,
@@ -130,6 +139,8 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show
 	bool b_ui_settings_menu
 		= show && app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED;
 	btn_update(app_menu.use_hardware_cursor_toggle, gs, input, pos,
+		b_ui_settings_menu);
+	btn_update(app_menu.use_px_perfect_brush_toggle, gs, input, pos,
 		b_ui_settings_menu);
 
 	if (!show) {
@@ -176,6 +187,8 @@ Vec2 parent_pos) {
 	else if (app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED) {
 		btn_draw(app_menu.use_hardware_cursor_toggle, gs, pos, false,
 			settings.use_hardware_cursor? "on" : "off");
+		btn_draw(app_menu.use_px_perfect_brush_toggle, gs, pos, false,
+			settings.use_px_perfect_brush? "on" : "off");
 	}
 
 	auto text = [&gs, pos](const std::string &text, Vec2 in_pos,
@@ -194,7 +207,7 @@ Vec2 parent_pos) {
 
 	text(
 		"settings",
-		vec2_new(MARGIN.x + 4, MARGIN.y + 13 * 2 + 8),
+		vec2_new(MARGIN.x + 4, MARGIN.y + 13 * 2 + 16),
 		KEY_HINT_COLOR
 	);
 
@@ -202,6 +215,10 @@ Vec2 parent_pos) {
 		text(
 			"> use hardware cursor",
 			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 1 + 4)
+		);
+		text(
+			"> use pixel perfect brush",
+			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 3 + 4)
 		);
 	}
 }

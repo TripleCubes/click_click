@@ -17,6 +17,7 @@ struct Color;
 struct GraphicStuff;
 struct Input;
 struct GameTime;
+struct Settings;
 
 struct Tab {
 	Btn btn;
@@ -61,7 +62,8 @@ int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 	Vec2 pos, Vec2i sz, int px_scale);
 
 void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
-	const GameTime &game_time, Vec2 parent_pos, bool show);
+	const GameTime &game_time, const Settings &settings,
+	Vec2 parent_pos, bool show);
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
 
