@@ -782,6 +782,7 @@ void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
 	tab.px_scale = clampi(tab.px_scale, 1, ZOOM_MAX);
 	tab.pos.x = view_sz.x / 2 - tab.sz.x * tab.px_scale / 2 + SIDE_BAR_W;
 	tab.pos.y = view_sz.y / 2 - tab.sz.y * tab.px_scale / 2;
+	tab.pos.y += TOP_BAR_H;
 }
 
 void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
