@@ -252,6 +252,8 @@ int icon, Vec2 pos, int scale, Color color, bool flip_color) {
 Vec2 draw_text(GraphicStuff &gs,
 const std::string &text, Vec2 pos, float box_w, int scale,
 Color color, Vec2 bkg_margin, bool flip_color) {
+	pos = vec2_floor(pos);
+	
 	Vec2 box_sz = draw_text_no_bkg(
 		gs,
 		text,
@@ -301,6 +303,8 @@ Color color, Vec2 bkg_margin, bool flip_color) {
 
 Vec2 draw_icon(GraphicStuff &gs,
 int icon, Vec2 pos, int scale, Color color, Vec2 bkg_margin, bool flip_color) {
+	pos = vec2_floor(pos);
+
 	Vec2 box_sz = draw_icon_no_bkg(
 		gs,
 		icon,

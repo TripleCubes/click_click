@@ -535,7 +535,7 @@ AppUI &app_ui
 	resize_menu_handling(states, app_ui.resize_menu, tab, gs, input);
 
 	top_left_menu_update(app_ui.top_left_menu, gs, input, game_time,
-		TOP_LEFT_MENU_OFFSET, true);
+		TOP_LEFT_MENU_OFFSET, !menu_opening(states));
 
 	app_menu_update(app_ui.app_menu, gs, input, game_time,
 		APP_MENU_OFFSET, states.app_menu_opening);
