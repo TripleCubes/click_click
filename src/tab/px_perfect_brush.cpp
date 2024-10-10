@@ -38,6 +38,10 @@ unsigned char pallete_index) {
 	};
 	
 	if (pos.x < 0 || pos.y < 0 || pos.x >= canvas_sz.x || pos.y >= canvas_sz.y){
+		draw(prev_point);
+		draw(prev_prev_point);
+		prev_point = vec2i_new(-1, -1);
+		prev_prev_point = vec2i_new(-1, -1);
 		return;
 	}
 	if (prev_point.x == -1) {
@@ -63,6 +67,7 @@ void line(Vec2i pos, Vec2i canvas_sz, Tab &tab, Layer &layer,
 unsigned char pallete_index) {
 	if (prev_point.x == -1) {
 		px(pos, canvas_sz, tab, layer, pallete_index);
+		return;
 	}
 
 	if (vec2i_equals(pos, prev_point)) {
