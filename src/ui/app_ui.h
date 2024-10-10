@@ -6,6 +6,7 @@
 #include "new_tab_menu/new_tab_menu.h"
 #include "resize_menu/resize_menu.h"
 #include "top_left_menu/top_left_menu.h"
+#include "app_menu/app_menu.h"
 
 struct GraphicStuff;
 
@@ -15,6 +16,7 @@ struct AppUI {
 	NewTabMenu new_tab_menu;
 	ResizeMenu resize_menu;
 	TopLeftMenu top_left_menu;
+	AppMenu app_menu;
 };
 
 void app_ui_init(AppUI &app_ui, GraphicStuff &gs);

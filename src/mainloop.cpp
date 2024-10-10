@@ -50,6 +50,7 @@ const Vec2 FILE_PICKER_OFFSET = vec2_new(0, 0);
 const Vec2 NEW_TAB_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 RESIZE_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 TOP_LEFT_MENU_OFFSET = vec2_new(0, 0);
+const Vec2 APP_MENU_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -149,6 +150,9 @@ void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
 	}
 	if (states.resize_menu_opening) {
 		resize_menu_bkg_draw(gs, RESIZE_MENU_OFFSET);
+	}
+	if (states.app_menu_opening) {
+		app_menu_bkg_draw(gs, APP_MENU_OFFSET);
 	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -307,7 +311,7 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 
 bool menu_opening(const States &states) {
 	return states.file_picker_opening || states.new_tab_menu_opening
-		|| states.resize_menu_opening;
+		|| states.resize_menu_opening || states.app_menu_opening;
 }
 
 void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
@@ -518,26 +522,23 @@ AppUI &app_ui
 
 	file_picker_update(app_ui.file_picker, gs, input, game_time,
 		FILE_PICKER_OFFSET, states.file_picker_opening);
-
 	file_picker_handling(states, app_ui.file_picker, app_ui.tab_bar,
 		tab, gs, input);
 
-
 	new_tab_menu_update(app_ui.new_tab_menu, gs, input, game_time,
 		NEW_TAB_MENU_OFFSET, states.new_tab_menu_opening);
-
 	new_tab_menu_handling(states, app_ui.new_tab_menu, app_ui.tab_bar,
 		gs, input);
 
-
 	resize_menu_update(app_ui.resize_menu, gs, input, game_time,
 		RESIZE_MENU_OFFSET, states.resize_menu_opening);
-
 	resize_menu_handling(states, app_ui.resize_menu, tab, gs, input);
-
 
 	top_left_menu_update(app_ui.top_left_menu, gs, input, game_time,
 		TOP_LEFT_MENU_OFFSET, true);
+
+	app_menu_update(app_ui.app_menu, gs, input, game_time,
+		APP_MENU_OFFSET, states.app_menu_opening);
 }
 
 void draw(
