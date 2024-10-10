@@ -25,6 +25,7 @@
 #include "brush.h"
 #include "curve.h"
 #include "fill.h"
+#include "px_perfect_brush.h"
 
 #include <string>
 #include <cmath>
@@ -232,11 +233,19 @@ const GameTime &game_time, Vec2 parent_pos) {
 
 	if (!tab.clicked_and_hold_on_ui && tab.layer_order_list.size() != 0) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
-			px_tool_preview_update(tab,
-				tab.tool_picker.brush_selected_index,
-				gs, input, true, parent_pos);
-			brush_tool_update(tab, get_layer_index(tab),
-				tab.tool_picker.brush_selected_index, gs, input, parent_pos);
+			if (tab.tool_picker.brush_selected_index == 0) {
+				px_perfect_brush_tool_preview_update(tab, gs, input,parent_pos);
+				px_perfect_brush_tool_update(tab, get_layer_index(tab), gs,
+					input, parent_pos);
+			}
+			else {
+				px_tool_preview_update(tab,
+					tab.tool_picker.brush_selected_index,
+					gs, input, true, parent_pos);
+				brush_tool_update(tab, get_layer_index(tab),
+					tab.tool_picker.brush_selected_index, gs, input,
+					parent_pos);
+			}
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_CURVE) {

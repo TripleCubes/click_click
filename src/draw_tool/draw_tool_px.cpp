@@ -6,8 +6,8 @@
 namespace {
 
 void px(std::vector<unsigned char> &data, const Selection &selection,
-bool use_selection,
-Vec2i data_sz, Vec2i pos, unsigned char pallete_index, int sz) {
+bool use_selection, Vec2i data_sz, Vec2i pos, unsigned char pallete_index,
+int sz) {
 	auto draw = [data_sz, pallete_index, &data, &selection, use_selection]
 	(int x, int y) {
 		if (x < 0 || y < 0 || x >= data_sz.x || y >= data_sz.y) {
