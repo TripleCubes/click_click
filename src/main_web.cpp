@@ -11,6 +11,7 @@
 #include "game_time.h"
 #include "input.h"
 #include "states.h"
+#include "settings.h"
 #include "tab/tab.h"
 #include "ui/app_ui.h"
 #include "graphic/graphic.h"
@@ -23,6 +24,7 @@
 namespace {
 
 States states;
+Settings settings;
 GraphicStuff graphic_stuff;
 GameTime game_time;
 Input input;
@@ -70,6 +72,7 @@ void main_loop() {
 	input_update(input);
 	update(
 		states,
+		settings,
 		graphic_stuff,
 		game_time,
 		input,
@@ -84,6 +87,7 @@ void main_loop() {
 
 	draw(
 		states,
+		settings,
 		graphic_stuff,
 		game_time,
 		input,

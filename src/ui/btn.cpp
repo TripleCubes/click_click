@@ -55,11 +55,20 @@ Vec2 parent_pos, bool show) {
 	}
 }
 
-void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
+void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,
+bool selected, const std::string &replace_text) {
 	Vec2 pos = vec2_add(parent_pos, btn.pos);
 	Color color = btn.color;
 	
 	bool flip_color = false;
+
+	std::string text;
+	if (replace_text.length() != 0) {
+		text = replace_text;
+	}
+	else {
+		text = btn.text;
+	}
 
 	if (btn.holding || btn.hovered || selected) {
 		flip_color = true;
@@ -112,7 +121,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 	};
 
 	for (int i = 0; i < ICON_COUNT; i++) {
-		if (btn.text == icon_str_list[i]) {
+		if (text == icon_str_list[i]) {
 			_draw_icon(i);
 			return;
 		}
@@ -120,7 +129,7 @@ void btn_draw(const Btn &btn, GraphicStuff &gs, Vec2 parent_pos,bool selected){
 
 	draw_text(
 		gs,
-		btn.text,
+		text,
 		vec2_add(pos, vec2_new(4, 3)),
 		btn.sz.x - 8,
 		1,

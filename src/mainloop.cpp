@@ -1,11 +1,5 @@
 #include "mainloop.h"
 
-#ifndef __EMSCRIPTEN__
-#include <glad/glad.h>
-#else
-#include <GLES2/gl2.h>
-#endif
-
 #include <vector>
 
 #include "game_time.h"
@@ -35,6 +29,7 @@
 #include "pos_convert.h"
 #include "consts.h"
 #include "states.h"
+#include "settings.h"
 
 #include "file/save_project.h"
 #include "file/open_project.h"
@@ -211,6 +206,7 @@ const GameTime &game_time
 
 void draw_ui_1(
 const States &states,
+const Settings &settings,
 GraphicStuff &gs,
 const AppUI &app_ui,
 const Tab &tab,
@@ -235,7 +231,7 @@ const GameTime &game_time
 			RESIZE_MENU_OFFSET);
 	}
 	if (states.app_menu_opening) {
-		app_menu_ui_draw(app_ui.app_menu, gs, input, game_time,
+		app_menu_ui_draw(app_ui.app_menu, settings, gs, input, game_time,
 			APP_MENU_OFFSET);
 	}
 
@@ -574,10 +570,14 @@ GraphicStuff &gs, const Input &input) {
 
 void update(
 States &states,
+Settings &settings,
 GraphicStuff &gs,
 const GameTime &game_time,
 const Input &input,
 AppUI &app_ui
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
 ) {
 	Tab &tab = app_ui.tab_bar.tab_list[tab_bar_get_tab_index(app_ui.tab_bar)];
 
@@ -604,13 +604,19 @@ AppUI &app_ui
 		TOP_LEFT_MENU_OFFSET, !menu_opening(states));
 	top_left_menu_handling(states, app_ui.top_left_menu, input);
 
-	app_menu_update(app_ui.app_menu, gs, input, game_time,
+	#ifndef __EMSCRIPTEN__
+	app_menu_update(app_ui.app_menu, settings, gs, input, game_time,
+		APP_MENU_OFFSET, states.app_menu_opening, glfw_window);
+	#else
+	app_menu_update(app_ui.app_menu, settings, gs, input, game_time,
 		APP_MENU_OFFSET, states.app_menu_opening);
+	#endif
 	app_menu_handling(states, app_ui, tab, gs, input);
 }
 
 void draw(
 const States &states,
+const Settings &settings,
 GraphicStuff &gs,
 const GameTime &game_time,
 const Input &input,
@@ -643,13 +649,15 @@ const AppUI &app_ui
 				BLUR_COLOR, true);
 		
 			draw_blurred_rects_1(gs, states);
-			draw_ui_1(states, gs, app_ui, tab, input, game_time);
+			draw_ui_1(states, settings, gs, app_ui, tab, input, game_time);
 
 			// TEST
 			//std::cout << "drawing secondlayer ui" << std::endl;
 		}
 
-		draw_cursor(gs, input);
+		if (!settings.use_hardware_cursor) {
+			draw_cursor(gs, input);
+		}
 	}
 
 	draw_fb_main(gs);

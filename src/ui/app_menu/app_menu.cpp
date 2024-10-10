@@ -1,5 +1,7 @@
 #include "app_menu.h"
 
+#include <cmath>
+
 #include "../../graphic_types/graphic_types.h"
 #include "../../graphic_types/framebuffer.h"
 #include "../../input.h"
@@ -9,8 +11,7 @@
 #include "../../graphic/draw_text.h"
 #include "../../types/vec2.h"
 #include "../../consts.h"
-
-#include <cmath>
+#include "../../settings.h"
 
 namespace {
 
@@ -18,11 +19,25 @@ const float W = 200;
 const float H = 160;
 const Vec2 MARGIN = vec2_new(4, 4);
 const Vec2 SIDE_BTN_SZ = vec2_new(50, 12);
+const Vec2 TOGGLE_SZ = vec2_new(20, 12);
 
-void per_menu_handling(AppMenu &app_menu, const Input &input) {
-	// if (app_menu.) {
+void per_settings_menu_handling(AppMenu &app_menu, Settings &settings
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
+	if (app_menu.use_hardware_cursor_toggle.clicked) {
+		settings.use_hardware_cursor = !settings.use_hardware_cursor;
 
-	// }
+		#ifndef __EMSCRIPTEN__
+		if (settings.use_hardware_cursor) {
+			glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		else {
+			glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		}
+		#endif
+	}
 }
 
 }
@@ -80,10 +95,21 @@ void app_menu_init(AppMenu &app_menu) {
 		BTN_TEXTAREA_COLOR,
 		"resize canvas"
 	);
+
+	app_menu.use_hardware_cursor_toggle = btn_new(
+		vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 1, MARGIN.y + 13 * 2),
+		TOGGLE_SZ,
+		BTN_TEXTAREA_COLOR,
+		"_"
+	);
 }
 
-void app_menu_update(AppMenu &app_menu, GraphicStuff &gs, const Input &input,
-const GameTime &game_time, Vec2 parent_pos, bool show) {
+void app_menu_update(AppMenu &app_menu, Settings &settings, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	const float X = (main_fb_sz.x - W) / 2;
 	const float Y = (main_fb_sz.y - H) / 2;
@@ -101,6 +127,10 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 	btn_update(app_menu.save_as_btn, gs, input, pos, b_file_menu);
 	btn_update(app_menu.resize_btn, gs, input, pos, b_file_menu);
 
+	bool b_ui_settings_menu
+		= show && app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED;
+	btn_update(app_menu.use_hardware_cursor_toggle, gs, input, pos,
+		b_ui_settings_menu);
 
 	if (!show) {
 		return;
@@ -113,13 +143,18 @@ const GameTime &game_time, Vec2 parent_pos, bool show) {
 		app_menu.selected_menu = APP_MENU_UI_SETTINGS_MENU_SELECTED;
 	}
 
-	per_menu_handling(app_menu, input);
+	per_settings_menu_handling(app_menu, settings
+	#ifndef __EMSCRIPTEN__
+	,glfw_window
+	#endif
+	);
 
 	gs.draw_secondlayer_ui = true;
 }
 
-void app_menu_ui_draw(const AppMenu &app_menu, GraphicStuff &gs,
-const Input &input, const GameTime &game_time, Vec2 parent_pos) {
+void app_menu_ui_draw(const AppMenu &app_menu, const Settings &settings,
+GraphicStuff &gs, const Input &input, const GameTime &game_time,
+Vec2 parent_pos) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	const float X = (main_fb_sz.x - W) / 2;
 	const float Y = (main_fb_sz.y - H) / 2;
@@ -138,17 +173,37 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		btn_draw(app_menu.save_as_btn, gs, pos, false);
 		btn_draw(app_menu.resize_btn, gs, pos, false);
 	}
+	else if (app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED) {
+		btn_draw(app_menu.use_hardware_cursor_toggle, gs, pos, false,
+			settings.use_hardware_cursor? "on" : "off");
+	}
 
-	draw_text(
-		gs,
+	auto text = [&gs, pos](const std::string &text, Vec2 in_pos,
+	Color color = BTN_TEXTAREA_COLOR) {
+		draw_text(
+			gs,
+			text,
+			vec2_add(in_pos, pos),
+			9999,
+			1,
+			color,
+			vec2_new(4, 3),
+			false
+		);
+	};
+
+	text(
 		"settings",
-		vec2_add(pos, vec2_new(MARGIN.x + 4, MARGIN.y + 13 * 2 + 8)),
-		9999,
-		1,
-		KEY_HINT_COLOR,
-		vec2_new(4, 3),
-		false
+		vec2_new(MARGIN.x + 4, MARGIN.y + 13 * 2 + 8),
+		KEY_HINT_COLOR
 	);
+
+	if (app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED) {
+		text(
+			"> use hardware cursor",
+			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 1 + 4)
+		);
+	}
 }
 
 void app_menu_bkg_draw(GraphicStuff &gs, Vec2 parent_pos) {

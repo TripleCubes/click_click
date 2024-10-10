@@ -11,6 +11,7 @@
 #include "input.h"
 #include "consts.h"
 #include "states.h"
+#include "settings.h"
 #include "mainloop.h"
 #include "ui/app_ui.h"
 
@@ -77,6 +78,7 @@ int main () {
 	}
 
 	States states;
+	Settings settings;
 
 	float game_start_time = glfwGetTime();
 	float frame_start_time = game_start_time;
@@ -119,10 +121,12 @@ int main () {
 
 		update(
 			states,
+			settings,
 			graphic_stuff,
 			game_time,
 			input,
-			app_ui
+			app_ui,
+			glfw_window
 		);
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
@@ -133,6 +137,7 @@ int main () {
 
 		draw(
 			states,
+			settings,
 			graphic_stuff,
 			game_time,
 			input,
