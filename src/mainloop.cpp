@@ -234,6 +234,10 @@ const GameTime &game_time
 		resize_menu_ui_draw(app_ui.resize_menu, gs, input, game_time,
 			RESIZE_MENU_OFFSET);
 	}
+	if (states.app_menu_opening) {
+		app_menu_ui_draw(app_ui.app_menu, gs, input, game_time,
+			APP_MENU_OFFSET);
+	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
@@ -361,9 +365,7 @@ void file_picker_handling(States &states, FilePicker &file_picker,
 TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 	if (!menu_opening(states) && map_press(input, MAP_OPEN_FILE)) {
 		states.file_picker_opening = true;
-		
 		file_picker.is_save_picker = false;
-		
 		tab.layer_name_editing = false;
 	}
 
@@ -504,6 +506,70 @@ Tab &tab, GraphicStuff &gs, const Input &input) {
 	}
 }
 
+void top_left_menu_handling(States &states, const TopLeftMenu &top_left_menu,
+const Input &input) {
+	if (!menu_opening(states) && top_left_menu.hamburger_btn.clicked) {
+		states.app_menu_opening = true;
+	}
+}
+
+void app_menu_handling(States &states, AppUI &app_ui, Tab &tab,
+GraphicStuff &gs, const Input &input) {
+	AppMenu &app_menu = app_ui.app_menu;
+	FilePicker &file_picker = app_ui.file_picker;
+	NewTabMenu &new_tab_menu = app_ui.new_tab_menu;
+	ResizeMenu &resize_menu = app_ui.resize_menu;
+
+	if (!menu_opening(states) && map_press(input, MAP_APP_MENU)) {
+		states.app_menu_opening = true;
+	}
+	
+	if (states.app_menu_opening
+	&& (app_menu.close_btn.clicked || map_press(input, MAP_ESC))) {
+		states.app_menu_opening = false;
+	}
+
+	if (app_menu.new_tab_btn.clicked) {
+		states.app_menu_opening = false;
+		states.new_tab_menu_opening = true;
+
+		new_tab_menu.ta_active = NEW_TAB_MENU_TA_ACTIVE_W;
+	}
+
+	if (app_menu.open_file_btn.clicked) {
+		states.app_menu_opening = false;
+
+		states.file_picker_opening = true;
+		file_picker.is_save_picker = false;
+		tab.layer_name_editing = false;
+	}
+
+	if (app_menu.save_btn.clicked) {
+		states.app_menu_opening = false;
+
+		states.file_picker_opening = true;
+		
+		file_picker.save_name_textarea.text
+			= file_picker.save_name_textarea.defl_text;
+		file_picker.is_save_picker = true;
+
+		tab.layer_name_editing = false;
+	}
+
+	if (app_menu.save_as_btn.clicked) {
+		states.app_menu_opening = false;
+	}
+
+	if (app_menu.resize_btn.clicked) {
+		states.app_menu_opening = false;
+
+		states.resize_menu_opening = true;
+		resize_menu.ta_active = RESIZE_MENU_TA_ACTIVE_W;
+		resize_menu.w_ta.text = std::to_string(tab.sz.x);
+		resize_menu.h_ta.text = std::to_string(tab.sz.y);
+	}
+}
+
 }
 
 void update(
@@ -536,9 +602,11 @@ AppUI &app_ui
 
 	top_left_menu_update(app_ui.top_left_menu, gs, input, game_time,
 		TOP_LEFT_MENU_OFFSET, !menu_opening(states));
+	top_left_menu_handling(states, app_ui.top_left_menu, input);
 
 	app_menu_update(app_ui.app_menu, gs, input, game_time,
 		APP_MENU_OFFSET, states.app_menu_opening);
+	app_menu_handling(states, app_ui, tab, gs, input);
 }
 
 void draw(

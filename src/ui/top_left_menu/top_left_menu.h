@@ -11,7 +11,7 @@ struct GameTime;
 struct TopLeftMenu {
 	Vec2 pos;
 	Btn hamburger_btn;
-	Btn search_btn;
+	Btn command_btn;
 };
 
 void top_left_menu_init(TopLeftMenu &top_left_menu, Vec2 pos);

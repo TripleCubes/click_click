@@ -58,6 +58,8 @@ enum MappedKeyIndex: int {
 
 	MAP_RESIZE_CANVAS,
 
+	MAP_APP_MENU,
+
 
 	MAP_COUNT,
 };

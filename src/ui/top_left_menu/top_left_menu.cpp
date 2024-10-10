@@ -15,11 +15,11 @@ void top_left_menu_init(TopLeftMenu &top_left_menu, Vec2 pos) {
 		"ICON_HAMBURGER"
 	);
 
-	top_left_menu.search_btn = btn_new(
+	top_left_menu.command_btn = btn_new(
 		vec2_new(13, 0),
 		vec2_new(SIDE_BAR_W - 8 - 12, 12),
 		BTN_TEXTAREA_COLOR,
-		"search"
+		"commands"
 	);
 }
 
@@ -28,7 +28,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	Vec2 pos = vec2_add(parent_pos, top_left_menu.pos);
 
 	btn_update(top_left_menu.hamburger_btn, gs, input, pos, show);
-	btn_update(top_left_menu.search_btn, gs, input, pos, show);
+	btn_update(top_left_menu.command_btn, gs, input, pos, show);
 
 	// if (!show) {
 	// 	return;
@@ -40,5 +40,5 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, top_left_menu.pos);
 
 	btn_draw(top_left_menu.hamburger_btn, gs, pos, false);
-	btn_draw(top_left_menu.search_btn, gs, pos, false);
+	btn_draw(top_left_menu.command_btn, gs, pos, false);
 }
