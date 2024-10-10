@@ -152,14 +152,16 @@ const Input &input, Vec2 parent_pos) {
 	}
 
 	if (input.left_release) {
-		draw_tool_px(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			px_pos,
-			pallete_index,
-			0
-		);
+		if (prev_point.x != -1) {
+			draw_tool_px(
+				layer.data,
+				tab.selection,
+				tab.sz,
+				px_pos,
+				pallete_index,
+				0
+			);
+		}
 		draw_tool_px(
 			layer.data,
 			tab.selection,
