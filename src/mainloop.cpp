@@ -583,7 +583,7 @@ AppUI &app_ui
 
 	tab_bar_update(app_ui.tab_bar, gs, input, !menu_opening(states));
 
-	tab_update(tab, gs, input, game_time, settings, TAB_OFFSET,
+	tab_update(tab, gs, states, input, game_time, settings, TAB_OFFSET,
 		!menu_opening(states));
 
 

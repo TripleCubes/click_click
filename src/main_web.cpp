@@ -69,6 +69,7 @@ void main_loop() {
 	
 	glfwPollEvents();
 
+	states_update(states);
 	input_update(input);
 	update(
 		states,

@@ -19,6 +19,7 @@
 #include "../basic_math.h"
 #include "../consts.h"
 #include "../settings.h"
+#include "../states.h"
 
 #include "../draw_tool/draw_tool_px.h"
 #include "../draw_tool/draw_tool_line.h"
@@ -221,14 +222,15 @@ const Input &input, bool use_selection, Vec2 parent_pos) {
 	}
 }
 
-void tool_update(Tab &tab, GraphicStuff &gs, const Input &input,
-const GameTime &game_time, const Settings &settings, Vec2 parent_pos) {
+void tool_update(Tab &tab, GraphicStuff &gs, const States &states,
+const Input &input, const GameTime &game_time, const Settings &settings,
+Vec2 parent_pos) {
 	if (tab.panning || tab.after_panning_1_frame) { return; }
 
 	bool b_cursor_on_ui
 		= cursor_on_ui(tab, gs, input, parent_pos);
 
-	if (b_cursor_on_ui && input.left_click) {
+	if ((b_cursor_on_ui && input.left_click) || states.menu_just_close) {
 		tab.clicked_and_hold_on_ui = true;
 	}
 
@@ -583,8 +585,9 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	return index;
 }
 
-void tab_update(Tab &tab, GraphicStuff &gs, const Input &input,
-const GameTime &game_time, const Settings &settings, Vec2 parent_pos,bool show){
+void tab_update(Tab &tab, GraphicStuff &gs, const States &states,
+const Input &input, const GameTime &game_time, const Settings &settings,
+Vec2 parent_pos,bool show){
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 bottom_pos
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
@@ -627,7 +630,7 @@ const GameTime &game_time, const Settings &settings, Vec2 parent_pos,bool show){
 	layer_bar_event_handle(tab);
 	canvas_move_update(tab, gs, input, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
-	tool_update(tab, gs, input, game_time, settings, parent_pos);
+	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
 }
 

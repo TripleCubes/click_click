@@ -117,6 +117,7 @@ int main () {
 		//glfwWaitEventsTimeout(REDRAW_REQUEST_WAIT);
 		glfwPollEvents();
 
+		states_update(states);
 		input_update(input, glfw_window);
 
 		update(

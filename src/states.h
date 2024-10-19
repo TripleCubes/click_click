@@ -6,6 +6,11 @@ struct States {
 	bool new_tab_menu_opening = false;
 	bool resize_menu_opening = false;
 	bool app_menu_opening = false;
+
+	bool menu_open = false;
+	bool menu_just_close = false;
 };
+
+void states_update(States &states);
 
 #endif
