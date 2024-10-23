@@ -77,6 +77,9 @@ int main () {
 		return 0;
 	}
 
+	GLFWcursor *text_cursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+	int prev_cursor_icon = CURSOR_POINTER;
+
 	States states;
 	Settings settings;
 
@@ -113,7 +116,7 @@ int main () {
 		graphic_stuff.draw_secondlayer_ui = false;
 		graphic_stuff.cursor_icon = CURSOR_POINTER;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
-		
+	
 		//glfwWaitEventsTimeout(REDRAW_REQUEST_WAIT);
 		glfwPollEvents();
 
@@ -129,6 +132,16 @@ int main () {
 			app_ui,
 			glfw_window
 		);
+
+		if (prev_cursor_icon != graphic_stuff.cursor_icon) {
+			if (graphic_stuff.cursor_icon == CURSOR_TEXT) {
+				glfwSetCursor(glfw_window, text_cursor);
+			}
+			else {
+				glfwSetCursor(glfw_window, NULL);
+			}
+		}
+		prev_cursor_icon = graphic_stuff.cursor_icon;
 
 		if (redraw_request_count * REDRAW_REQUEST_WAIT
 		                                        < game_time.time_since_start) {
@@ -153,6 +166,7 @@ int main () {
 
 	app_ui_release(app_ui, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
+	glfwDestroyCursor(text_cursor);
 	glfwTerminate();
 	std::cout << "reached end of main" << std::endl;
 
