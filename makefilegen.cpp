@@ -301,8 +301,9 @@ void makefilegen_linklib(std::string &result) {
 void makefilegen_web(std::string &result) {
 	Config web_config;
 	web_config.compiler = "em++";
-	web_config.link_flags
-		= "-Wall -sWASM=0 -lglfw --embed-file shader --embed-file texture";
+	web_config.link_flags = "-Wall -sWASM=0 -lglfw ";
+	web_config.link_flags += "--embed-file shader --embed-file texture ";
+	web_config.link_flags += "-lidbfs.js";
 	web_config.compile_flags = "-Wall -MMD -MP " + STB_IMAGE_INCLUDE_FLAG;
 	web_config.obj_path = "./build/web/obj/";
 	web_config.bin_path = "./build/web/bin/";

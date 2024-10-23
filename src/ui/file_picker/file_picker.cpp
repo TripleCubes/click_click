@@ -15,6 +15,9 @@
 #include <filesystem>
 #include <algorithm>
 
+// TEST
+#include <iostream>
+
 namespace {
 
 const std::vector<std::string> SYSTEM_PATH_LIST = {
@@ -32,7 +35,11 @@ const std::vector<std::string> SYSTEM_PATH_LIST = {
 //	"Users",
 	"Windows",
 };
+#ifndef __EMSCRIPTEN__
 const char SLASH = '\\';
+#else
+const char SLASH = '/';
+#endif
 const Vec2 SIDE_BTN_SZ = vec2_new(80, 12);
 const Vec2 VIEW_BTN_SZ = vec2_new(28, 12);
 const Vec2 SAVE_FORMAT_BTN_SZ = vec2_new(32, 12);
@@ -128,9 +135,11 @@ void draw_path_bar(const FilePicker &file_picker, GraphicStuff &gs, Vec2 pos) {
 		path_str += SLASH;
 	}
 
+	#ifndef __EMSCRIPTEN__
 	if (path_str == "") {
 		path_str = "recent";
 	}
+	#endif
 
 	draw_text(
 		gs,
@@ -244,6 +253,46 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 	}
 }
 
+#ifdef __EMSCRIPTEN__
+void update_folder_file_list_web(
+std::vector<FilePickerFolderFile> &folder_file_list) {
+	namespace fs = std::filesystem;
+
+	folder_file_list.clear();
+
+	for (const auto &f: fs::directory_iterator("./data/")) {
+		FilePickerFolderFile folder_file;
+		folder_file.name = f.path().string();
+		rm_parent_path(folder_file.name);
+
+		folder_file_list.push_back(folder_file);
+	}
+}
+
+void update_folder_file_btn_list_web(
+std::vector<FilePickerBtnPair> &folder_file_btn_list,
+const std::vector<FilePickerFolderFile> &folder_file_list) {
+	folder_file_btn_list.clear();
+
+	for (int i = 0; i < (int)folder_file_list.size(); i++) {
+		const FilePickerFolderFile &folder_file = folder_file_list[i];
+
+		FilePickerBtnPair btn_pair;
+		btn_pair.btn = btn_new(
+			vec2_new(12, 0),
+			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 12 - 12, 12),
+			BTN_TEXTAREA_COLOR,
+			trim_path(
+				folder_file.name,
+				W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 24,
+				true)
+		);
+
+		folder_file_btn_list.push_back(btn_pair);
+	}
+}
+#endif
+
 int pinned_i(const FilePicker &file_picker, const std::string &folder_name) {
 	std::vector<std::string> path_list = file_picker.current_path_list;
 	path_list.push_back(folder_name);
@@ -279,7 +328,11 @@ void file_picker_init(FilePicker &file_picker) {
 		vec2_new(SIDE_PADDING.x, SIDE_PADDING.y + 13),
 		SIDE_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
+		#ifndef __EMSCRIPTEN__
 		"recent"
+		#else
+		"files"
+		#endif
 	);
 
 	file_picker.list_view_btn = btn_new(
@@ -331,6 +384,7 @@ void file_picker_init(FilePicker &file_picker) {
 		".click"
 	);
 
+	#ifndef __EMSCRIPTEN__
 	if (std::filesystem::exists("C:\\")) {
 		std::vector<std::string> path_list = {
 			"C:"
@@ -364,6 +418,7 @@ void file_picker_init(FilePicker &file_picker) {
 			false
 		);
 	}
+	#endif
 }
 
 void file_picker_update(FilePicker &file_picker, GraphicStuff &gs,
@@ -376,7 +431,11 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 
 	btn_update(file_picker.close_btn, gs, input, pos, show);
 	btn_update(file_picker.recent_btn, gs, input, pos, show);
+	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.up_btn, gs, input, pos, show);
+	#else
+	btn_update(file_picker.up_btn, gs, input, pos, false);
+	#endif
 
 	btn_update(file_picker.list_view_btn, gs, input,
 		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)), show);
@@ -439,10 +498,12 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		update();
 	}
 
+	#ifndef __EMSCRIPTEN__
 	if (file_picker.recent_btn.clicked) {
 		file_picker.current_path_list.clear();
 		update();
 	}
+	#endif
 
 	if (file_picker.list_view_btn.clicked) {
 		file_picker.is_image_view = false;
@@ -556,7 +617,9 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_draw(file_picker.close_btn, gs, pos, false);
+	#ifndef __EMSCRIPTEN__
 	btn_draw(file_picker.up_btn, gs, pos, false);
+	#endif
 	draw_path_bar(file_picker, gs, pos);
 	btn_draw(file_picker.recent_btn, gs, pos,
 		file_picker.current_path_list.size() == 0);
@@ -638,9 +701,13 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 
 void file_picker_get_save_link(std::string &result,
 const FilePicker &file_picker) {
+	#ifndef __EMSCRIPTEN__
 	for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
 		result += file_picker.current_path_list[i] + SLASH;
 	}
+	#else
+	result = "./data/";
+	#endif
 
 	result += file_picker.save_name_textarea.text;
 
@@ -654,6 +721,11 @@ const FilePicker &file_picker) {
 
 void file_picker_open_file(std::string &file_name,
 const FilePicker &file_picker) {
+	if (file_picker.is_save_picker) {
+		return;
+	}
+
+	#ifndef __EMSCRIPTEN__
 	auto get_file_name = [&file_picker](std::string &file_name, int index) {
 		const FilePickerFolderFile &folder_file
 			= file_picker.folder_file_list[index];
@@ -664,6 +736,7 @@ const FilePicker &file_picker) {
 
 		file_name += folder_file.name;
 	};
+	#endif
 
 	auto is_dot_click = [](const std::string &str) {
 		for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
@@ -683,8 +756,21 @@ const FilePicker &file_picker) {
 
 		if (!folder_file.is_folder && btn_pair.btn.clicked
 		&& is_dot_click(folder_file.name)) {
+			#ifndef __EMSCRIPTEN__
 			get_file_name(file_name, i);
+			#else
+			file_name = "./data/";
+			file_name += folder_file.name;
+			#endif
 			break;
 		}
 	}
 }
+
+#ifdef __EMSCRIPTEN__
+void file_picker_web_file_btn_list_update(FilePicker &file_picker) {
+	update_folder_file_list_web(file_picker.folder_file_list);
+	update_folder_file_btn_list_web(file_picker.folder_file_btn_list,
+	                                file_picker.folder_file_list);
+}
+#endif

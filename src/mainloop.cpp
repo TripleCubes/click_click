@@ -1,5 +1,8 @@
 #include "mainloop.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <vector>
 
 #include "game_time.h"
@@ -363,6 +366,10 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		states.file_picker_opening = true;
 		file_picker.is_save_picker = false;
 		tab.layer_name_editing = false;
+		
+		#ifdef __EMSCRIPTEN__
+			file_picker_web_file_btn_list_update(file_picker);
+		#endif
 	}
 
 	if (!menu_opening(states) && map_press(input, MAP_SAVE_FILE)) {
@@ -373,6 +380,10 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		file_picker.is_save_picker = true;
 
 		tab.layer_name_editing = false;
+
+		#ifdef __EMSCRIPTEN__
+			file_picker_web_file_btn_list_update(file_picker);
+		#endif
 	}
 
 	if (states.file_picker_opening
@@ -380,7 +391,7 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		states.file_picker_opening = false;
 	}
 
-	if (states.file_picker_opening
+	if (states.file_picker_opening && file_picker.is_save_picker
 	&& (file_picker.save_btn.clicked || map_press(input, MAP_ENTER))) {
 		states.file_picker_opening = false;
 
@@ -388,18 +399,31 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		file_picker_get_save_link(save_link, file_picker);
 		
 		save_project(save_link, tab);
+		EM_ASM(
+			FS.syncfs(function(err) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					console.log('file saved');
+				}
+			});
+		);
 	}
 
 	if (states.file_picker_opening) {
 		std::string open_path;
 		file_picker_open_file(open_path, file_picker);
 
-		if (open_path.size() != 0) {
+		if (open_path.length() != 0) {
 			states.file_picker_opening = false;
 
 			OpenProjectData data;
 			if (file_to_project_data(data, open_path)) {
 				_tab_new(tab_bar, gs, data);
+			}
+			else {
+				std::cout << "error opening file " << open_path << std::endl;
 			}
 		}
 	}
