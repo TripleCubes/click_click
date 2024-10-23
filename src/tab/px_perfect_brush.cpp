@@ -146,6 +146,18 @@ const Input &input, Vec2 parent_pos) {
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 	Vec2i px_pos = to_vec2i(tex_draw_mouse_pos);
 
+	if (input.left_click) {
+		draw_tool_px(
+			layer.data,
+			tab.selection,
+			tab.sz,
+			px_pos,
+			pallete_index,
+			0
+		);
+		layer_set_texture_data(layer, gs);
+	}
+
 	if (input.left_down && input.mouse_move) {
 		line(px_pos, tab.sz, tab, layer, pallete_index);
 		layer_set_texture_data(layer, gs);
@@ -167,6 +179,14 @@ const Input &input, Vec2 parent_pos) {
 			tab.selection,
 			tab.sz,
 			prev_point,
+			pallete_index,
+			0
+		);
+		draw_tool_px(
+			layer.data,
+			tab.selection,
+			tab.sz,
+			px_pos,
 			pallete_index,
 			0
 		);
