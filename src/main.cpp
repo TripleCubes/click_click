@@ -57,7 +57,7 @@ GLFWwindow * init() {
 	glfwSetFramebufferSizeCallback(glfw_window, on_resize);
 
 
-	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+//	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
