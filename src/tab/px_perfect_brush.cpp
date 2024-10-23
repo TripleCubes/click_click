@@ -158,7 +158,7 @@ const Input &input, Vec2 parent_pos) {
 		layer_set_texture_data(layer, gs);
 	}
 
-	if (input.left_down && input.mouse_move) {
+	if (input.left_click || (input.left_down && input.mouse_move)) {
 		line(px_pos, tab.sz, tab, layer, pallete_index);
 		layer_set_texture_data(layer, gs);
 	}
