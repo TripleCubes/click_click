@@ -24,6 +24,15 @@ int get_index(int page, int row, int column) {
 	       column;
 }
 
+void page_index_set(ColorPallete &color_pallete, int page, int index) {
+	color_pallete.prev_selected_index = color_pallete.selected_index;
+	color_pallete.prev_at_page = color_pallete.at_page;
+
+	color_pallete.at_page = page;
+	color_pallete.selected_index = index;
+	color_pallete.selection_changed = true;
+}
+
 void mouse_update(ColorPallete &color_pallete,
 const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	color_pallete.selection_changed = false;
@@ -43,14 +52,11 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 	for (int i = 0; i < (int)color_pallete.page_btn_list.size(); i++) {
 		const Btn &btn = color_pallete.page_btn_list[i];
 		if (btn.clicked) {
-			color_pallete.at_page = i;
-
 			int row = color_pallete.selected_index / COLOR_PALLETE_NUM_COLUMN %
 				COLOR_PALLETE_NUM_ROW;
 			int column = color_pallete.selected_index %
 				COLOR_PALLETE_NUM_COLUMN;
-			color_pallete.selected_index = get_index(i, row, column);
-			color_pallete.selection_changed = true;
+			page_index_set(color_pallete, i, get_index(i, row, column));
 		}
 	}
 
@@ -71,8 +77,7 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 			),
 			vec2_new(COLOR_PALLETE_COLOR_CLICK_SZ,COLOR_PALLETE_COLOR_CLICK_SZ)
 		)) {
-			color_pallete.selected_index = index;
-			color_pallete.selection_changed = true;
+			page_index_set(color_pallete, color_pallete.at_page, index);
 			return;
 		}
 	}
@@ -88,17 +93,26 @@ void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
 		if (map_press(input, (MappedKeyIndex)i)) {
 			int next_index = i - MAP_COLOR_1;
 			if (next_index == color_pallete.selected_index) {
-				color_pallete.selected_index = next_index + 8;
+				page_index_set(color_pallete, color_pallete.at_page,
+					next_index + 8);
 			}
 			else {
-				color_pallete.selected_index = next_index;
+				page_index_set(color_pallete, color_pallete.at_page,
+					next_index);
 			}
 		}
 	}
 
 	for (int i = MAP_COLOR_PAGE_1; i <= MAP_COLOR_PAGE_4; i++) {
 		if (map_press(input, (MappedKeyIndex)i)) {
-			color_pallete.at_page = i - MAP_COLOR_PAGE_1;
+			int page = i - MAP_COLOR_PAGE_1;
+
+			int row = color_pallete.selected_index / COLOR_PALLETE_NUM_COLUMN %
+				COLOR_PALLETE_NUM_ROW;
+			int column = color_pallete.selected_index %
+				COLOR_PALLETE_NUM_COLUMN;
+
+			page_index_set(color_pallete, page, get_index(page, row, column));
 		}
 	}
 }
@@ -211,5 +225,15 @@ GraphicStuff &gs, const Input &input, Vec2 parent_pos) {
 			vec2_new(0, 0),
 			false
 		);
+	}
+}
+
+void color_pallete_toggle_eraser(ColorPallete &color_pallete) {
+	if (color_pallete.at_page != 0 || color_pallete.selected_index != 0) {
+		page_index_set(color_pallete, 0, 0);
+	}
+	else {
+		page_index_set(color_pallete, color_pallete.prev_at_page,
+			color_pallete.prev_selected_index);
 	}
 }

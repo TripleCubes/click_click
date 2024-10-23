@@ -132,6 +132,7 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_TOOL_FILL       , KEY_F                         );
 	set(MAP_TOOL_SELECT     , KEY_S                         );
 	set(MAP_TOOL_SELECT_MODE, KEY_D                         );
+	set(MAP_TOOL_ERASER     , KEY_E                         );
 
 	set(MAP_COLOR_1         , KEY_1                         );
 	set(MAP_COLOR_2         , KEY_2                         );

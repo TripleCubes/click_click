@@ -118,6 +118,7 @@ bool selected, const std::string &replace_text) {
 		"ICON_CIRCLE",
 
 		"ICON_HAMBURGER",
+		"ICON_ERASER",
 	};
 
 	for (int i = 0; i < ICON_COUNT; i++) {

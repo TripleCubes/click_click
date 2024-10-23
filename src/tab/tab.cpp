@@ -632,6 +632,11 @@ Vec2 parent_pos,bool show){
 		tab_center_canvas(tab, gs);
 	}
 
+	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
+	|| map_press(input, MAP_TOOL_ERASER)) {
+		color_pallete_toggle_eraser(tab.color_pallete);
+	}
+
 	layer_bar_event_handle(tab);
 	canvas_move_update(tab, gs, input, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);

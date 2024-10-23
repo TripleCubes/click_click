@@ -25,9 +25,12 @@ struct ColorPallete {
 	std::array<Color, COLOR_PALLETE_NUM_COLUMN *
 	                  COLOR_PALLETE_NUM_ROW *
 	                  COLOR_PALLETE_NUM_PAGE> color_list;
+	int at_page = 0;
 	int selected_index = 1;
 	bool selection_changed = false;
-	int at_page = 0;
+
+	int prev_at_page = 0;
+	int prev_selected_index = 1;
 
 	std::array<Btn, COLOR_PALLETE_NUM_PAGE> page_btn_list;
 };
@@ -38,5 +41,6 @@ void color_pallete_update(ColorPallete &color_pallete,
 	bool kb_allowed, bool show);
 void color_pallete_draw(const ColorPallete &color_pallete,
 	GraphicStuff &gs, const Input &input, Vec2 parent_pos);
+void color_pallete_toggle_eraser(ColorPallete &color_pallete);
 
 #endif

@@ -22,6 +22,10 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	}
 
 	for (int i = 0; i < NUM_BTN; i++) {
+		if (i == TOOL_ERASER) {
+			continue;
+		}
+
 		const Btn &btn = tool_picker.btn_list[i];
 
 		if (btn.clicked) {
@@ -31,16 +35,16 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 
 	if (tool_key_allowed) {
 		if (map_press(input, MAP_TOOL_BRUSH)) {
-			tool_picker.selected_index = 0;
+			tool_picker.selected_index = TOOL_BRUSH;
 		}
 		else if (map_press(input, MAP_TOOL_CURVE)) {
-			tool_picker.selected_index = 1;
+			tool_picker.selected_index = TOOL_CURVE;
 		}
 		else if (map_press(input, MAP_TOOL_FILL)) {
-			tool_picker.selected_index = 2;
+			tool_picker.selected_index = TOOL_FILL;
 		}
 		else if (map_press(input, MAP_TOOL_SELECT)) {
-			tool_picker.selected_index = 3;
+			tool_picker.selected_index = TOOL_SELECT;
 		}
 	}
 }
@@ -50,10 +54,11 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	Vec2 pos = vec2_add(parent_pos, tool_picker.pos);
 	
 	bool cond_0 = show
-	&& (tool_picker.selected_index == 0 || tool_picker.selected_index == 1);
-	bool cond_1 = show && tool_picker.selected_index == 2;
-	bool cond_2 = show && tool_picker.selected_index == 3;
-	bool cond_3 = show && tool_picker.selected_index == 3;
+	&& (tool_picker.selected_index == TOOL_BRUSH
+		|| tool_picker.selected_index == TOOL_CURVE);
+	bool cond_1 = show && tool_picker.selected_index == TOOL_FILL;
+	bool cond_2 = show && tool_picker.selected_index == TOOL_SELECT;
+	bool cond_3 = show && tool_picker.selected_index == TOOL_SELECT;
 
 	for (int i = 0; i < NUM_SZ_BTN; i++) {
 		btn_update(tool_picker.sz_btn_list[i], gs, input, pos, cond_0);
@@ -180,6 +185,7 @@ const Input &input, Vec2 parent_pos) {
 
 	std::array<std::string, NUM_BTN> tool_key_list = {
 		get_key_str(input, MAP_TOOL_BRUSH),
+		get_key_str(input, MAP_TOOL_ERASER),
 		get_key_str(input, MAP_TOOL_CURVE),
 		get_key_str(input, MAP_TOOL_FILL),
 		get_key_str(input, MAP_TOOL_SELECT),
@@ -203,7 +209,8 @@ const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tool_picker.pos);
 	std::string tool_key_str;
 
-	if (tool_picker.selected_index == 0 || tool_picker.selected_index == 1) {
+	if (tool_picker.selected_index == TOOL_BRUSH
+	|| tool_picker.selected_index == TOOL_CURVE) {
 		for (int i = 0; i < NUM_SZ_BTN; i++) {
 			bool cond = false;
 			if (tool_picker.selected_index == 0) {
@@ -217,37 +224,37 @@ const Input &input, Vec2 parent_pos) {
 		}
 	}
 
-	if (tool_picker.selected_index == 2) {
+	if (tool_picker.selected_index == TOOL_FILL) {
 		for (int i = 0; i < NUM_FILL_BTN; i++) {
 			btn_draw(tool_picker.fill_btn_list[i], gs, pos,
 				tool_picker.fill_selected_index == i);
 		}
 	}
 	
-	if (tool_picker.selected_index == 3) {
+	if (tool_picker.selected_index == TOOL_SELECT) {
 		for (int i = 0; i < NUM_SELECT_BTN; i++) {
 			btn_draw(tool_picker.select_btn_list[i], gs, pos,
 				tool_picker.select_selected_index == i);
 		}
 	}
 	
-	if (tool_picker.selected_index == 3) {
+	if (tool_picker.selected_index == TOOL_SELECT) {
 		for (int i = 0; i < NUM_SELECT_SECOND_BTN; i++) {
 			btn_draw(tool_picker.select_second_btn_list[i], gs, pos,
 				tool_picker.select_second_selected_index == i);
 		}
 	}
 
-	if (tool_picker.selected_index == 0) {
+	if (tool_picker.selected_index == TOOL_BRUSH) {
 		tool_key_str = get_key_str(input, MAP_TOOL_BRUSH);
 	}
-	else if (tool_picker.selected_index == 1) {
+	else if (tool_picker.selected_index == TOOL_CURVE) {
 		tool_key_str = get_key_str(input, MAP_TOOL_CURVE);
 	}
-	else if (tool_picker.selected_index == 2) {
+	else if (tool_picker.selected_index == TOOL_FILL) {
 		tool_key_str = get_key_str(input, MAP_TOOL_FILL);
 	}
-	else if (tool_picker.selected_index == 3) {
+	else if (tool_picker.selected_index == TOOL_SELECT) {
 		tool_key_str = get_key_str(input, MAP_TOOL_SELECT);
 	}
 	draw_text(
@@ -261,7 +268,7 @@ const Input &input, Vec2 parent_pos) {
 		false
 	);
 
-	if (tool_picker.selected_index == 3) {
+	if (tool_picker.selected_index == TOOL_SELECT) {
 		draw_text(
 			gs,
 			get_key_str(input, MAP_TOOL_SELECT_MODE),
@@ -283,7 +290,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	tool_picker.pos = pos;
 
 	std::array<std::string, NUM_BTN> icon_str_list = {
-		"ICON_PEN", "ICON_CURVE", "ICON_FILL", "ICON_SELECT",
+		"ICON_PEN", "ICON_ERASER", "ICON_CURVE", "ICON_FILL", "ICON_SELECT",
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		tool_picker.btn_list[i] = btn_new(
