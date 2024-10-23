@@ -2,8 +2,8 @@
 #define SETTINGS_H
 
 struct Settings {
-	bool use_hardware_cursor = false;
-	bool use_px_perfect_brush = true; 
+	bool use_hardware_cursor = true;
+	bool use_px_perfect_brush = true;
 };
 
 #endif

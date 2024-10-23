@@ -31,6 +31,7 @@ Input input;
 AppUI app_ui;
 float game_start_time = 0;
 float frame_start_time = 0;
+int prev_cursor_icon = CURSOR_POINTER;
 
 const float REDRAW_REQUEST_WAIT = 0.5;
 int redraw_request_count = 0;
@@ -79,6 +80,21 @@ void main_loop() {
 		input,
 		app_ui
 	);
+	
+	if (settings.use_hardware_cursor
+	&& prev_cursor_icon != graphic_stuff.cursor_icon) {
+		if (graphic_stuff.cursor_icon == CURSOR_TEXT) {
+			EM_ASM(
+			document.body.style.cursor = 'text';
+			);
+		}
+		else {
+			EM_ASM(
+			document.body.style.cursor = 'default';
+			);
+		}
+	}
+	prev_cursor_icon = graphic_stuff.cursor_icon;
 
 	if (redraw_request_count * REDRAW_REQUEST_WAIT
 											< game_time.time_since_start) {

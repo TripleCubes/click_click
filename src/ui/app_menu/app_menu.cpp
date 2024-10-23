@@ -1,5 +1,8 @@
 #include "app_menu.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <cmath>
 
 #include "../../graphic_types/graphic_types.h"
@@ -35,6 +38,17 @@ void per_settings_menu_handling(AppMenu &app_menu, Settings &settings
 		}
 		else {
 			glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		}
+		#else
+		if (settings.use_hardware_cursor) {
+			EM_ASM(
+			document.body.style.cursor = 'default';
+			);
+		}
+		else {
+			EM_ASM(
+			document.body.style.cursor = 'none';
+			);
 		}
 		#endif
 	}
