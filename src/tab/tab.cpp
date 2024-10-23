@@ -156,14 +156,17 @@ const Input &input, Vec2 parent_pos) {
 	);
 	if (on_ui) { return true; }
 
-	Vec2 color_picker_pos
-		= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
-	on_ui = check(
-		mouse_pos,
-		vec2_sub(color_picker_pos, vec2_new(4, 4)),
-		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
-	);
-	if (on_ui) { return true; }
+	if (tab.color_pallete.at_page != 0
+	|| tab.color_pallete.selected_index != 0) {
+		Vec2 color_picker_pos
+			= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
+		on_ui = check(
+			mouse_pos,
+			vec2_sub(color_picker_pos, vec2_new(4, 4)),
+			vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
+		);
+		if (on_ui) { return true; }
+	}
 
 	on_ui = check(
 		mouse_pos,
@@ -238,7 +241,7 @@ Vec2 parent_pos) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
 			if (settings.use_px_perfect_brush
 			&& tab.tool_picker.brush_selected_index == 0) {
-				px_perfect_brush_tool_preview_update(tab, gs, input,parent_pos);
+				px_perfect_brush_tool_preview_update(tab, gs,input,parent_pos);
 				px_perfect_brush_tool_update(tab, get_layer_index(tab), gs,
 					input, parent_pos);
 			}
@@ -592,8 +595,10 @@ Vec2 parent_pos,bool show){
 	Vec2 bottom_pos
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
 
-	color_picker_update(tab.color_picker, gs, input, bottom_pos, show);
-	color_pallete_update(tab.color_pallete, gs, input, parent_pos, 
+	color_picker_update(tab.color_picker, gs, input, bottom_pos,
+		show && (tab.color_pallete.at_page != 0
+		         || tab.color_pallete.selected_index != 0));
+	color_pallete_update(tab.color_pallete, gs, input, parent_pos,
 		!tab.layer_name_editing, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
@@ -654,13 +659,16 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 		vec2_sub(tab.color_pallete.pos, vec2_new(24 + 3, 3)),
 		vec2_add(COLOR_PALLETE_SZ, vec2_new(24 + 6, 6))
 	);
-	
-	Vec2 color_picker_pos
-		= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
-	draw(
-		vec2_sub(color_picker_pos, vec2_new(4, 4)),
-		vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
-	);
+
+	if (tab.color_pallete.at_page != 0
+	|| tab.color_pallete.selected_index != 0) {
+		Vec2 color_picker_pos
+			= vec2_add(tab.color_picker.pos, vec2_new(0, main_fb_sz.y));
+		draw(
+			vec2_sub(color_picker_pos, vec2_new(4, 4)),
+			vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
+		);
+	}
 
 	draw(
 		vec2_sub(tab.tool_picker.pos, vec2_new(3, 3)),
@@ -736,8 +744,11 @@ const GameTime &game_time, Vec2 parent_pos) {
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
 
 	layer_textarea_list_draw(tab, gs, game_time, parent_pos);
-
-	color_picker_draw(tab.color_picker, gs, bottom_pos);
+	
+	if (tab.color_pallete.at_page != 0
+	|| tab.color_pallete.selected_index != 0) {
+		color_picker_draw(tab.color_picker, gs, bottom_pos);
+	}
 	color_pallete_draw(tab.color_pallete, gs, input, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, input, parent_pos);
