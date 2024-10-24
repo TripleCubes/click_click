@@ -232,7 +232,8 @@ void tool_update(Tab &tab, GraphicStuff &gs, const States &states,
 const Input &input, const GameTime &game_time, const Settings &settings,
 Vec2 parent_pos) {
 	if (tab.panning || tab.after_panning_1_frame) { return; }
-	if (tab.layer_list[get_layer_index(tab)].locked) { return; }
+	const Layer &layer = tab.layer_list[get_layer_index(tab)];
+	if (layer.locked || layer.hidden) { return; }
 
 	bool b_cursor_on_ui
 		= cursor_on_ui(tab, gs, input, parent_pos);

@@ -53,7 +53,7 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 		vec2_new(TEXTAREA_SZ.x, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
-		"ICON_EYE"
+		"ICON_UP"
 	);
 	layer.lock_btn = btn_new(
 		vec2_new(TEXTAREA_SZ.x + 12, 0),
@@ -82,10 +82,10 @@ bool active, bool show) {
 		layer.hidden = !layer.hidden;
 
 		if (layer.hidden) {
-			layer.show_hide_btn.text = "ICON_EYE_CLOSED";
+			layer.show_hide_btn.text = "ICON_MINUS";
 		}
 		else {
-			layer.show_hide_btn.text = "ICON_EYE";
+			layer.show_hide_btn.text = "ICON_UP";
 		}
 	}
 	
