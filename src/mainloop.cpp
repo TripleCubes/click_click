@@ -125,8 +125,8 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 
 	draw(vec2_new(0, 0), vec2_new(SIDE_BAR_W, main_fb_sz.y));
 	draw(
-		vec2_new(SIDE_BAR_W + 4, 4),
-		vec2_new(main_fb_sz.x - SIDE_BAR_W - 4 * 2, TOP_BAR_H - 4)
+		vec2_new(SIDE_BAR_W + 3, 3),
+		vec2_new(main_fb_sz.x - SIDE_BAR_W - 3 * 2, TOP_BAR_H - 4)
 	);
 	tab_blur_rects_draw(tab, gs, TAB_OFFSET);
 

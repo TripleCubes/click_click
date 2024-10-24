@@ -4,7 +4,7 @@
 #include "../consts.h"
 
 void app_ui_init(AppUI &app_ui, GraphicStuff &gs) {
-	tab_bar_init(app_ui.tab_bar, gs, vec2_new(SIDE_BAR_W + 4 + 3, 4 + 3));
+	tab_bar_init(app_ui.tab_bar, gs, vec2_new(SIDE_BAR_W + 3 + 3, 3 + 3));
 	file_picker_init(app_ui.file_picker);
 	new_tab_menu_init(app_ui.new_tab_menu);
 	resize_menu_init(app_ui.resize_menu);
