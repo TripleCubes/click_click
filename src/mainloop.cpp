@@ -13,6 +13,7 @@
 #include "ui/file_picker/file_picker.h"
 #include "ui/new_tab_menu/new_tab_menu.h"
 #include "ui/top_left_menu/top_left_menu.h"
+#include "ui/tab/color_picker.h"
 
 #include "graphic_types/graphic_types.h"
 #include "graphic_types/framebuffer.h"
@@ -358,6 +359,10 @@ void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
 			layer_data.data
 		);
 	}
+
+	int pallete_index = tab.color_pallete.selected_index;
+	Color color = tab.color_pallete.color_list[pallete_index];
+	color_picker_set_rgb(tab.color_picker, color);
 }
 
 void file_picker_handling(States &states, FilePicker &file_picker,
@@ -399,6 +404,8 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 		file_picker_get_save_link(save_link, file_picker);
 		
 		save_project(save_link, tab);
+
+		#ifdef __EMSCRIPTEN__
 		EM_ASM(
 			FS.syncfs(function(err) {
 				if (err) {
@@ -409,6 +416,7 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 				}
 			});
 		);
+		#endif
 	}
 
 	if (states.file_picker_opening) {
