@@ -621,11 +621,10 @@ Vec2 parent_pos,bool show){
 	if (tab.layer_bar.add_btn.clicked) {
 		tab_layer_new(
 			tab,
-			tab.layer_order_list_index + 1,
+			tab.layer_order_list_index,
 			"layer " + std::to_string(tab.num_layer_created),
 			gs
 		);
-		tab.layer_order_list_index++;
 	}
 
 	if (tab.btn_panel.zoom_out_btn.clicked || kb_zoom_out(input)) {
