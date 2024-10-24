@@ -19,7 +19,7 @@ void top_left_menu_init(TopLeftMenu &top_left_menu, Vec2 pos) {
 		vec2_new(12, 0),
 		vec2_new(SIDE_BAR_W - 17, 12),
 		BTN_TEXTAREA_COLOR,
-		"commands"
+		">_"
 	);
 }
 

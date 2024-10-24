@@ -42,7 +42,7 @@ unsigned char replace_index, unsigned char pallete_index) {
 				continue;
 			}
 			
-			int index = next_pos.x * data_sz.y + next_pos.x;
+			int index = next_pos.y * data_sz.x + next_pos.x;
 			bool selection_cond = selection.full_preview_list.size() == 0
 				|| selection.map[index] == 1;
 
