@@ -637,9 +637,8 @@ Vec2 parent_pos,bool show){
 		tab_center_canvas(tab, gs);
 	}
 
-	if (tool_key_allowed
-	&& (tab.tool_picker.btn_list[TOOL_ERASER].clicked
-	|| map_press(input, MAP_TOOL_ERASER))) {
+	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
+	|| (tool_key_allowed && map_press(input, MAP_TOOL_ERASER))) {
 		color_pallete_toggle_eraser(tab.color_pallete);
 	}
 
