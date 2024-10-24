@@ -182,7 +182,7 @@ const GameTime &game_time
 	draw_text(
 		gs,
 		std::to_string((int)(1/game_time.delta)),
-		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 8),
+		vec2_new(main_fb_sz.x - 26, TOP_BAR_H + 5),
 		20,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -193,7 +193,7 @@ const GameTime &game_time
 	draw_text(
 		gs,
 		std::to_string((int)(1/game_time.frame_time)),
-		vec2_new(main_fb_sz.x - 30, TOP_BAR_H + 20),
+		vec2_new(main_fb_sz.x - 26, TOP_BAR_H + 17),
 		20,
 		1,
 		BTN_TEXTAREA_COLOR,
