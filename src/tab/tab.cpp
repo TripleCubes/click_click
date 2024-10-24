@@ -763,7 +763,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 	color_pallete_draw(tab.color_pallete, gs, input, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, input, parent_pos);
-	btn_panel_draw(tab.btn_panel, gs, parent_pos);
+	btn_panel_draw(tab.btn_panel, gs, input, parent_pos);
 	
 	draw_text(
 		gs,

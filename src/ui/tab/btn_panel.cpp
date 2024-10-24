@@ -1,6 +1,7 @@
 #include "btn_panel.h"
 
 #include "../../consts.h"
+#include "../../input_map.h"
 
 BtnPanel btn_panel_new(Vec2 pos) {
 	BtnPanel btn_panel;
@@ -40,9 +41,9 @@ const Input &input, Vec2 parent_pos, bool show) {
 }
 
 void btn_panel_draw(const BtnPanel &btn_panel, GraphicStuff &gs,
-Vec2 parent_pos) {
+const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, btn_panel.pos);
-	btn_draw(btn_panel.zoom_out_btn, gs, pos, false);
-	btn_draw(btn_panel.zoom_in_btn, gs, pos, false);
-	btn_draw(btn_panel.zoom_0_btn, gs, pos, false);
+	btn_draw(btn_panel.zoom_out_btn, gs, pos, map_down(input, MAP_ZOOM_OUT));
+	btn_draw(btn_panel.zoom_in_btn, gs, pos, map_down(input, MAP_ZOOM_IN));
+	btn_draw(btn_panel.zoom_0_btn, gs, pos, map_down(input, MAP_ZOOM_0));
 }

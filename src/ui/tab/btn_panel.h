@@ -20,6 +20,6 @@ void btn_panel_update(BtnPanel &btn_panel, const GraphicStuff &gs,
 	const Input &input, Vec2 parent_pos, bool show);
 
 void btn_panel_draw(const BtnPanel &btn_panel, GraphicStuff &gs,
-	Vec2 parent_pos);
+	const Input &input, Vec2 parent_pos);
 
 #endif
