@@ -9,7 +9,7 @@
 
 namespace {
 
-const Vec2 TEXTAREA_SZ = vec2_new(100 - 20, 12);
+const Vec2 TEXTAREA_SZ = vec2_new(81, 12);
 const Vec2 DELETE_BTN_SZ = vec2_new(11, 12);
 const Color TEXTAREA_COLOR = BTN_TEXTAREA_COLOR;
 
@@ -49,8 +49,14 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 		TEXTAREA_COLOR,
 		name
 	);
+	layer.hide_btn = btn_new(
+		vec2_new(TEXTAREA_SZ.x, 0),
+		DELETE_BTN_SZ,
+		TEXTAREA_COLOR,
+		"ICON_PLUS"
+	);
 	layer.delete_btn = btn_new(
-		vec2_new(TEXTAREA_SZ.x + 1, 0),
+		vec2_new(TEXTAREA_SZ.x + 12, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
 		"ICON_X"
@@ -65,12 +71,14 @@ void layer_textarea_update(Layer &layer, const GraphicStuff &gs,
 const GameTime &game_time, const Input &input, Vec2 parent_pos,
 bool active, bool show) {
 	textarea_update(layer.textarea,gs,game_time,input,parent_pos,active,show);
+	btn_update(layer.hide_btn, gs, input, parent_pos, show);
 	btn_update(layer.delete_btn, gs, input, parent_pos, show);
 }
 
 void layer_textarea_draw(const Layer &layer, GraphicStuff &gs,
 const GameTime &game_time, Vec2 parent_pos, bool active, bool selected) {
 	textarea_draw(layer.textarea, gs, game_time, parent_pos, active, selected);
+	btn_draw(layer.hide_btn, gs, parent_pos, false);
 	btn_draw(layer.delete_btn, gs, parent_pos, false);
 }
 

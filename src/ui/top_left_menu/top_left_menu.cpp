@@ -16,8 +16,8 @@ void top_left_menu_init(TopLeftMenu &top_left_menu, Vec2 pos) {
 	);
 
 	top_left_menu.command_btn = btn_new(
-		vec2_new(13, 0),
-		vec2_new(SIDE_BAR_W - 8 - 12, 12),
+		vec2_new(12, 0),
+		vec2_new(SIDE_BAR_W - 17, 12),
 		BTN_TEXTAREA_COLOR,
 		"commands"
 	);

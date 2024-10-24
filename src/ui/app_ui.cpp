@@ -8,7 +8,7 @@ void app_ui_init(AppUI &app_ui, GraphicStuff &gs) {
 	file_picker_init(app_ui.file_picker);
 	new_tab_menu_init(app_ui.new_tab_menu);
 	resize_menu_init(app_ui.resize_menu);
-	top_left_menu_init(app_ui.top_left_menu, vec2_new(4, 4));
+	top_left_menu_init(app_ui.top_left_menu, vec2_new(3, 3));
 	app_menu_init(app_ui.app_menu);
 }
 

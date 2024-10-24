@@ -550,13 +550,13 @@ Vec2 pos, Vec2i sz, int px_scale) {
 		vec2_new(SIDE_BAR_W + 30, TOP_BAR_H + 5)
 	);
 	tab.layer_bar = layer_bar_new(
-		vec2_new(4, -100 - 3), vec2_new(100, 100)
+		vec2_new(3, -122), vec2_new(0, 120)
 	);
 	tab.tool_picker = tool_picker_new(
 		vec2_new(SIDE_BAR_W + 59, TOP_BAR_H + 5)
 	);
 	tab.btn_panel = btn_panel_new(
-		vec2_new(SIDE_BAR_W + 155, TOP_BAR_H + 3)
+		vec2_new(SIDE_BAR_W + 149, TOP_BAR_H + 3)
 	);
 
 	tab.pallete_data.resize(16 * 16, 255);
@@ -591,6 +591,9 @@ Vec2 pos, Vec2i sz, int px_scale) {
 void tab_update(Tab &tab, GraphicStuff &gs, const States &states,
 const Input &input, const GameTime &game_time, const Settings &settings,
 Vec2 parent_pos,bool show){
+	bool tool_key_allowed = !tab.layer_name_editing && !input.left_down
+		&& !input.left_release;
+
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 bottom_pos
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
@@ -602,8 +605,7 @@ Vec2 parent_pos,bool show){
 		!tab.layer_name_editing, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
-		!tab.layer_name_editing && !input.left_down && !input.left_release,
-		show);
+		tool_key_allowed, show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
 
 	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
@@ -632,8 +634,9 @@ Vec2 parent_pos,bool show){
 		tab_center_canvas(tab, gs);
 	}
 
-	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
-	|| map_press(input, MAP_TOOL_ERASER)) {
+	if (tool_key_allowed
+	&& (tab.tool_picker.btn_list[TOOL_ERASER].clicked
+	|| map_press(input, MAP_TOOL_ERASER))) {
 		color_pallete_toggle_eraser(tab.color_pallete);
 	}
 

@@ -194,7 +194,7 @@ const Input &input, Vec2 parent_pos) {
 		draw_text(
 			gs,
 			tool_key_list[i],
-			vec2_add(pos, vec2_new(i * 13 + 4, 2)),
+			vec2_add(pos, vec2_new(i * 12 + 4, 2)),
 			12,
 			1,
 			KEY_HINT_COLOR,
@@ -260,7 +260,7 @@ const Input &input, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		tool_key_str,
-		vec2_add(pos, vec2_new(4, 13 * 2 + 1)),
+		vec2_add(pos, vec2_new(4, 12 * 2 + 1)),
 		12,
 		1,
 		KEY_HINT_COLOR,
@@ -272,7 +272,7 @@ const Input &input, Vec2 parent_pos) {
 		draw_text(
 			gs,
 			get_key_str(input, MAP_TOOL_SELECT_MODE),
-			vec2_add(pos, vec2_new(4 + 13 * 4, 13 * 2 + 1)),
+			vec2_add(pos, vec2_new(4 + 12 * 4, 12 * 2 + 1)),
 			12,
 			1,
 			KEY_HINT_COLOR,
@@ -294,7 +294,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		tool_picker.btn_list[i] = btn_new(
-			vec2_new(i * 13, 11),
+			vec2_new(i * 12, 10),
 			vec2_new(12, 12),
 			BTN_TEXTAREA_COLOR,
 			icon_str_list[i]
@@ -307,7 +307,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	};
 	for (int i = 0; i < NUM_SZ_BTN; i++) {
 		tool_picker.sz_btn_list[i] = btn_new(
-			vec2_new(i * 13 + 13, 11 + 13),
+			vec2_new(i * 12 + 12, 10 + 12),
 			vec2_new(12, 12),
 			BTN_TEXTAREA_COLOR,
 			sz_icon_str_list[i]
@@ -319,7 +319,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	};
 	for (int i = 0; i < NUM_FILL_BTN; i++) {
 		tool_picker.fill_btn_list[i] = btn_new(
-			vec2_new(i * 13 + 13, 11 + 13),
+			vec2_new(i * 12 + 12, 10 + 12),
 			vec2_new(12, 12),
 			BTN_TEXTAREA_COLOR,
 			fill_icon_str_list[i]
@@ -331,7 +331,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	};
 	for (int i = 0; i < NUM_SELECT_BTN; i++) {
 		tool_picker.select_btn_list[i] = btn_new(
-			vec2_new(i * 13 + 13, 11 + 13),
+			vec2_new(i * 12 + 12, 10 + 12),
 			vec2_new(12, 12),
 			BTN_TEXTAREA_COLOR,
 			select_icon_str_list[i]
@@ -344,7 +344,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	};
 	for (int i = 0; i < NUM_SELECT_SECOND_BTN; i++) {
 		tool_picker.select_second_btn_list[i] = btn_new(
-			vec2_new(i * 13 + 13 * 5, 11 + 13),
+			vec2_new(i * 12 + 12 * 5, 10 + 12),
 			vec2_new(12, 12),
 			BTN_TEXTAREA_COLOR,
 			select_second_icon_str_list[i]

@@ -18,6 +18,7 @@ struct Layer {
 	int texture_index = 0;
 
 	TextArea textarea;
+	Btn hide_btn;
 	Btn delete_btn;
 };
 
