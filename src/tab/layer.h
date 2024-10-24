@@ -18,8 +18,11 @@ struct Layer {
 	int texture_index = 0;
 
 	TextArea textarea;
-	Btn hide_btn;
-	Btn delete_btn;
+	Btn show_hide_btn;
+	Btn lock_btn;
+
+	bool hidden = false;
+	bool locked = false;
 };
 
 int layer_new(std::vector<Layer> &layer_list, GraphicStuff &gs,

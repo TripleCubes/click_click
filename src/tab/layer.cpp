@@ -49,17 +49,17 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 		TEXTAREA_COLOR,
 		name
 	);
-	layer.hide_btn = btn_new(
+	layer.show_hide_btn = btn_new(
 		vec2_new(TEXTAREA_SZ.x, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
-		"ICON_PLUS"
+		"ICON_EYE"
 	);
-	layer.delete_btn = btn_new(
+	layer.lock_btn = btn_new(
 		vec2_new(TEXTAREA_SZ.x + 12, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
-		"ICON_X"
+		"ICON_UNLOCKED"
 	);
 
 	layer.running = true;
@@ -71,15 +71,41 @@ void layer_textarea_update(Layer &layer, const GraphicStuff &gs,
 const GameTime &game_time, const Input &input, Vec2 parent_pos,
 bool active, bool show) {
 	textarea_update(layer.textarea,gs,game_time,input,parent_pos,active,show);
-	btn_update(layer.hide_btn, gs, input, parent_pos, show);
-	btn_update(layer.delete_btn, gs, input, parent_pos, show);
+	btn_update(layer.show_hide_btn, gs, input, parent_pos, show);
+	btn_update(layer.lock_btn, gs, input, parent_pos, show);
+
+	if (!show) {
+		return;
+	}
+
+	if (layer.show_hide_btn.clicked) {
+		layer.hidden = !layer.hidden;
+
+		if (layer.hidden) {
+			layer.show_hide_btn.text = "ICON_EYE_CLOSED";
+		}
+		else {
+			layer.show_hide_btn.text = "ICON_EYE";
+		}
+	}
+	
+	if (layer.lock_btn.clicked) {
+		layer.locked = !layer.locked;
+
+		if (layer.locked) {
+			layer.lock_btn.text = "ICON_LOCKED";
+		}
+		else {
+			layer.lock_btn.text = "ICON_UNLOCKED";
+		}
+	}
 }
 
 void layer_textarea_draw(const Layer &layer, GraphicStuff &gs,
 const GameTime &game_time, Vec2 parent_pos, bool active, bool selected) {
 	textarea_draw(layer.textarea, gs, game_time, parent_pos, active, selected);
-	btn_draw(layer.hide_btn, gs, parent_pos, false);
-	btn_draw(layer.delete_btn, gs, parent_pos, false);
+	btn_draw(layer.show_hide_btn, gs, parent_pos, false);
+	btn_draw(layer.lock_btn, gs, parent_pos, false);
 }
 
 void layer_set_texture_data(const Layer &layer, GraphicStuff &gs) {

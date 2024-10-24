@@ -40,8 +40,15 @@ const int ICON_CIRCLE          = 26;
 
 const int ICON_HAMBURGER       = 27;
 const int ICON_ERASER          = 28;
+const int ICON_EYE             = 29;
 
-const int ICON_COUNT           = 29;
+const int ICON_UNLOCKED        = 30;
+const int ICON_EYE_CLOSED      = 31;
+const int ICON_LOCKED          = 32;
+
+const int ICON_TRASH           = 33;
+
+const int ICON_COUNT           = 34;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;

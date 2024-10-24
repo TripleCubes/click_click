@@ -109,6 +109,9 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 	for (int i = (int)tab.layer_order_list.size() - 1; i >= 0; i--) {
 		int index = tab.layer_order_list[i];
 		const Layer &layer = tab.layer_list[index];
+		if (layer.hidden) {
+			continue;
+		}
 		layer_texture_draw(tab, gs, layer.texture_index, PALLETE_DRAW,
 			vec2_floor(pos));
 	}
@@ -229,6 +232,7 @@ void tool_update(Tab &tab, GraphicStuff &gs, const States &states,
 const Input &input, const GameTime &game_time, const Settings &settings,
 Vec2 parent_pos) {
 	if (tab.panning || tab.after_panning_1_frame) { return; }
+	if (tab.layer_list[get_layer_index(tab)].locked) { return; }
 
 	bool b_cursor_on_ui
 		= cursor_on_ui(tab, gs, input, parent_pos);
@@ -365,27 +369,26 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 			return;
 		}
 
-		if (layer.delete_btn.clicked && tab.layer_order_list.size() > 1) {
-			layer_release(tab.layer_list, gs, index);
-			tab.layer_order_list.erase(tab.layer_order_list.begin() + i);
-
-			if (i < tab.layer_order_list_index) {
-				tab.layer_order_list_index--;
-			}
-
-			tab.layer_order_list_index = clampi(
-				tab.layer_order_list_index,
-				0,
-				(int)tab.layer_order_list.size() - 1
-			);
-
-			return;
-		}
-
 		if (layer.textarea.hovered && tab.layer_order_list_index == i) {
 			gs.cursor_icon = CURSOR_TEXT;
 			return;
 		}
+	}
+
+	if (tab.layer_bar.delete_layer_btn.clicked
+	&& tab.layer_order_list.size() > 1) {
+		layer_release(tab.layer_list, gs, get_layer_index(tab));
+		tab.layer_order_list.erase(
+			tab.layer_order_list.begin() + tab.layer_order_list_index
+		);
+
+		tab.layer_order_list_index = clampi(
+			tab.layer_order_list_index,
+			0,
+			(int)tab.layer_order_list.size() - 1
+		);
+
+		return;
 	}
 }
 

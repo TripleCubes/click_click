@@ -37,6 +37,13 @@ LayerBar layer_bar_new(Vec2 pos, Vec2 sz) {
 		"ICON_DOWN"
 	);
 
+	layer_bar.delete_layer_btn = btn_new(
+		vec2_new(37, sz.y - BTN_HEIGHT),
+		vec2_new(BTN_HEIGHT - 1, BTN_HEIGHT),
+		BTN_COLOR,
+		"ICON_X"
+	);
+
 	return layer_bar;
 }
 
@@ -46,6 +53,7 @@ const Input &input, Vec2 parent_pos, bool show) {
 	btn_update(layer_bar.add_btn, gs, input, pos, show);
 	btn_update(layer_bar.up_btn, gs, input, pos, show);
 	btn_update(layer_bar.down_btn, gs, input, pos, show);
+	btn_update(layer_bar.delete_layer_btn, gs, input, pos, show);
 }
 
 void layer_bar_draw(const LayerBar &layer_bar, GraphicStuff &gs,
@@ -54,4 +62,5 @@ Vec2 parent_pos) {
 	btn_draw(layer_bar.add_btn, gs, pos, false);
 	btn_draw(layer_bar.up_btn, gs, pos, false);
 	btn_draw(layer_bar.down_btn, gs, pos, false);
+	btn_draw(layer_bar.delete_layer_btn, gs, pos, false);
 }
