@@ -42,5 +42,17 @@
 	</script>
 
 	<script src="click_click.js"></script>
+
+	<script>
+		FS.mkdir('./data/');
+		FS.mount(IDBFS, {}, './data/');
+
+		FS.syncfs(true, function(err) {
+			console.log('FS.syncfs(true) finished');
+			if (err) {
+				console.log(err);
+			}
+		});
+	</script>
 </body>
 </html>
