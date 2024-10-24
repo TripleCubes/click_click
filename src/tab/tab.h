@@ -57,6 +57,8 @@ struct Tab {
 	bool layer_name_editing = false;
 	bool panning = false;
 	bool after_panning_1_frame = false;
+	float panning_left_down_at = 0;
+	float panning_pan_key_down_at = 0;
 };
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,

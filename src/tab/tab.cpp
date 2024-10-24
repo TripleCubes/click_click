@@ -433,8 +433,16 @@ void layer_bar_event_handle(Tab &tab) {
 }
 
 void canvas_move_update(Tab &tab, const GraphicStuff &gs,
-const Input &input, Vec2 parent_pos) {
-	if (map_down(input, MAP_PAN) && input.left_down) {
+const Input &input, const GameTime &game_time, Vec2 parent_pos) {
+	if (map_press(input, MAP_PAN)) {
+		tab.panning_pan_key_down_at = game_time.time_since_start;
+	}
+	if (input.left_click) {
+		tab.panning_left_down_at = game_time.time_since_start;
+	}
+
+	if (map_down(input, MAP_PAN) && input.left_down
+	&& tab.panning_left_down_at > tab.panning_pan_key_down_at) {
 		tab.panning = true;
 		tab.after_panning_1_frame = true;
 	}
@@ -643,7 +651,7 @@ Vec2 parent_pos,bool show){
 	}
 
 	layer_bar_event_handle(tab);
-	canvas_move_update(tab, gs, input, parent_pos);
+	canvas_move_update(tab, gs, input, game_time, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
