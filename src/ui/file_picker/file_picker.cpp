@@ -1,5 +1,12 @@
 #include "file_picker.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+#include <filesystem>
+#include <algorithm>
+#include <cmath>
+
 #include "../../tab/tab.h"
 #include "../../graphic_types/graphic_types.h"
 #include "../../input.h"
@@ -12,10 +19,6 @@
 #include "../../types/vec2i.h"
 #include "../../consts.h"
 #include "../../file/file.h"
-
-#include <filesystem>
-#include <algorithm>
-#include <cmath>
 
 // TEST
 #include <iostream>
@@ -387,6 +390,7 @@ void file_picker_init(FilePicker &file_picker) {
 		"save"
 	);
 
+	#ifndef __EMSCRIPTEN__
 	file_picker.png_save_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
 		         H - SIDE_PADDING.y - 10 - 14),
@@ -394,6 +398,7 @@ void file_picker_init(FilePicker &file_picker) {
 		BTN_TEXTAREA_COLOR,
 		".png"
 	);
+	#endif
 
 	file_picker.project_save_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
@@ -402,6 +407,15 @@ void file_picker_init(FilePicker &file_picker) {
 		BTN_TEXTAREA_COLOR,
 		".click"
 	);
+
+	#ifdef __EMSCRIPTEN__
+	file_picker.upload_btn = btn_new(
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1, H - SIDE_PADDING.y - 11),
+		vec2_new(40, 12),
+		BTN_TEXTAREA_COLOR,
+		"upload"
+	);
+	#endif
 
 	#ifndef __EMSCRIPTEN__
 	if (std::filesystem::exists("C:\\")) {
@@ -465,8 +479,13 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	textarea_update(file_picker.save_name_textarea, gs, game_time, input, pos,
 		file_picker.file_name_editing, show_1);
 	btn_update(file_picker.save_btn, gs, input, pos, show_1);
+	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.png_save_btn, gs, input, pos, show_1);
+	#endif
 	btn_update(file_picker.project_save_btn, gs, input, pos, show_1);
+
+	bool show_2 = show && !file_picker.is_save_picker;
+	btn_update(file_picker.upload_btn, gs, input, pos, show_2);
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
 	pos_1.y += 25;
@@ -620,6 +639,25 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		#endif
 	}
 
+	#ifdef __EMSCRIPTEN__
+	if (file_picker.upload_btn.clicked) {
+		EM_ASM(
+			file_input.click();
+		);
+	}
+
+	bool file_picked = EM_ASM_INT(
+		return file_picked;
+	);
+
+	if (file_picked == 1) {
+		EM_ASM(
+			file_picked = 0;
+		);
+		file_picker_web_file_btn_list_update(file_picker);
+	}
+	#endif
+
 	gs.draw_secondlayer_ui = true;
 }
 
@@ -671,10 +709,15 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		textarea_draw(file_picker.save_name_textarea, gs, game_time, pos,
 			file_picker.file_name_editing, true);
 		btn_draw(file_picker.save_btn, gs, pos, false);
+		#ifndef __EMSCRIPTEN__
 		btn_draw(file_picker.png_save_btn, gs, pos,
 			!file_picker.is_project_save);
+		#endif
 		btn_draw(file_picker.project_save_btn, gs, pos,
 			file_picker.is_project_save);
+	}
+	else {
+		btn_draw(file_picker.upload_btn, gs, pos, false);
 	}
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
@@ -749,6 +792,23 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 
 		pos_2.y += 12;
 	}
+
+//	#ifdef __EMSCRIPTEN__
+//	if (file_picker.folder_file_btn_list.size() == 0) {
+//		std::string str = "empty";
+//		draw_text(
+//			gs,
+//			str,
+//			vec2_new(X + SIDE_PADDING.x + SIDE_BTN_SZ.x + 5,
+//			         Y + SIDE_PADDING.y + 13 + 3),
+//			W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 8,
+//			1,
+//			BTN_TEXTAREA_COLOR,
+//			vec2_new(4, 3),
+//			false
+//		);
+//	}
+//	#endif
 }
 
 void file_picker_get_save_link(std::string &result,

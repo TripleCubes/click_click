@@ -120,6 +120,18 @@ void main_loop() {
 }
 
 int main() {
+	EM_ASM(
+		FS.mkdir('./data/');
+		FS.mount(IDBFS, {}, './data/');
+
+		FS.syncfs(true, function(err) {
+			console.log('FS.syncfs(true) finished');
+			if (err) {
+				console.log(err);
+			}
+		});
+	);
+
 	if (!init()) {
 		std::cout << "program exited" << std::endl;
 		return 0;

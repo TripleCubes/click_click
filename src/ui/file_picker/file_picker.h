@@ -50,6 +50,9 @@ struct FilePicker {
 	Btn save_btn;
 	Btn png_save_btn;
 	Btn project_save_btn;
+	#ifdef __EMSCRIPTEN__
+	Btn upload_btn;
+	#endif
 
 	std::vector<FilePickerSideItem> pinned_folder_list;
 	std::vector<FilePickerSideItem> quick_access_folder_list;
