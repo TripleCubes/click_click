@@ -16,6 +16,11 @@ struct FilePickerBtnPair {
 	Btn btn;
 	bool sec_btn_used = false;
 	Btn btn_1;
+
+	#ifdef __EMSCRIPTEN__
+	bool third_btn_used = false;
+	Btn btn_2;
+	#endif
 };
 
 struct FilePickerSideItem {

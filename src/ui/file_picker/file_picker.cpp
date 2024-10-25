@@ -11,9 +11,11 @@
 #include "../../types/vec2.h"
 #include "../../types/vec2i.h"
 #include "../../consts.h"
+#include "../../file/file.h"
 
 #include <filesystem>
 #include <algorithm>
+#include <cmath>
 
 // TEST
 #include <iostream>
@@ -95,6 +97,7 @@ const std::vector<std::string> &list_1) {
 	return true;
 }
 
+#ifndef __EMSCRIPTEN__
 void side_item_add(std::vector<FilePickerSideItem> &item_list,
 const std::vector<std::string> &path_list, const std::string &label,
 bool pin_btn) {
@@ -124,6 +127,7 @@ bool pin_btn) {
 		);
 	}
 }
+#endif
 
 void draw_path_bar(const FilePicker &file_picker, GraphicStuff &gs, Vec2 pos) {
 	std::string path_str;
@@ -280,7 +284,7 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 		FilePickerBtnPair btn_pair;
 		btn_pair.btn = btn_new(
 			vec2_new(12, 0),
-			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 12 - 12, 12),
+			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 36, 12),
 			BTN_TEXTAREA_COLOR,
 			trim_path(
 				folder_file.name,
@@ -288,11 +292,28 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 				true)
 		);
 
+		btn_pair.sec_btn_used = true;
+		btn_pair.btn_1 = btn_new(
+			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 16, 0),
+			vec2_new(12, 12),
+			BTN_TEXTAREA_COLOR,
+			"ICON_X"
+		);
+
+		btn_pair.third_btn_used = true;
+		btn_pair.btn_2 = btn_new(
+			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 16 - 12, 0),
+			vec2_new(12, 12),
+			BTN_TEXTAREA_COLOR,
+			"ICON_DOWNLOAD"
+		);
+
 		folder_file_btn_list.push_back(btn_pair);
 	}
 }
 #endif
 
+#ifndef __EMSCRIPTEN__
 int pinned_i(const FilePicker &file_picker, const std::string &folder_name) {
 	std::vector<std::string> path_list = file_picker.current_path_list;
 	path_list.push_back(folder_name);
@@ -306,6 +327,7 @@ int pinned_i(const FilePicker &file_picker, const std::string &folder_name) {
 
 	return -1;
 }
+#endif
 
 }
 
@@ -369,7 +391,7 @@ void file_picker_init(FilePicker &file_picker) {
 	);
 
 	file_picker.png_save_btn = btn_new(
-		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
 		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
@@ -377,7 +399,7 @@ void file_picker_init(FilePicker &file_picker) {
 	);
 
 	file_picker.project_save_btn = btn_new(
-		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
 		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
@@ -473,9 +495,17 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	for (int i = 0; i < (int)file_picker.folder_file_btn_list.size(); i++) {
 		FilePickerBtnPair &btn_pair = file_picker.folder_file_btn_list[i];
 		btn_update(btn_pair.btn, gs, input, pos_2, show);
+		
 		if (btn_pair.sec_btn_used) {
 			btn_update(btn_pair.btn_1, gs, input, pos_2, show);
 		}
+
+		#ifdef __EMSCRIPTEN__
+		if (btn_pair.third_btn_used) {
+			btn_update(btn_pair.btn_2, gs, input, pos_2, show);
+		}
+		#endif
+
 		pos_2.y += 12;
 	}
 
@@ -563,6 +593,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 			update();
 		}
 
+		#ifndef __EMSCRIPTEN__
 		if (btn_pair.btn_1.clicked) {
 			int index = pinned_i(file_picker, folder_file.name);
 			if (index == -1) {
@@ -582,6 +613,14 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 				);
 			}
 		}
+		#else
+		if (btn_pair.btn_1.clicked) {
+			std::cout << i << std::endl;
+		}
+		if (btn_pair.btn_2.clicked) {
+			web_download_file(folder_file.name);
+		}
+		#endif
 	}
 
 	gs.draw_secondlayer_ui = true;
@@ -675,14 +714,30 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		const FilePickerBtnPair &btn_pair= file_picker.folder_file_btn_list[i];
 		
 		btn_draw(btn_pair.btn, gs, pos_2, false);
+
 		if (btn_pair.sec_btn_used) {
 			btn_draw(
 				btn_pair.btn_1,
 				gs,
 				pos_2,
+				#ifndef __EMSCRIPTEN__
 				pinned_i(file_picker, folder_file.name) != -1
+				#else
+				false
+				#endif
 			);
 		}
+
+		#ifdef __EMSCRIPTEN__
+		if (btn_pair.third_btn_used) {
+			btn_draw(
+				btn_pair.btn_2,
+				gs,
+				pos_2,
+				false
+			);
+		}
+		#endif
 
 		int icon = folder_file.is_folder? ICON_FOLDER : ICON_FILE;
 		draw_icon(

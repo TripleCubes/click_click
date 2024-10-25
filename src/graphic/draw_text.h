@@ -40,10 +40,10 @@ const int ICON_CIRCLE          = 26;
 
 const int ICON_HAMBURGER       = 27;
 const int ICON_ERASER          = 28;
-const int ICON_EYE             = 29;
+const int ICON_DOWNLOAD        = 29;
 
 const int ICON_UNLOCKED        = 30;
-const int ICON_EYE_CLOSED      = 31;
+const int ICON_DELETE          = 31;
 const int ICON_LOCKED          = 32;
 
 const int ICON_TRASH           = 33;

@@ -411,9 +411,6 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 				if (err) {
 					console.log(err);
 				}
-				else {
-					console.log('file saved');
-				}
 			});
 		);
 		#endif
