@@ -625,6 +625,10 @@ GraphicStuff &gs, const Input &input) {
 		states.file_picker_opening = true;
 		file_picker.is_save_picker = false;
 		tab.layer_name_editing = false;
+
+		#ifdef __EMSCRIPTEN__
+			file_picker_web_file_btn_list_update(file_picker);
+		#endif
 	}
 
 	if (app_menu.save_btn.clicked) {
@@ -637,10 +641,26 @@ GraphicStuff &gs, const Input &input) {
 		file_picker.is_save_picker = true;
 
 		tab.layer_name_editing = false;
+
+		#ifdef __EMSCRIPTEN__
+			file_picker_web_file_btn_list_update(file_picker);
+		#endif
 	}
 
 	if (app_menu.save_as_btn.clicked) {
 		states.app_menu_opening = false;
+
+		states.file_picker_opening = true;
+		
+		file_picker.save_name_textarea.text
+			= file_picker.save_name_textarea.defl_text;
+		file_picker.is_save_picker = true;
+
+		tab.layer_name_editing = false;
+
+		#ifdef __EMSCRIPTEN__
+			file_picker_web_file_btn_list_update(file_picker);
+		#endif
 	}
 
 	if (app_menu.resize_btn.clicked) {
