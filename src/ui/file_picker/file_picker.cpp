@@ -233,14 +233,12 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 
 		FilePickerBtnPair btn_pair;
 
+		const float BTN_0_W = W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 24;
 		btn_pair.btn = btn_new(
 			vec2_new(12, 0),
-			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 12 - 12, 12),
+			vec2_new(BTN_0_W, 12),
 			BTN_TEXTAREA_COLOR,
-			trim_path(
-				folder_file.name,
-				W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 24,
-				true)
+			trim_path(folder_file.name, BTN_0_W, true)
 		);
 
 		if (folder_file.is_folder) {
@@ -282,14 +280,13 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 		const FilePickerFolderFile &folder_file = folder_file_list[i];
 
 		FilePickerBtnPair btn_pair;
+
+		const float BTN_0_W = W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 64;
 		btn_pair.btn = btn_new(
 			vec2_new(12, 0),
-			vec2_new(W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 36, 12),
+			vec2_new(BTN_0_W, 12),
 			BTN_TEXTAREA_COLOR,
-			trim_path(
-				folder_file.name,
-				W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 24,
-				true)
+			trim_path(folder_file.name, BTN_0_W, true)
 		);
 
 		btn_pair.sec_btn_used = true;
@@ -302,10 +299,10 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 
 		btn_pair.third_btn_used = true;
 		btn_pair.btn_2 = btn_new(
-			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 16 - 12, 0),
-			vec2_new(12, 12),
+			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 56, 0),
+			vec2_new(40, 12),
 			BTN_TEXTAREA_COLOR,
-			"ICON_DOWNLOAD"
+			"download"
 		);
 
 		folder_file_btn_list.push_back(btn_pair);
