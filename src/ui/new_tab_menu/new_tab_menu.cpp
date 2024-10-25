@@ -112,8 +112,8 @@ void new_tab_menu_update(NewTabMenu &new_tab_menu, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 
-	const float X = (main_fb_sz.x - W) / 2;
-	const float Y = (main_fb_sz.y - H) / 2;
+	const float X = std::floor((main_fb_sz.x - W) / 2);
+	const float Y = std::floor((main_fb_sz.y - H) / 2);
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_update(new_tab_menu.new_tab_btn, gs, input, pos, show);
@@ -199,8 +199,8 @@ void new_tab_menu_bkg_draw(GraphicStuff &gs, Vec2 parent_pos) {
 		);
 	};
 
-	const float X = (main_fb_sz.x - W) / 2;
-	const float Y = (main_fb_sz.y - H) / 2;
+	const float X = std::floor((main_fb_sz.x - W) / 2);
+	const float Y = std::floor((main_fb_sz.y - H) / 2);
 	draw(vec2_new(X, Y), vec2_new(W, H));
 }
 
