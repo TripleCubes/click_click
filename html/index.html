@@ -24,26 +24,47 @@
 </head>
 <body>
 	<canvas id="canvas"></canvas>
-	<input type=file><input>
+	<input type="file" accept=".click"></input>
 
 	<script>
 		var Module = {
-			canvas: document.querySelector("#canvas"),
+			canvas: document.querySelector('#canvas'),
 		};
 
-		let canvas = document.querySelector("#canvas");
+		let canvas = document.querySelector('#canvas');
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 	
-		window.addEventListener("resize", (e) => {
+		window.addEventListener('resize', (e) => {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 		});
 
-
 		document.onkeydown = (e) => {
 			return false;
 		}
+
+
+		let file_input = document.querySelector('input');
+		let file_picked = 0;
+
+		file_input.addEventListener('change', async function() {
+			if (file_input.files.length == 0) {
+				return;
+			}
+
+			let file = file_input.files[0];
+			let str = await file.text();
+			FS.writeFile('./data/' + file.name, str);
+			FS.syncfs(function(err) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					file_picked = 1;
+				}
+			});
+		});
 	</script>
 
 	<script src="click_click.js"></script>
