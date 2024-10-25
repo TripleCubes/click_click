@@ -65,6 +65,7 @@ void main_loop() {
 	graphic_stuff.just_resized = false;
 	graphic_stuff.redraw_requested = false;
 	graphic_stuff.draw_secondlayer_ui = false;
+	graphic_stuff.draw_thirdlayer_ui = false;
 	graphic_stuff.cursor_icon = CURSOR_POINTER;
 	graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
 	

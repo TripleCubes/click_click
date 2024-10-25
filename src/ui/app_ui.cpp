@@ -10,6 +10,8 @@ void app_ui_init(AppUI &app_ui, GraphicStuff &gs) {
 	resize_menu_init(app_ui.resize_menu);
 	top_left_menu_init(app_ui.top_left_menu, vec2_new(3, 3));
 	app_menu_init(app_ui.app_menu);
+
+	dialog_box_init(app_ui.dialog_box);
 }
 
 void app_ui_release(AppUI &app_ui, GraphicStuff &gs) {

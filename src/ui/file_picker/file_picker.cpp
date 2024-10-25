@@ -411,7 +411,7 @@ void file_picker_init(FilePicker &file_picker) {
 	#ifdef __EMSCRIPTEN__
 	file_picker.upload_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1, H - SIDE_PADDING.y - 11),
-		vec2_new(40, 12),
+		vec2_new(33, 12),
 		BTN_TEXTAREA_COLOR,
 		"upload"
 	);
@@ -484,8 +484,10 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	#endif
 	btn_update(file_picker.project_save_btn, gs, input, pos, show_1);
 
+	#ifdef __EMSCRIPTEN__
 	bool show_2 = show && !file_picker.is_save_picker;
 	btn_update(file_picker.upload_btn, gs, input, pos, show_2);
+	#endif
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
 	pos_1.y += 25;
@@ -630,9 +632,6 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 			}
 		}
 		#else
-		if (btn_pair.btn_1.clicked) {
-			std::cout << i << std::endl;
-		}
 		if (btn_pair.btn_2.clicked) {
 			web_download_file(folder_file.name);
 		}
@@ -716,9 +715,11 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		btn_draw(file_picker.project_save_btn, gs, pos,
 			file_picker.is_project_save);
 	}
+	#ifdef __EMSCRIPTEN__
 	else {
 		btn_draw(file_picker.upload_btn, gs, pos, false);
 	}
+	#endif
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
 	pos_1.y += 25;

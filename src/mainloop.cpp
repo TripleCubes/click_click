@@ -50,6 +50,7 @@ const Vec2 NEW_TAB_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 RESIZE_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 TOP_LEFT_MENU_OFFSET = vec2_new(0, 0);
 const Vec2 APP_MENU_OFFSET = vec2_new(0, 0);
+const Vec2 DIALOG_BOX_OFFSET = vec2_new(0, 0);
 
 void draw_canvas_bkg(GraphicStuff &gs, const Tab &tab) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
@@ -137,7 +138,8 @@ void draw_blurred_rects(GraphicStuff &gs, const Tab &tab) {
 	mesh_draw(gs, MESH_BASIC_DRAW);
 }
 
-void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
+void draw_blurred_rects_1(GraphicStuff &gs, const AppUI &app_ui,
+const States &states) {
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 	
@@ -152,6 +154,25 @@ void draw_blurred_rects_1(GraphicStuff &gs, const States &states) {
 	}
 	if (states.app_menu_opening) {
 		app_menu_bkg_draw(gs, APP_MENU_OFFSET);
+	}
+	if (states.dialog_box_opening) {
+		dialog_box_bkg_draw(app_ui.dialog_box, gs, DIALOG_BOX_OFFSET);
+	}
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		fb_get_texture_id(gs, FB_BLUR_1));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_blurred_rects_2(GraphicStuff &gs, const AppUI &app_ui,
+const States &states) {
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+	
+	if (states.dialog_box_opening) {
+		dialog_box_bkg_draw(app_ui.dialog_box, gs, DIALOG_BOX_OFFSET);
 	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -217,8 +238,6 @@ const Tab &tab,
 const Input &input,
 const GameTime &game_time
 ) {
-//	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
-
 	mesh_clear(gs, MESH_BASIC_DRAW);
 	bind_framebuffer(gs, FB_MAIN);
 
@@ -237,6 +256,30 @@ const GameTime &game_time
 	if (states.app_menu_opening) {
 		app_menu_ui_draw(app_ui.app_menu, settings, gs, input, game_time,
 			APP_MENU_OFFSET);
+	}
+
+	use_shader(gs, SHADER_BASIC_DRAW);
+	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
+		texture_get_id(gs, TEXTURE_FONT));
+	mesh_set(gs, MESH_BASIC_DRAW);
+	mesh_draw(gs, MESH_BASIC_DRAW);
+}
+
+void draw_ui_2(
+const States &states,
+const Settings &settings,
+GraphicStuff &gs,
+const AppUI &app_ui,
+const Tab &tab,
+const Input &input,
+const GameTime &game_time
+) {
+	mesh_clear(gs, MESH_BASIC_DRAW);
+	bind_framebuffer(gs, FB_MAIN);
+
+	if (states.dialog_box_opening) {
+		dialog_box_draw(app_ui.dialog_box, gs, input, game_time,
+			DIALOG_BOX_OFFSET);
 	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
@@ -315,7 +358,8 @@ void draw_cursor(GraphicStuff &gs, const Input &input) {
 
 bool menu_opening(const States &states) {
 	return states.file_picker_opening || states.new_tab_menu_opening
-		|| states.resize_menu_opening || states.app_menu_opening;
+		|| states.resize_menu_opening || states.app_menu_opening
+		|| states.dialog_box_opening;
 }
 
 void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
@@ -366,7 +410,8 @@ void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
 }
 
 void file_picker_handling(States &states, FilePicker &file_picker,
-TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
+TabBar &tab_bar, Tab &tab, DialogBox &dialog_box,
+GraphicStuff &gs, const Input &input) {
 	if (!menu_opening(states) && map_press(input, MAP_OPEN_FILE)) {
 		states.file_picker_opening = true;
 		file_picker.is_save_picker = false;
@@ -432,6 +477,19 @@ TabBar &tab_bar, Tab &tab, GraphicStuff &gs, const Input &input) {
 			}
 		}
 	}
+
+	#ifdef __EMSCRIPTEN__
+	for (int i = 0; i < (int)file_picker.folder_file_btn_list.size(); i++) {
+		FilePickerBtnPair &btn_pair = file_picker.folder_file_btn_list[i];
+		FilePickerFolderFile &folder_file = file_picker.folder_file_list[i];
+
+		if (btn_pair.btn_1.clicked) {
+			states.dialog_box_opening = true;
+			dialog_box.web_delete_file_name = folder_file.name;
+			dialog_box_set(dialog_box, DIALOG_BOX_WEB_DELETE_FILE);
+		}
+	}
+	#endif
 }
 
 void new_tab_menu_handling(States &states, NewTabMenu &new_tab_menu,
@@ -595,6 +653,32 @@ GraphicStuff &gs, const Input &input) {
 	}
 }
 
+void dialog_box_handle(AppUI &app_ui, States &states) {
+	DialogBox &dialog_box = app_ui.dialog_box;
+	FilePicker &file_picker = app_ui.file_picker;
+
+	if (dialog_box.ok_btn.clicked) {
+		#ifdef __EMSCRIPTEN__
+		if (dialog_box.dialog_type == DIALOG_BOX_WEB_DELETE_FILE) {
+			EM_ASM({
+				FS.unlink("./data/" + UTF8ToString($0));
+				FS.syncfs(function(err) {
+					if (err) {
+						console.log(err);
+					};
+				});
+			}, dialog_box.web_delete_file_name.c_str());
+			
+			file_picker_web_file_btn_list_update(file_picker);
+		}
+		#endif
+	}
+
+	if (dialog_box.ok_btn.clicked || dialog_box.cancel_btn.clicked) {
+		states.dialog_box_opening = false;
+	}
+}
+
 }
 
 void update(
@@ -616,18 +700,25 @@ AppUI &app_ui
 		!menu_opening(states));
 
 
+	dialog_box_update(app_ui.dialog_box, gs, input, game_time,
+		DIALOG_BOX_OFFSET, states.dialog_box_opening);
+	dialog_box_handle(app_ui, states);
+
+
+	bool dialog_opening = states.dialog_box_opening;
+
 	file_picker_update(app_ui.file_picker, gs, input, game_time,
-		FILE_PICKER_OFFSET, states.file_picker_opening);
+		FILE_PICKER_OFFSET, states.file_picker_opening && !dialog_opening);
 	file_picker_handling(states, app_ui.file_picker, app_ui.tab_bar,
-		tab, gs, input);
+		tab, app_ui.dialog_box, gs, input);
 
 	new_tab_menu_update(app_ui.new_tab_menu, gs, input, game_time,
-		NEW_TAB_MENU_OFFSET, states.new_tab_menu_opening);
+		NEW_TAB_MENU_OFFSET, states.new_tab_menu_opening && !dialog_opening);
 	new_tab_menu_handling(states, app_ui.new_tab_menu, app_ui.tab_bar,
 		gs, input);
 
 	resize_menu_update(app_ui.resize_menu, gs, input, game_time,
-		RESIZE_MENU_OFFSET, states.resize_menu_opening);
+		RESIZE_MENU_OFFSET, states.resize_menu_opening && !dialog_opening);
 	resize_menu_handling(states, app_ui.resize_menu, tab, gs, input);
 
 	top_left_menu_update(app_ui.top_left_menu, gs, input, game_time,
@@ -636,10 +727,11 @@ AppUI &app_ui
 
 	#ifndef __EMSCRIPTEN__
 	app_menu_update(app_ui.app_menu, settings, gs, input, game_time,
-		APP_MENU_OFFSET, states.app_menu_opening, glfw_window);
+		APP_MENU_OFFSET, states.app_menu_opening && !dialog_opening,
+		glfw_window);
 	#else
 	app_menu_update(app_ui.app_menu, settings, gs, input, game_time,
-		APP_MENU_OFFSET, states.app_menu_opening);
+		APP_MENU_OFFSET, states.app_menu_opening && !dialog_opening);
 	#endif
 	app_menu_handling(states, app_ui, tab, gs, input);
 }
@@ -672,17 +764,30 @@ const AppUI &app_ui
 		draw_blurred_rects(gs, tab);
 		draw_ui(gs, app_ui, tab, input, game_time);
 
-		if (gs.draw_secondlayer_ui) {
+		if (gs.draw_secondlayer_ui || states.dialog_box_opening) {
 			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
 				BLUR_COLOR, false);
 			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
 				BLUR_COLOR, true);
 		
-			draw_blurred_rects_1(gs, states);
+			draw_blurred_rects_1(gs, app_ui, states);
 			draw_ui_1(states, settings, gs, app_ui, tab, input, game_time);
 
 			// TEST
-			//std::cout << "drawing secondlayer ui" << std::endl;
+			// std::cout << "drawing secondlayer ui" << std::endl;
+		}
+
+		if (gs.draw_thirdlayer_ui) {
+			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_MAIN),
+				BLUR_COLOR, false);
+			draw_blurred_texture(gs, fb_get_texture_id(gs, FB_BLUR_1),
+				BLUR_COLOR, true);
+		
+			draw_blurred_rects_2(gs, app_ui, states);
+			draw_ui_2(states, settings, gs, app_ui, tab, input, game_time);
+
+			// TEST
+			// std::cout << "drawing thirdlayer ui" << std::endl;
 		}
 
 		if (!settings.use_hardware_cursor) {

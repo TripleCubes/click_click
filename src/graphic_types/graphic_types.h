@@ -44,6 +44,7 @@ struct GraphicStuff {
 	bool just_resized = false;
 	bool redraw_requested = false;
 	bool draw_secondlayer_ui = false;
+	bool draw_thirdlayer_ui = false;
 	int cursor_icon = CURSOR_POINTER;
 	std::vector<Mesh> mesh_list;
 	std::vector<Shader> shader_list;
