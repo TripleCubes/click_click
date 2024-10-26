@@ -297,7 +297,7 @@ Vec2 parent_pos) {
 		selection_all(tab.selection, tab.sz);
 	}
 
-	if (map_press(input, MAP_DESELECT_ALL) || map_press(input, MAP_ESC)) {
+	if (map_press(input, MAP_DESELECT_ALL)) {
 		selection_clear(tab.selection, tab.sz);
 	}
 
