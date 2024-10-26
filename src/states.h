@@ -13,5 +13,6 @@ struct States {
 };
 
 void states_update(States &states);
+bool menu_opening(const States &states);
 
 #endif

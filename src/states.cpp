@@ -22,3 +22,9 @@ void states_update(States &states) {
 		states.menu_open = true;
 	}
 }
+
+bool menu_opening(const States &states) {
+	return states.file_picker_opening || states.new_tab_menu_opening
+		|| states.resize_menu_opening || states.app_menu_opening
+		|| states.dialog_box_opening;
+}

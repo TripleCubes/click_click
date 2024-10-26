@@ -238,7 +238,8 @@ Vec2 parent_pos) {
 	bool b_cursor_on_ui
 		= cursor_on_ui(tab, gs, input, parent_pos);
 
-	if ((b_cursor_on_ui && input.left_click) || states.menu_just_close) {
+	if ((b_cursor_on_ui && input.left_click)
+	|| (states.menu_just_close && input.left_down)) {
 		tab.clicked_and_hold_on_ui = true;
 	}
 

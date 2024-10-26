@@ -163,7 +163,7 @@ void input_map_init(InputMap &input_map) {
 
 	set(MAP_RESIZE_CANVAS   , KEY_R    , MODIFIER_BOTH_CTRL );
 
-	set(MAP_APP_MENU        , KEY_COMMA, MODIFIER_BOTH_CTRL );
+	set(MAP_APP_MENU        , KEY_ESC                       );
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {
