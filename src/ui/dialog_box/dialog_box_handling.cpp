@@ -5,6 +5,8 @@
 #include "../../states.h"
 #ifdef __EMSCRIPTEN__
 #include "../file_picker/file_picker.h"
+
+#include <emscripten.h>
 #endif
 
 void dialog_box_handling(AppUI &app_ui, States &states) {

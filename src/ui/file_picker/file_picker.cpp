@@ -463,9 +463,9 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_update(file_picker.close_btn, gs, input, pos, show);
+	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.recent_btn, gs, input, pos,
 		!file_picker.is_save_picker);
-	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.up_btn, gs, input, pos, show);
 	#else
 	btn_update(file_picker.up_btn, gs, input, pos, false);
@@ -693,10 +693,12 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	#endif
 	draw_path_bar(file_picker, gs, pos);
 	
+	#ifndef __EMSCRIPTEN__
 	if (!file_picker.is_save_picker) {
 		btn_draw(file_picker.recent_btn, gs, pos,
 			file_picker.current_path_list.size() == 0);
 	}
+	#endif
 
 	btn_draw(file_picker.list_view_btn, gs,
 		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)),
@@ -795,22 +797,22 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		pos_2.y += 12;
 	}
 
-//	#ifdef __EMSCRIPTEN__
-//	if (file_picker.folder_file_btn_list.size() == 0) {
-//		std::string str = "empty";
-//		draw_text(
-//			gs,
-//			str,
-//			vec2_new(X + SIDE_PADDING.x + SIDE_BTN_SZ.x + 5,
-//			         Y + SIDE_PADDING.y + 13 + 3),
-//			W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 8,
-//			1,
-//			BTN_TEXTAREA_COLOR,
-//			vec2_new(4, 3),
-//			false
-//		);
-//	}
-//	#endif
+	#ifdef __EMSCRIPTEN__
+	if (file_picker.folder_file_btn_list.size() == 0) {
+		std::string str = "um... empty...";
+		draw_text(
+			gs,
+			str,
+			vec2_new(X + SIDE_PADDING.x + SIDE_BTN_SZ.x + 5,
+			         Y + SIDE_PADDING.y + 13 + 3),
+			W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 8,
+			1,
+			KEY_HINT_COLOR,
+			vec2_new(4, 3),
+			false
+		);
+	}
+	#endif
 }
 
 void file_picker_get_save_path(std::string &result,

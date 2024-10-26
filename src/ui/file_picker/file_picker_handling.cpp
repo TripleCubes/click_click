@@ -1,5 +1,8 @@
 #include "file_picker_handling.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <iostream>
 
 #include "file_picker.h"
