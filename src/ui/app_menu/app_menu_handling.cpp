@@ -8,6 +8,7 @@
 #include "../../states.h"
 #include "../../tab/tab.h"
 #include "../../input.h"
+#include "../../file/save_project.h"
 
 void app_menu_handling(States &states, AppUI &app_ui, Tab &tab,
 GraphicStuff &gs, const Input &input) {
@@ -37,7 +38,13 @@ GraphicStuff &gs, const Input &input) {
 
 	if (app_menu.save_btn.clicked) {
 		states.app_menu_opening = false;
-		file_picker_type_save_file_open(states, file_picker, tab);
+
+		if (tab.path.length() == 0) {
+			file_picker_type_save_file_open(states, file_picker, tab);
+		}
+		else {
+			save_project(tab.path, tab);
+		}
 	}
 
 	if (app_menu.save_as_btn.clicked) {

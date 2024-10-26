@@ -154,6 +154,8 @@ void input_map_init(InputMap &input_map) {
 
 	set(MAP_OPEN_FILE       , KEY_O    , MODIFIER_BOTH_CTRL );
 	set(MAP_SAVE_FILE       , KEY_S    , MODIFIER_BOTH_CTRL );
+	set(MAP_SAVE_FILE_AS    , KEY_S    , MODIFIER_BOTH_CTRL ,
+	                                     MODIFIER_BOTH_SHIFT);
 
 	set(MAP_NEW_PROJECT     , KEY_N    , MODIFIER_BOTH_CTRL,
 	                                     MODIFIER_BOTH_SHIFT);

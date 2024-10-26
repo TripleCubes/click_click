@@ -812,7 +812,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 //	#endif
 }
 
-void file_picker_get_save_link(std::string &result,
+void file_picker_get_save_path(std::string &result,
 const FilePicker &file_picker) {
 	#ifndef __EMSCRIPTEN__
 	for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
@@ -832,26 +832,30 @@ const FilePicker &file_picker) {
 	}
 }
 
-void file_picker_open_file(std::string &file_name,
+void file_picker_open_file(std::string &file_name, std::string &file_path,
 const FilePicker &file_picker) {
 	if (file_picker.is_save_picker) {
 		return;
 	}
 
 	#ifndef __EMSCRIPTEN__
-	auto get_file_name = [&file_picker](std::string &file_name, int index) {
+	auto get_file_path = [&file_picker](std::string &file_path, int index) {
 		const FilePickerFolderFile &folder_file
 			= file_picker.folder_file_list[index];
 
 		for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
-			file_name += file_picker.current_path_list[i] + SLASH;
+			file_path += file_picker.current_path_list[i] + SLASH;
 		}
 
-		file_name += folder_file.name;
+		file_path += folder_file.name;
 	};
 	#endif
 
 	auto is_dot_click = [](const std::string &str) {
+		if (str.length() <= DOT_CLICK.length()) {
+			return false;
+		}
+
 		for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
 			if (str[str.length() - DOT_CLICK.length() + i] != DOT_CLICK[i]) {
 				return false;
@@ -870,11 +874,14 @@ const FilePicker &file_picker) {
 		if (!folder_file.is_folder && btn_pair.btn.clicked
 		&& is_dot_click(folder_file.name)) {
 			#ifndef __EMSCRIPTEN__
-			get_file_name(file_name, i);
+			get_file_path(file_path, i);
 			#else
-			file_name = "./data/";
-			file_name += folder_file.name;
+			file_path = "./data/";
+			file_path += folder_file.name;
 			#endif
+
+			file_name = folder_file.name;
+			
 			break;
 		}
 	}

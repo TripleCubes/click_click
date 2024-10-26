@@ -1,5 +1,7 @@
 #include "tab.h"
 
+#include <cmath>
+
 #include "../types/color.h"
 
 #include "../graphic_types/texture.h"
@@ -28,9 +30,6 @@
 #include "curve.h"
 #include "fill.h"
 #include "px_perfect_brush.h"
-
-#include <string>
-#include <cmath>
 
 // TEST
 #include <iostream>
@@ -545,10 +544,10 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	Tab &tab = tab_list[index];
 
 	tab.btn = btn_new(
-		vec2_new(0, 0), vec2_new(4 * 5 + 1, 12), BTN_TEXTAREA_COLOR, "tab"
+		vec2_new(0, 0), vec2_new(4 * 3 + 9, 12), BTN_TEXTAREA_COLOR, "tab"
 	);
 	tab.close_btn = btn_new(
-		vec2_new(4 * 5 + 1, 0), vec2_new(12, 12),
+		vec2_new(4 * 3 + 9, 0), vec2_new(12, 12),
 		BTN_TEXTAREA_COLOR, "ICON_X"
 	);
 

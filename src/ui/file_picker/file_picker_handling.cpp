@@ -17,13 +17,31 @@
 
 namespace {
 
-void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data) {
+void rm_extension(std::string &str) {
+	for (int i = (int)str.length() - 1; i >= 0; i--) {
+		if (str[i] == '.') {
+			str.pop_back();
+			break;
+		}
+
+		str.pop_back();
+	}
+}
+
+void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data,
+const std::string &file_name, const std::string &file_path) {
 	tab_bar_tab_new(tab_bar, gs, tab_bar.order_index + 1,
 		data.pos, data.sz, data.px_scale);
 	tab_bar.order_index++;
 
 	int index = tab_bar.tab_order_list[tab_bar.order_index];
 	Tab &tab = tab_bar.tab_list[index];
+
+	tab.path = file_path;
+	tab.btn.text = file_name;
+	rm_extension(tab.btn.text);
+	tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
+	tab.close_btn.pos.x = tab.btn.sz.x;
 
 	tab.pallete_data.clear();
 	tab.layer_list.clear();
@@ -103,8 +121,17 @@ GraphicStuff &gs, const Input &input) {
 		file_picker_type_open_file_open(states, file_picker, tab);
 	}
 
-	if (!menu_opening(states) && map_press(input, MAP_SAVE_FILE)) {
+	if (!menu_opening(states) && map_press(input, MAP_SAVE_FILE_AS)) {
 		file_picker_type_save_file_open(states, file_picker, tab);
+	}
+
+	if (!menu_opening(states) && map_press(input, MAP_SAVE_FILE)) {
+		if (tab.path.length() == 0) {
+			file_picker_type_save_file_open(states, file_picker, tab);
+		}
+		else {
+			save_project(tab.path, tab);
+		}
 	}
 
 	if (states.file_picker_opening
@@ -116,10 +143,15 @@ GraphicStuff &gs, const Input &input) {
 	&& (file_picker.save_btn.clicked || map_press(input, MAP_ENTER))) {
 		states.file_picker_opening = false;
 
-		std::string save_link;
-		file_picker_get_save_link(save_link, file_picker);
+		std::string save_path;
+		file_picker_get_save_path(save_path, file_picker);
 		
-		save_project(save_link, tab);
+		save_project(save_path, tab);
+
+		tab.path = save_path;
+		tab.btn.text = file_picker.save_name_textarea.text;
+		tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
+		tab.close_btn.pos.x = tab.btn.sz.x;
 
 		#ifdef __EMSCRIPTEN__
 		EM_ASM(
@@ -133,18 +165,19 @@ GraphicStuff &gs, const Input &input) {
 	}
 
 	if (states.file_picker_opening) {
-		std::string open_path;
-		file_picker_open_file(open_path, file_picker);
+		std::string file_name;
+		std::string file_path;
+		file_picker_open_file(file_name, file_path, file_picker);
 
-		if (open_path.length() != 0) {
+		if (file_path.length() != 0) {
 			states.file_picker_opening = false;
 
 			OpenProjectData data;
-			if (file_to_project_data(data, open_path)) {
-				_tab_new(tab_bar, gs, data);
+			if (file_to_project_data(data, file_path)) {
+				_tab_new(tab_bar, gs, data, file_name, file_path);
 			}
 			else {
-				std::cout << "error opening file " << open_path << std::endl;
+				std::cout << "error opening file " << file_path << std::endl;
 			}
 		}
 	}

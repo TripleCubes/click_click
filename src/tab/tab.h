@@ -2,6 +2,7 @@
 #define TAB__TAB_H
 
 #include <vector>
+#include <string>
 #include "../types/vec2i.h"
 #include "../types/vec2.h"
 #include "../ui/tab/color_picker.h"
@@ -23,6 +24,7 @@ struct States;
 struct Tab {
 	Btn btn;
 	Btn close_btn;
+	std::string path;
 
 	bool running = true;
 	Vec2 pos;

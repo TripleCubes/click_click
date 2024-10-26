@@ -53,6 +53,7 @@ enum MappedKeyIndex: int {
 
 	MAP_OPEN_FILE,
 	MAP_SAVE_FILE,
+	MAP_SAVE_FILE_AS,
 	
 	MAP_NEW_PROJECT,
 	MAP_NEW_PROJECT_1,
