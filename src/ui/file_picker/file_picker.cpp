@@ -54,6 +54,17 @@ const float W = 320;
 const float H = 220;
 const std::string DOT_CLICK = ".click";
 
+void rm_extension(std::string &str) {
+	for (int i = (int)str.length() - 1; i >= 0; i--) {
+		if (str[i] == '.') {
+			str.pop_back();
+			break;
+		}
+
+		str.pop_back();
+	}
+}
+
 void rm_parent_path(std::string &path) {
 	int last_slash_pos = 0;
 
@@ -607,6 +618,12 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		if (btn_pair.btn.clicked && folder_file.is_folder) {
 			file_picker.current_path_list.push_back(folder_file.name);
 			update();
+		}
+
+		if (btn_pair.btn.clicked && !folder_file.is_folder
+		&& file_picker.is_save_picker) {
+			file_picker.save_name_textarea.text = folder_file.name;
+			rm_extension(file_picker.save_name_textarea.text);
 		}
 
 		#ifndef __EMSCRIPTEN__

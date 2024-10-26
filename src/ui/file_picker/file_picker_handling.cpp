@@ -153,6 +153,10 @@ GraphicStuff &gs, const Input &input) {
 
 	if (states.file_picker_opening && file_picker.is_save_picker
 	&& (file_picker.save_btn.clicked || map_press(input, MAP_ENTER))) {
+		if (file_picker.save_name_textarea.text.length() == 0) {
+			return;
+		}
+
 		states.file_picker_opening = false;
 
 		std::string save_path;
