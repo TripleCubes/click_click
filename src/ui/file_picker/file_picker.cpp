@@ -463,7 +463,8 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_update(file_picker.close_btn, gs, input, pos, show);
-	btn_update(file_picker.recent_btn, gs, input, pos, show);
+	btn_update(file_picker.recent_btn, gs, input, pos,
+		!file_picker.is_save_picker);
 	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.up_btn, gs, input, pos, show);
 	#else
@@ -534,10 +535,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 
 
 	auto update = [&file_picker]() {
-		update_folder_file_list(file_picker.folder_file_list,
-		                        file_picker.current_path_list);
-		update_folder_file_btn_list(file_picker.folder_file_btn_list,
-		                            file_picker.folder_file_list);
+		file_picker_file_btn_list_update(file_picker);
 	};
 
 	if (file_picker.up_btn.clicked
@@ -694,8 +692,11 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	btn_draw(file_picker.up_btn, gs, pos, false);
 	#endif
 	draw_path_bar(file_picker, gs, pos);
-	btn_draw(file_picker.recent_btn, gs, pos,
-		file_picker.current_path_list.size() == 0);
+	
+	if (!file_picker.is_save_picker) {
+		btn_draw(file_picker.recent_btn, gs, pos,
+			file_picker.current_path_list.size() == 0);
+	}
 
 	btn_draw(file_picker.list_view_btn, gs,
 		vec2_new(pos.x, pos.y + (file_picker.is_save_picker? 0 : 12)),
@@ -885,6 +886,13 @@ const FilePicker &file_picker) {
 			break;
 		}
 	}
+}
+
+void file_picker_file_btn_list_update(FilePicker &file_picker) {
+	update_folder_file_list(file_picker.folder_file_list,
+	                        file_picker.current_path_list);
+	update_folder_file_btn_list(file_picker.folder_file_btn_list,
+	                            file_picker.folder_file_list);
 }
 
 #ifdef __EMSCRIPTEN__

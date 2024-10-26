@@ -77,6 +77,8 @@ void file_picker_get_save_path(std::string &resulr,
 void file_picker_open_file(std::string &file_name, std::string &file_path,
 	const FilePicker &file_picker);
 
+void file_picker_file_btn_list_update(FilePicker &file_picker);
+
 #ifdef __EMSCRIPTEN__
 void file_picker_web_file_btn_list_update(FilePicker &file_picker);
 #endif

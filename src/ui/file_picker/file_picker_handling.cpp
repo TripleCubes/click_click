@@ -90,7 +90,9 @@ Tab &tab) {
 	file_picker.is_save_picker = false;
 	tab.layer_name_editing = false;
 	
-	#ifdef __EMSCRIPTEN__
+	#ifndef __EMSCRIPTEN__
+	file_picker_file_btn_list_update(file_picker);
+	#else
 	file_picker_web_file_btn_list_update(file_picker);
 	#endif
 }
@@ -105,7 +107,14 @@ Tab &tab) {
 
 	tab.layer_name_editing = false;
 
-	#ifdef __EMSCRIPTEN__
+	#ifndef __EMSCRIPTEN__
+	if (file_picker.current_path_list.size() == 0
+	&& file_picker.quick_access_folder_list.size() > 0) {
+		file_picker.current_path_list
+			= file_picker.quick_access_folder_list[0].path_list;
+	}
+	file_picker_file_btn_list_update(file_picker);
+	#else
 	file_picker_web_file_btn_list_update(file_picker);
 	#endif
 }
