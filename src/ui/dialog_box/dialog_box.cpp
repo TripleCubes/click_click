@@ -140,9 +140,9 @@ void dialog_box_set(DialogBox &dialog_box, int dialog_type) {
 
 	if (dialog_box.dialog_type == DIALOG_BOX_OVERRIDE_FILE) {
 		dialog_box.ok_btn.text = "okay";
-		dialog_box.title_text = "delete \"" + dialog_box.override_file_name
-		                        + "\" ?";
+		dialog_box.title_text = "override \"" + dialog_box.override_file_name
+		                        + ".click\" ?";
 		dialog_box.text = dialog_box.override_file_name + " already exist. "
-		                        + "do you want to override?";
+		                  + "do you want to override?";
 	}
 }
