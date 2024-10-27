@@ -15,6 +15,7 @@
 #include "../../graphic_types/texture.h"
 #include "../../file/open_project.h"
 #include "../../file/save_project.h"
+#include "../../file/save_png.h"
 #include "../../types/vec2.h"
 #include "../../types/vec2i.h"
 
@@ -130,6 +131,7 @@ void file_picker_close(States &states) {
 void file_picker_save_project(const FilePicker &file_picker,
 const std::string &save_path, Tab &tab) {
 	save_project(save_path, tab);
+	save_png(save_path + ".png", tab);
 
 	tab.path = save_path;
 	tab.name = file_picker.save_name_textarea.text;

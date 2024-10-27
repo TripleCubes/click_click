@@ -180,7 +180,7 @@ const std::string GLFW_SRC_PATH = "./lib/glfw-3.3.8/src/";
 const std::string GLAD_SRC_PATH = "./lib/glad/src/";
 const std::string GLFW_INCLUDE_FLAG = "-I./lib/glfw-3.3.8/include/";
 const std::string GLAD_INCLUDE_FLAG = "-I./lib/glad/include/";
-const std::string STB_IMAGE_INCLUDE_FLAG = "-I./lib/stb_image/include/";
+const std::string STB_INCLUDE_FLAG = "-I./lib/stb/include/";
 
 void makefilegen_glad_glfw(std::string &result) {
 	Config glad_config;
@@ -256,7 +256,7 @@ void makefilegen_native(std::string &result) {
 		= "-Wall -g3 -lgdi32";
 	native_config.compile_flags = "-Wall -g3 -MMD -MP "
 		+ GLFW_INCLUDE_FLAG + ' ' + GLAD_INCLUDE_FLAG + ' '
-		+ STB_IMAGE_INCLUDE_FLAG;
+		+ STB_INCLUDE_FLAG;
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
@@ -282,7 +282,7 @@ void makefilegen_linklib(std::string &result) {
 		= "-Wall -g3 -lgdi32 -static-libgcc -static-libstdc++";
 	native_config.compile_flags = "-Wall -g3 -MMD -MP "
 		+ GLFW_INCLUDE_FLAG + ' ' + GLAD_INCLUDE_FLAG + ' '
-		+ STB_IMAGE_INCLUDE_FLAG;
+		+ STB_INCLUDE_FLAG;
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
@@ -304,7 +304,7 @@ void makefilegen_web(std::string &result) {
 	web_config.link_flags = "-Wall -sWASM=0 -lglfw ";
 	web_config.link_flags += "--embed-file shader --embed-file texture ";
 	web_config.link_flags += "-lidbfs.js";
-	web_config.compile_flags = "-Wall -MMD -MP " + STB_IMAGE_INCLUDE_FLAG;
+	web_config.compile_flags = "-Wall -MMD -MP " + STB_INCLUDE_FLAG;
 	web_config.obj_path = "./build/web/obj/";
 	web_config.bin_path = "./build/web/bin/";
 	web_config.src_path = SRC_PATH;

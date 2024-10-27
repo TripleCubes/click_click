@@ -18,7 +18,7 @@ All rights reserved.
 
 The license file is located at [lib/glad/LICENSE](lib/glad/LICENSE)
 
-## Stb_image
+## Stb_image and Stb_image_write
 Public Domain [www.unlicense.org](www.unlicense.org)
 
 The license file is located at [lib/stb_image/LICENSE](lib/stb_image/LICENSE)

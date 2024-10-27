@@ -54,6 +54,20 @@ const float W = 320;
 const float H = 220;
 const std::string DOT_CLICK = ".click";
 
+bool is_dot_click(const std::string &str) {
+	if (str.length() <= DOT_CLICK.length()) {
+		return false;
+	}
+
+	for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
+		if (str[str.length() - DOT_CLICK.length() + i] != DOT_CLICK[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void rm_extension(std::string &str) {
 	for (int i = (int)str.length() - 1; i >= 0; i--) {
 		if (str[i] == '.') {
@@ -621,7 +635,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		}
 
 		if (btn_pair.btn.clicked && !folder_file.is_folder
-		&& file_picker.is_save_picker) {
+		&& file_picker.is_save_picker && is_dot_click(folder_file.name)) {
 			file_picker.save_name_textarea.text = folder_file.name;
 			rm_extension(file_picker.save_name_textarea.text);
 		}
@@ -873,20 +887,6 @@ const FilePicker &file_picker) {
 		file_path += folder_file.name;
 	};
 	#endif
-
-	auto is_dot_click = [](const std::string &str) {
-		if (str.length() <= DOT_CLICK.length()) {
-			return false;
-		}
-
-		for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
-			if (str[str.length() - DOT_CLICK.length() + i] != DOT_CLICK[i]) {
-				return false;
-			}
-		}
-
-		return true;
-	};
 
 	for (int i = 0; i < (int)file_picker.folder_file_btn_list.size(); i++) {
 		const FilePickerBtnPair &btn_pair
