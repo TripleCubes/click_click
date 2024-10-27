@@ -390,7 +390,7 @@ AppUI &app_ui
 
 	dialog_box_update(app_ui.dialog_box, gs, input, game_time,
 		DIALOG_BOX_OFFSET, states.dialog_box_opening);
-	dialog_box_handling(app_ui, states);
+	dialog_box_handling(app_ui, states, tab);
 
 
 	bool dialog_opening = states.dialog_box_opening;

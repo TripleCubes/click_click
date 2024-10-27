@@ -6,6 +6,7 @@
 #include "../btn.h"
 
 const int DIALOG_BOX_WEB_DELETE_FILE = 0;
+const int DIALOG_BOX_OVERRIDE_FILE = 1;
 
 struct GraphicStuff;
 struct Input;
@@ -18,6 +19,7 @@ struct DialogBox {
 	std::string text;
 
 	Btn ok_btn;
+	bool show_cancel_btn = true;
 	Btn cancel_btn;
 
 	int dialog_type = DIALOG_BOX_WEB_DELETE_FILE;
@@ -25,6 +27,9 @@ struct DialogBox {
 	#ifdef __EMSCRIPTEN__
 	std::string web_delete_file_name;
 	#endif
+
+	std::string override_file_name;
+	std::string override_file_path;
 };
 
 void dialog_box_init(DialogBox &dialog_box);

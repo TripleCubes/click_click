@@ -71,7 +71,7 @@ void file_picker_bkg_draw(GraphicStuff &gs, Vec2 parent_pos);
 void file_picker_ui_draw(const FilePicker &file_picker, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, Vec2 parent_pos);
 
-void file_picker_get_save_path(std::string &resulr,
+void file_picker_get_save_path(std::string &save_name, std::string &save_path,
 	const FilePicker &file_picker);
 
 void file_picker_open_file(std::string &file_name, std::string &file_path,

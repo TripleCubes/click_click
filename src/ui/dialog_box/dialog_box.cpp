@@ -50,7 +50,8 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_update(dialog_box.ok_btn, gs, input, pos, show);
-	btn_update(dialog_box.cancel_btn, gs, input, pos, show);
+	btn_update(dialog_box.cancel_btn, gs, input, pos,
+		dialog_box.show_cancel_btn);
 
 	if (!show) {
 		return;
@@ -68,7 +69,9 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, vec2_new(X, Y));
 
 	btn_draw(dialog_box.ok_btn, gs, pos, false);
-	btn_draw(dialog_box.cancel_btn, gs, pos, false);
+	if (dialog_box.show_cancel_btn) {
+		btn_draw(dialog_box.cancel_btn, gs, pos, false);
+	}
 
 	draw_text(
 		gs,
@@ -119,15 +122,27 @@ Vec2 parent_pos) {
 void dialog_box_set(DialogBox &dialog_box, int dialog_type) {
 	dialog_box.dialog_type = dialog_type;
 
+	dialog_box.sz.x = 160;
+	dialog_box.sz.y = 80;
+	dialog_box.ok_btn.text = "ok defl";
+	dialog_box.title_text = "title defl";
+	dialog_box.text = "text sefl";
+	dialog_box.show_cancel_btn = true;
+
 	#ifdef __EMSCRIPTEN__
 	if (dialog_box.dialog_type == DIALOG_BOX_WEB_DELETE_FILE) {
-		dialog_box.sz.x = 160;
-		dialog_box.sz.y = 80;
-
 		dialog_box.ok_btn.text = "delete";
 		dialog_box.title_text = "delete \"" + dialog_box.web_delete_file_name
 		                        + "\" ?";
 		dialog_box.text = "this file will be permanently deleted";
 	}
 	#endif
+
+	if (dialog_box.dialog_type == DIALOG_BOX_OVERRIDE_FILE) {
+		dialog_box.ok_btn.text = "okay";
+		dialog_box.title_text = "delete \"" + dialog_box.override_file_name
+		                        + "\" ?";
+		dialog_box.text = dialog_box.override_file_name + " already exist. "
+		                        + "do you want to override?";
+	}
 }

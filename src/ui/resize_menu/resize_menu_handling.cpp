@@ -32,7 +32,7 @@ Tab &tab, GraphicStuff &gs, const Input &input) {
 	if (states.resize_menu_opening
 	&& (resize_menu.resize_btn.clicked || map_press(input, MAP_ENTER))
 	&& resize_menu_all_field_valid(resize_menu)) {
-		states.resize_menu_opening = false;
+		resize_menu_close(states);
 
 		Vec2i prev_sz = tab.sz;
 		Vec2i new_sz = resize_menu_get_canvas_sz(resize_menu);

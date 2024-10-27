@@ -832,24 +832,27 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	#endif
 }
 
-void file_picker_get_save_path(std::string &result,
+void file_picker_get_save_path(std::string &save_name, std::string &save_path,
 const FilePicker &file_picker) {
 	#ifndef __EMSCRIPTEN__
 	for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
-		result += file_picker.current_path_list[i] + SLASH;
+		save_path += file_picker.current_path_list[i] + SLASH;
 	}
 	#else
-	result = "./data/";
+	save_path = "./data/";
 	#endif
 
-	result += file_picker.save_name_textarea.text;
+	save_path += file_picker.save_name_textarea.text;
 
 	if (file_picker.is_project_save) {
-		result += ".click";
+		save_path += ".click";
 	}
 	else {
-		result += ".png";
+		save_path += ".png";
 	}
+
+
+	save_name = file_picker.save_name_textarea.text;
 }
 
 void file_picker_open_file(std::string &file_name, std::string &file_path,

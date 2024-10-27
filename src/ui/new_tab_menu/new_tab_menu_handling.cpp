@@ -31,7 +31,7 @@ TabBar &tab_bar, GraphicStuff &gs, const Input &input) {
 	if (states.new_tab_menu_opening
 	&& (new_tab_menu.new_tab_btn.clicked || map_press(input, MAP_ENTER))
 	&& new_tab_menu_all_field_valid(new_tab_menu)) {
-		states.new_tab_menu_opening = false;
+		new_tab_menu_close(states);
 
 		Vec2i canvas_sz = new_tab_menu_get_canvas_sz(new_tab_menu);
 

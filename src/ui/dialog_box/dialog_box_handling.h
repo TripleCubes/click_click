@@ -3,7 +3,8 @@
 
 struct AppUI;
 struct States;
+struct Tab;
 
-void dialog_box_handling(AppUI &app_ui, States &states);
+void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab);
 
 #endif

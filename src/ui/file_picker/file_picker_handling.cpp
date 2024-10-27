@@ -126,6 +126,26 @@ void file_picker_close(States &states) {
 	states.file_picker_opening = false;
 }
 
+void file_picker_save_project(const FilePicker &file_picker,
+const std::string &save_path, Tab &tab) {
+	save_project(save_path, tab);
+
+	tab.path = save_path;
+	tab.btn.text = file_picker.save_name_textarea.text;
+	tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
+	tab.close_btn.pos.x = tab.btn.sz.x;
+
+	#ifdef __EMSCRIPTEN__
+	EM_ASM(
+		FS.syncfs(function(err) {
+			if (err) {
+				console.log(err);
+			}
+		});
+	);
+	#endif
+}
+
 void file_picker_handling(States &states, FilePicker &file_picker,
 TabBar &tab_bar, Tab &tab, DialogBox &dialog_box,
 GraphicStuff &gs, const Input &input) {
@@ -157,27 +177,29 @@ GraphicStuff &gs, const Input &input) {
 			return;
 		}
 
-		states.file_picker_opening = false;
-
 		std::string save_path;
-		file_picker_get_save_path(save_path, file_picker);
+		std::string save_name;
+		file_picker_get_save_path(save_name, save_path, file_picker);
 		
-		save_project(save_path, tab);
+		bool call_override_dialog = false;
+		for (int i = 0; i < (int)file_picker.folder_file_list.size(); i++) {
+			FilePickerFolderFile &folder_file =file_picker.folder_file_list[i];
+			if (folder_file.name == save_name + ".click") {
+				call_override_dialog = true;
+			}
+		}
+		
+		if (call_override_dialog) {
+			states.dialog_box_opening = true;
+			dialog_box.override_file_name = save_name;
+			dialog_box.override_file_path = save_path;
+			dialog_box_set(dialog_box, DIALOG_BOX_OVERRIDE_FILE);
+		}
+		else {
+			file_picker_save_project(file_picker, save_path, tab);
 
-		tab.path = save_path;
-		tab.btn.text = file_picker.save_name_textarea.text;
-		tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
-		tab.close_btn.pos.x = tab.btn.sz.x;
-
-		#ifdef __EMSCRIPTEN__
-		EM_ASM(
-			FS.syncfs(function(err) {
-				if (err) {
-					console.log(err);
-				}
-			});
-		);
-		#endif
+			file_picker_close(states);
+		}
 	}
 
 	if (states.file_picker_opening) {
@@ -186,7 +208,7 @@ GraphicStuff &gs, const Input &input) {
 		file_picker_open_file(file_name, file_path, file_picker);
 
 		if (file_path.length() != 0) {
-			states.file_picker_opening = false;
+			file_picker_close(states);
 
 			OpenProjectData data;
 			if (file_to_project_data(data, file_path)) {
