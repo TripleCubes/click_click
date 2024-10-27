@@ -14,6 +14,8 @@
 #include "layer.h"
 #include "select.h"
 
+const float TAB_BTN_W_ADD = 17;
+
 struct Color;
 struct GraphicStuff;
 struct Input;
@@ -25,6 +27,7 @@ struct Tab {
 	Btn btn;
 	Btn close_btn;
 	std::string path;
+	std::string name;
 
 	bool running = true;
 	Vec2 pos;

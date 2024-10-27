@@ -41,9 +41,10 @@ const std::string &file_name, const std::string &file_path) {
 	Tab &tab = tab_bar.tab_list[index];
 
 	tab.path = file_path;
-	tab.btn.text = file_name;
-	rm_extension(tab.btn.text);
-	tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
+	tab.name = file_name;
+	rm_extension(tab.name);
+	tab.btn.text = tab.name;
+	tab.btn.sz.x = tab.name.length() * 4 + TAB_BTN_W_ADD;
 	tab.close_btn.pos.x = tab.btn.sz.x;
 
 	tab.pallete_data.clear();
@@ -131,8 +132,9 @@ const std::string &save_path, Tab &tab) {
 	save_project(save_path, tab);
 
 	tab.path = save_path;
-	tab.btn.text = file_picker.save_name_textarea.text;
-	tab.btn.sz.x = tab.btn.text.length() * 4 + 9;
+	tab.name = file_picker.save_name_textarea.text;
+	tab.btn.text = tab.name;
+	tab.btn.sz.x = tab.name.length() * 4 + TAB_BTN_W_ADD;
 	tab.close_btn.pos.x = tab.btn.sz.x;
 
 	#ifdef __EMSCRIPTEN__

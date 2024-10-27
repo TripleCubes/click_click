@@ -7,6 +7,7 @@
 #include "../../graphic/graphic.h"
 #include "../../graphic/draw_texture.h"
 #include "../../graphic/draw_text.h"
+#include "../../types/vec2.h"
 #include "../../types/vec2i.h"
 #include "../../types/color.h"
 #include "../../input.h"
@@ -73,7 +74,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		btn_draw(dialog_box.cancel_btn, gs, pos, false);
 	}
 
-	draw_text(
+	Vec2 title_box_sz = draw_text(
 		gs,
 		dialog_box.title_text,
 		vec2_new(X + MARGIN.x + 5,
@@ -88,7 +89,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		gs,
 		dialog_box.text,
 		vec2_new(X + MARGIN.x + 5,
-		         Y + MARGIN.y + 19),
+		         Y + MARGIN.y + title_box_sz.y + 13),
 		dialog_box.sz.x - MARGIN.x * 2 - 9,
 		1,
 		BTN_TEXTAREA_COLOR,

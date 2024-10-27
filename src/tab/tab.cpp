@@ -543,11 +543,13 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	}
 	Tab &tab = tab_list[index];
 
+	tab.name = "tab";
 	tab.btn = btn_new(
-		vec2_new(0, 0), vec2_new(4 * 3 + 9, 12), BTN_TEXTAREA_COLOR, "tab"
+		vec2_new(0, 0), vec2_new(4 * 3 + TAB_BTN_W_ADD, 12),
+		BTN_TEXTAREA_COLOR, tab.name
 	);
 	tab.close_btn = btn_new(
-		vec2_new(4 * 3 + 9, 0), vec2_new(12, 12),
+		vec2_new(4 * 3 + TAB_BTN_W_ADD, 0), vec2_new(12, 12),
 		BTN_TEXTAREA_COLOR, "ICON_X"
 	);
 
