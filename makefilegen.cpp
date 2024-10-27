@@ -260,7 +260,7 @@ void makefilegen_native(std::string &result) {
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
-	native_config.output_name = "click_click";
+	native_config.output_name = "clickclick";
 	native_config.lib_path = "./build/glfw/bin/glfw.a ./build/glad/bin/glad.a";
 	native_config.is_cpp = true;
 	native_config.is_lib = false;
@@ -286,7 +286,7 @@ void makefilegen_linklib(std::string &result) {
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
-	native_config.output_name = "click_click";
+	native_config.output_name = "clickclick";
 	native_config.lib_path = "./build/glfw/bin/glfw.a ./build/glad/bin/glad.a";
 	native_config.is_cpp = true;
 	native_config.is_lib = false;
@@ -308,7 +308,7 @@ void makefilegen_web(std::string &result) {
 	web_config.obj_path = "./build/web/obj/";
 	web_config.bin_path = "./build/web/bin/";
 	web_config.src_path = SRC_PATH;
-	web_config.output_name = "click_click.js";
+	web_config.output_name = "clickclick.js";
 	web_config.lib_path = "";
 	web_config.is_cpp = true;
 	web_config.is_lib = false;
