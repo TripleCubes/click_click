@@ -1,5 +1,8 @@
 #include "save_project.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include "file.h"
 #include "../tab/tab.h"
 
@@ -113,4 +116,14 @@ void save_project(const std::string &path, const Tab &tab) {
 	}
 
 	write_file(path, result);
+
+	#ifdef __EMSCRIPTEN__
+	EM_ASM(
+		FS.syncfs(function(err) {
+			if (err) {
+				console.log(err);
+			}
+		});
+	);
+	#endif
 }

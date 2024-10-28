@@ -13,6 +13,7 @@
 #include "../../input.h"
 #include "../../game_time.h"
 #include "../../consts.h"
+#include "../../file/file_extension.h"
 
 namespace {
 
@@ -140,9 +141,17 @@ void dialog_box_set(DialogBox &dialog_box, int dialog_type) {
 	#endif
 
 	if (dialog_box.dialog_type == DIALOG_BOX_OVERRIDE_FILE) {
+		std::string dot_extension;
+		if (is_dot_click(dialog_box.override_file_path)) {
+			dot_extension = DOT_CLICK;
+		}
+		else {
+			dot_extension = DOT_PNG;
+		}
+
 		dialog_box.ok_btn.text = "okay";
 		dialog_box.title_text = "override \"" + dialog_box.override_file_name
-		                        + ".click\" ?";
+		                        + dot_extension + "\" ?";
 		dialog_box.text = dialog_box.override_file_name + " already exist. "
 		                  + "do you want to override?";
 	}

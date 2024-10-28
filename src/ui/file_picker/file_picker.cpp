@@ -19,6 +19,7 @@
 #include "../../types/vec2i.h"
 #include "../../consts.h"
 #include "../../file/file.h"
+#include "../../file/file_extension.h"
 
 // TEST
 #include <iostream>
@@ -52,31 +53,6 @@ const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
 const float H = 220;
-
-bool is_dot_click(const std::string &str) {
-	if (str.length() <= DOT_CLICK.length()) {
-		return false;
-	}
-
-	for (int i = 0; i < (int)DOT_CLICK.length(); i++) {
-		if (str[str.length() - DOT_CLICK.length() + i] != DOT_CLICK[i]) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-void rm_extension(std::string &str) {
-	for (int i = (int)str.length() - 1; i >= 0; i--) {
-		if (str[i] == '.') {
-			str.pop_back();
-			break;
-		}
-
-		str.pop_back();
-	}
-}
 
 void rm_parent_path(std::string &path) {
 	int last_slash_pos = 0;
@@ -583,10 +559,10 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	}
 
 	if (file_picker.png_save_btn.clicked) {
-		file_picker.is_project_save = false;
+		file_picker.is_dot_click_save = false;
 	}
 	if (file_picker.project_save_btn.clicked) {
-		file_picker.is_project_save = true;
+		file_picker.is_dot_click_save = true;
 	}
 
 	if (file_picker.is_save_picker) {
@@ -634,7 +610,15 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		}
 
 		if (btn_pair.btn.clicked && !folder_file.is_folder
-		&& file_picker.is_save_picker && is_dot_click(folder_file.name)) {
+		&& file_picker.is_save_picker && file_picker.is_dot_click_save
+		&& is_dot_click(folder_file.name)) {
+			file_picker.save_name_textarea.text = folder_file.name;
+			rm_extension(file_picker.save_name_textarea.text);
+		}
+
+		if (btn_pair.btn.clicked && !folder_file.is_folder
+		&& file_picker.is_save_picker && !file_picker.is_dot_click_save
+		&& is_dot_png(folder_file.name)) {
 			file_picker.save_name_textarea.text = folder_file.name;
 			rm_extension(file_picker.save_name_textarea.text);
 		}
@@ -743,10 +727,10 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		btn_draw(file_picker.save_btn, gs, pos, false);
 		#ifndef __EMSCRIPTEN__
 		btn_draw(file_picker.png_save_btn, gs, pos,
-			!file_picker.is_project_save);
+			!file_picker.is_dot_click_save);
 		#endif
 		btn_draw(file_picker.project_save_btn, gs, pos,
-			file_picker.is_project_save);
+			file_picker.is_dot_click_save);
 	}
 	#ifdef __EMSCRIPTEN__
 	else {
@@ -848,24 +832,26 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 void file_picker_get_save_path(std::string &save_name, std::string &save_path,
 const FilePicker &file_picker) {
 	#ifndef __EMSCRIPTEN__
+	
+	save_name = file_picker.save_name_textarea.text;
+
 	for (int i = 0; i < (int)file_picker.current_path_list.size(); i++) {
 		save_path += file_picker.current_path_list[i] + SLASH;
 	}
-	#else
-	save_path = "./data/";
-	#endif
 
-	save_path += file_picker.save_name_textarea.text;
+	save_path += save_name;
 
-	if (file_picker.is_project_save) {
+	if (file_picker.is_dot_click_save) {
 		save_path += DOT_CLICK;
 	}
 	else {
 		save_path += DOT_PNG;
 	}
 
-
+	#else
 	save_name = file_picker.save_name_textarea.text;
+	save_path = "./data/" + save_name + DOT_CLICK;
+	#endif
 }
 
 void file_picker_open_file(std::string &file_name, std::string &file_path,

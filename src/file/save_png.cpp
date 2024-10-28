@@ -1,5 +1,8 @@
 #include "save_png.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <vector>
 #include <iostream>
 #include <stb_image_write.h>
@@ -48,6 +51,16 @@ bool save_png(const std::string &path, const Tab &tab) {
 		std::cout << "failed writing " << path << std::endl;
 		return false;
 	}
+
+	#ifdef __EMSCRIPTEN__
+	EM_ASM(
+		FS.syncfs(function(err) {
+			if (err) {
+				console.log(err);
+			}
+		});
+	);
+	#endif
 
 	return true;
 }

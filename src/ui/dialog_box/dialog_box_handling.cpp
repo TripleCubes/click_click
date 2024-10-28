@@ -13,7 +13,9 @@
 
 void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab) {
 	DialogBox &dialog_box = app_ui.dialog_box;
+	#ifdef __EMSCRIPTEN__
 	FilePicker &file_picker = app_ui.file_picker;
+	#endif
 
 	if (dialog_box.ok_btn.clicked) {
 		#ifdef __EMSCRIPTEN__
@@ -32,8 +34,11 @@ void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab) {
 		#endif
 
 		if (dialog_box.dialog_type == DIALOG_BOX_OVERRIDE_FILE) {
-			file_picker_save_project(file_picker,
-				dialog_box.override_file_path, tab);
+			file_picker_save_tab_path_assign(
+				dialog_box.override_file_name,
+				dialog_box.override_file_path,
+				tab
+			);
 
 			file_picker_close(states);
 		}

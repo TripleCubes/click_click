@@ -17,21 +17,11 @@
 #include "../../file/open_project.h"
 #include "../../file/save_project.h"
 #include "../../file/save_png.h"
+#include "../../file/file_extension.h"
 #include "../../types/vec2.h"
 #include "../../types/vec2i.h"
 
 namespace {
-
-void rm_extension(std::string &str) {
-	for (int i = (int)str.length() - 1; i >= 0; i--) {
-		if (str[i] == '.') {
-			str.pop_back();
-			break;
-		}
-
-		str.pop_back();
-	}
-}
 
 void _tab_new(TabBar &tab_bar, GraphicStuff &gs, const OpenProjectData &data,
 const std::string &file_name, const std::string &file_path) {
@@ -44,7 +34,6 @@ const std::string &file_name, const std::string &file_path) {
 
 	tab.path = file_path;
 	tab.name = file_name;
-	rm_extension(tab.name);
 	tab.btn.text = tab.name;
 	tab.btn.sz.x = tab.name.length() * 4 + TAB_BTN_W_ADD;
 	tab.close_btn.pos.x = tab.btn.sz.x;
@@ -129,26 +118,22 @@ void file_picker_close(States &states) {
 	states.file_picker_opening = false;
 }
 
-void file_picker_save_project(const FilePicker &file_picker,
+void file_picker_save_tab_path_assign(const std::string &save_name,
 const std::string &save_path, Tab &tab) {
-	save_project(save_path, tab);
-	save_png(save_path + DOT_PNG, tab);
+	bool is_save_dot_click = is_dot_click(save_path);
+
+	if (is_save_dot_click) {
+		save_project(save_path, tab);
+	}
+	else {
+		save_png(save_path, tab);
+	}
 
 	tab.path = save_path;
-	tab.name = file_picker.save_name_textarea.text;
+	tab.name = save_name + (is_save_dot_click? DOT_CLICK : DOT_PNG);
 	tab.btn.text = tab.name;
 	tab.btn.sz.x = tab.name.length() * 4 + TAB_BTN_W_ADD;
 	tab.close_btn.pos.x = tab.btn.sz.x;
-
-	#ifdef __EMSCRIPTEN__
-	EM_ASM(
-		FS.syncfs(function(err) {
-			if (err) {
-				console.log(err);
-			}
-		});
-	);
-	#endif
 }
 
 void file_picker_handling(States &states, FilePicker &file_picker,
@@ -167,7 +152,7 @@ GraphicStuff &gs, const Input &input) {
 			file_picker_type_save_file_open(states, file_picker, tab);
 		}
 		else {
-			save_project(tab.path, tab);
+			file_picker_save_tab_path_assign(tab.name, tab.path, tab);
 		}
 	}
 
@@ -182,14 +167,15 @@ GraphicStuff &gs, const Input &input) {
 			return;
 		}
 
-		std::string save_path;
 		std::string save_name;
+		std::string save_path;
 		file_picker_get_save_path(save_name, save_path, file_picker);
 		
 		bool call_override_dialog = false;
 		for (int i = 0; i < (int)file_picker.folder_file_list.size(); i++) {
 			FilePickerFolderFile &folder_file =file_picker.folder_file_list[i];
-			if (folder_file.name == save_name + DOT_CLICK) {
+			if (folder_file.name == save_name
+				            + (is_dot_click(save_path)? DOT_CLICK : DOT_PNG)) {
 				call_override_dialog = true;
 			}
 		}
@@ -201,7 +187,7 @@ GraphicStuff &gs, const Input &input) {
 			dialog_box_set(dialog_box, DIALOG_BOX_OVERRIDE_FILE);
 		}
 		else {
-			file_picker_save_project(file_picker, save_path, tab);
+			file_picker_save_tab_path_assign(save_name, save_path, tab);
 
 			file_picker_close(states);
 		}

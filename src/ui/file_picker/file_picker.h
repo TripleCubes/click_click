@@ -35,7 +35,7 @@ struct FilePickerFolderFile {
 
 struct FilePicker {
 	bool is_image_view = false;
-	bool is_project_save = true;
+	bool is_dot_click_save = true;
 	bool is_save_picker = false;
 	bool file_name_editing = false;
 	
