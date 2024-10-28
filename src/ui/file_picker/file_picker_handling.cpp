@@ -8,6 +8,7 @@
 #include "file_picker.h"
 #include "../../states.h"
 #include "../../input.h"
+#include "../../consts.h"
 #include "../../tab/tab.h"
 #include "../tab_bar/tab_bar.h"
 #include "../dialog_box/dialog_box.h"
@@ -131,7 +132,7 @@ void file_picker_close(States &states) {
 void file_picker_save_project(const FilePicker &file_picker,
 const std::string &save_path, Tab &tab) {
 	save_project(save_path, tab);
-	save_png(save_path + ".png", tab);
+	save_png(save_path + DOT_PNG, tab);
 
 	tab.path = save_path;
 	tab.name = file_picker.save_name_textarea.text;
@@ -188,7 +189,7 @@ GraphicStuff &gs, const Input &input) {
 		bool call_override_dialog = false;
 		for (int i = 0; i < (int)file_picker.folder_file_list.size(); i++) {
 			FilePickerFolderFile &folder_file =file_picker.folder_file_list[i];
-			if (folder_file.name == save_name + ".click") {
+			if (folder_file.name == save_name + DOT_CLICK) {
 				call_override_dialog = true;
 			}
 		}

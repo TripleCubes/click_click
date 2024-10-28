@@ -52,7 +52,6 @@ const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
 const float H = 220;
-const std::string DOT_CLICK = ".click";
 
 bool is_dot_click(const std::string &str) {
 	if (str.length() <= DOT_CLICK.length()) {
@@ -421,7 +420,7 @@ void file_picker_init(FilePicker &file_picker) {
 		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
-		".png"
+		DOT_PNG
 	);
 	#endif
 
@@ -430,7 +429,7 @@ void file_picker_init(FilePicker &file_picker) {
 		         H - SIDE_PADDING.y - 10 - 14),
 		SAVE_FORMAT_BTN_SZ,
 		BTN_TEXTAREA_COLOR,
-		".click"
+		DOT_CLICK
 	);
 
 	#ifdef __EMSCRIPTEN__
@@ -859,10 +858,10 @@ const FilePicker &file_picker) {
 	save_path += file_picker.save_name_textarea.text;
 
 	if (file_picker.is_project_save) {
-		save_path += ".click";
+		save_path += DOT_CLICK;
 	}
 	else {
-		save_path += ".png";
+		save_path += DOT_PNG;
 	}
 
 
