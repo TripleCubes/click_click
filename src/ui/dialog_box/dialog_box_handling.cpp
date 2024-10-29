@@ -6,6 +6,7 @@
 #include "../../tab/tab.h"
 #include "../file_picker/file_picker_handling.h"
 #include "../file_picker/file_picker.h"
+#include "../../consts.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -21,13 +22,13 @@ void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab) {
 		#ifdef __EMSCRIPTEN__
 		if (dialog_box.dialog_type == DIALOG_BOX_WEB_DELETE_FILE) {
 			EM_ASM({
-				FS.unlink("./data/" + UTF8ToString($0));
+				FS.unlink(UFT8ToString($0) + UTF8ToString($1));
 				FS.syncfs(function(err) {
 					if (err) {
 						console.log(err);
 					};
 				});
-			}, dialog_box.web_delete_file_name.c_str());
+			}, WEB_DATA_DIR.c_str(), dialog_box.web_delete_file_name.c_str());
 			
 			file_picker_web_file_btn_list_update(file_picker);
 		}

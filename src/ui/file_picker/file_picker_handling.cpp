@@ -126,7 +126,7 @@ const std::string &save_path, Tab &tab) {
 		save_project(save_path, tab);
 	}
 	else {
-		save_png(save_path, tab);
+		save_png_from_tab(save_path, tab);
 	}
 
 	tab.path = save_path;

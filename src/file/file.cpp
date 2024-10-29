@@ -7,6 +7,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "../consts.h"
+
 bool file_to_str(std::string &result, const std::string &path) {
 	std::ifstream i(path);
 	if (!i.good()) {
@@ -29,9 +31,10 @@ void write_file(const std::string &file_path, const std::string &str) {
 }
 
 #ifdef __EMSCRIPTEN__
-bool web_download_file(const std::string &file_name) {
+bool web_download_file(const std::string &file_path,
+const std::string &download_name) {
 	std::string file_content;
-	if (!file_to_str(file_content, "./data/" + file_name)) {
+	if (!file_to_str(file_content, file_path)) {
 		return false;
 	}
 	
@@ -41,11 +44,28 @@ bool web_download_file(const std::string &file_name) {
 			+ encodeURIComponent(UTF8ToString($0));
 
 		a.download = UTF8ToString($1);
-		a.display = 'none';
+		a.style.display = 'none';
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
-	}, file_content.c_str(), file_name.c_str());
+	}, file_content.c_str(), download_name.c_str());
+
+	return true;
+}
+
+bool web_download_bin_file(const std::string &file_path,
+const std::string &download_name) {
+	EM_ASM({
+		let u8arr = FS.readFile(UTF8ToString($0), { encoding: 'binary' });
+		let blob = new Blob([u8arr]);
+		let a = document.createElement('a');
+		a.href = window.URL.createObjectURL(blob);
+		a.download = UTF8ToString($1);
+		a.style.display = 'none';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	}, file_path.c_str(), download_name.c_str());
 
 	return true;
 }

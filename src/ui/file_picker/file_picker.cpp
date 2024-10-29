@@ -19,7 +19,9 @@
 #include "../../types/vec2i.h"
 #include "../../consts.h"
 #include "../../file/file.h"
+#include "../../file/open_project.h"
 #include "../../file/file_extension.h"
+#include "../../file/save_png.h"
 
 // TEST
 #include <iostream>
@@ -265,7 +267,7 @@ std::vector<FilePickerFolderFile> &folder_file_list) {
 
 	folder_file_list.clear();
 
-	for (const auto &f: fs::directory_iterator("./data/")) {
+	for (const auto &f: fs::directory_iterator(WEB_DATA_DIR)) {
 		FilePickerFolderFile folder_file;
 		folder_file.name = f.path().string();
 		rm_parent_path(folder_file.name);
@@ -645,7 +647,32 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		}
 		#else
 		if (btn_pair.btn_2.clicked) {
-			web_download_file(folder_file.name);
+			std::string file_name = folder_file.name;
+			rm_extension(file_name);
+			std::string file_name_dot_click = file_name + DOT_CLICK;
+			std::string file_name_dot_png = file_name + DOT_PNG;
+
+			web_download_file(WEB_DATA_DIR + file_name_dot_click,
+				file_name_dot_click);
+
+
+			OpenProjectData open_project_data;
+			file_to_project_data(open_project_data, WEB_DATA_DIR
+			                                      + file_name_dot_click);
+			web_save_png_from_open_project_data_no_syncfs(
+				WEB_DATA_DIR + file_name_dot_png,
+				open_project_data
+			);
+			web_download_bin_file(WEB_DATA_DIR + file_name_dot_png,
+				file_name_dot_png);
+			EM_ASM({
+				FS.unlink(UTF8ToString($0) + UTF8ToString($1));
+				FS.syncfs(function(err) {
+					if (err) {
+						console.log(err);
+					};
+				});
+			}, WEB_DATA_DIR.c_str(), file_name_dot_png.c_str());
 		}
 		#endif
 	}
@@ -850,7 +877,7 @@ const FilePicker &file_picker) {
 
 	#else
 	save_name = file_picker.save_name_textarea.text;
-	save_path = "./data/" + save_name + DOT_CLICK;
+	save_path = WEB_DATA_DIR + save_name + DOT_CLICK;
 	#endif
 }
 
@@ -884,7 +911,7 @@ const FilePicker &file_picker) {
 			#ifndef __EMSCRIPTEN__
 			get_file_path(file_path, i);
 			#else
-			file_path = "./data/";
+			file_path = WEB_DATA_DIR;
 			file_path += folder_file.name;
 			#endif
 

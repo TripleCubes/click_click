@@ -121,9 +121,9 @@ void main_loop() {
 }
 
 int main() {
-	EM_ASM(
-		FS.mkdir('./data/');
-		FS.mount(IDBFS, {}, './data/');
+	EM_ASM({
+		FS.mkdir(UTF8ToString($0));
+		FS.mount(IDBFS, {}, UTF8ToString($0));
 
 		FS.syncfs(true, function(err) {
 			console.log('FS.syncfs(true) finished');
@@ -131,7 +131,7 @@ int main() {
 				console.log(err);
 			}
 		});
-	);
+	}, WEB_DATA_DIR.c_str());
 
 	if (!init()) {
 		std::cout << "program exited" << std::endl;

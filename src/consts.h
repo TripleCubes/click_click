@@ -14,6 +14,10 @@ const float TOP_BAR_H = 12 + 5 + 4;
 
 const Vec2i DEFL_CANVAS_SZ = vec2i_new(64, 64);
 
+#ifdef __EMSCRIPTEN__
+const std::string WEB_DATA_DIR = "./data/";
+const std::string WEB_PNG_DOWNLOAD_DIR = "./png_download/";
+#endif
 const std::string DOT_CLICK = ".click";
 const std::string DOT_PNG = ".png";
 
