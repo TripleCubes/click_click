@@ -24,6 +24,6 @@ void file_picker_handling(States &states, FilePicker &file_picker,
 	GraphicStuff &gs, const Input &input);
 
 void file_picker_save_tab_path_assign(const std::string &save_name,
-	const std::string &save_path, Tab &tab);
+	const std::string &save_path, Tab &tab, int png_px_scale_index);
 
 #endif

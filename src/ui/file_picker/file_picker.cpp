@@ -51,6 +51,7 @@ const char SLASH = '/';
 const Vec2 SIDE_BTN_SZ = vec2_new(80, 12);
 const Vec2 VIEW_BTN_SZ = vec2_new(28, 12);
 const Vec2 SAVE_FORMAT_BTN_SZ = vec2_new(32, 12);
+const Vec2 PNG_SCALE_BTN_SZ = vec2_new(16, 12);
 const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
@@ -392,6 +393,14 @@ void file_picker_init(FilePicker &file_picker) {
 		"save"
 	);
 
+	file_picker.project_save_btn = btn_new(
+		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
+		         H - SIDE_PADDING.y - 10 - 14),
+		SAVE_FORMAT_BTN_SZ,
+		BTN_TEXTAREA_COLOR,
+		DOT_CLICK
+	);
+
 	#ifndef __EMSCRIPTEN__
 	file_picker.png_save_btn = btn_new(
 		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + SAVE_FORMAT_BTN_SZ.x + 1,
@@ -402,13 +411,20 @@ void file_picker_init(FilePicker &file_picker) {
 	);
 	#endif
 
-	file_picker.project_save_btn = btn_new(
-		vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1,
-		         H - SIDE_PADDING.y - 10 - 14),
-		SAVE_FORMAT_BTN_SZ,
-		BTN_TEXTAREA_COLOR,
-		DOT_CLICK
-	);
+	const int PNG_SCALE_COUNT = 4;
+	for (int i = 0; i < PNG_SCALE_COUNT; i++) {
+		Btn btn;
+		file_picker.png_save_scale_btn_list.push_back(btn);
+		file_picker.png_save_scale_btn_list[i] = btn_new(
+			vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x
+			                        + SAVE_FORMAT_BTN_SZ.x * 2 + 1
+			                        + PNG_SCALE_BTN_SZ.x * i,
+			         H - SIDE_PADDING.y - 10 - 14),
+			PNG_SCALE_BTN_SZ,
+			BTN_TEXTAREA_COLOR,
+			std::to_string(i_to_px_scale(i)) + "x"
+		);
+	}
 
 	#ifdef __EMSCRIPTEN__
 	file_picker.upload_btn = btn_new(
@@ -482,10 +498,16 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	textarea_update(file_picker.save_name_textarea, gs, game_time, input, pos,
 		file_picker.file_name_editing, show_1);
 	btn_update(file_picker.save_btn, gs, input, pos, show_1);
+	btn_update(file_picker.project_save_btn, gs, input, pos, show_1);
 	#ifndef __EMSCRIPTEN__
 	btn_update(file_picker.png_save_btn, gs, input, pos, show_1);
 	#endif
-	btn_update(file_picker.project_save_btn, gs, input, pos, show_1);
+
+	for (int i = 0; i < (int)file_picker.png_save_scale_btn_list.size(); i++) {
+		Btn &btn = file_picker.png_save_scale_btn_list[i];
+		btn_update(btn, gs, input, pos, show_1
+			&& !file_picker.is_dot_click_save);
+	}
 
 	#ifdef __EMSCRIPTEN__
 	bool show_2 = show && !file_picker.is_save_picker;
@@ -565,6 +587,12 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	}
 	if (file_picker.project_save_btn.clicked) {
 		file_picker.is_dot_click_save = true;
+	}
+	for (int i = 0; i < (int)file_picker.png_save_scale_btn_list.size(); i++) {
+		Btn &btn = file_picker.png_save_scale_btn_list[i];
+		if (btn.clicked) {
+			file_picker.png_save_scale_selected_index = i;
+		}
 	}
 
 	if (file_picker.is_save_picker) {
@@ -752,12 +780,21 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		textarea_draw(file_picker.save_name_textarea, gs, game_time, pos,
 			file_picker.file_name_editing, true);
 		btn_draw(file_picker.save_btn, gs, pos, false);
+		btn_draw(file_picker.project_save_btn, gs, pos,
+			file_picker.is_dot_click_save);
 		#ifndef __EMSCRIPTEN__
 		btn_draw(file_picker.png_save_btn, gs, pos,
 			!file_picker.is_dot_click_save);
 		#endif
-		btn_draw(file_picker.project_save_btn, gs, pos,
-			file_picker.is_dot_click_save);
+
+		if (!file_picker.is_dot_click_save) {
+			for (int i = 0;i < (int)file_picker.png_save_scale_btn_list.size();
+			i++) {
+				const Btn &btn = file_picker.png_save_scale_btn_list[i];
+				btn_draw(btn, gs, pos,
+					file_picker.png_save_scale_selected_index == i);
+			}
+		}
 	}
 	#ifdef __EMSCRIPTEN__
 	else {
@@ -927,6 +964,17 @@ void file_picker_file_btn_list_update(FilePicker &file_picker) {
 	                        file_picker.current_path_list);
 	update_folder_file_btn_list(file_picker.folder_file_btn_list,
 	                            file_picker.folder_file_list);
+}
+
+int i_to_px_scale(int i) {
+	switch (i) {
+		case 0: return 1;
+		case 1: return 2;
+		case 2: return 4;
+		case 3: return 6;
+		case 4: return 8;
+		default: return 1;
+	}
 }
 
 #ifdef __EMSCRIPTEN__

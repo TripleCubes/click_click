@@ -9,15 +9,34 @@
 #include "../tab/tab.h"
 #include "../tab/layer.h"
 #include "open_project.h"
+#include "../types/vec2i.h"
 
 namespace {
 
 std::vector<unsigned char> data;
 
-void get_data_from_tab(std::vector<unsigned char> &data, const Tab &tab) {
+void fill_block(std::vector<unsigned char> &data, Vec2i pos, Vec2i canvas_sz,
+unsigned char r, unsigned char g, unsigned char b, unsigned char a,
+int png_px_scale) {
+	Vec2i data_pos = vec2i_mul(pos, png_px_scale);
+	Vec2i canvas_sz_scaled = vec2i_mul(canvas_sz, png_px_scale);
+
+	for (int y = data_pos.y; y < data_pos.y + png_px_scale; y++) {
+	for (int x = data_pos.x; x < data_pos.x + png_px_scale; x++) {
+		int data_i = (y * canvas_sz_scaled.x + x) * 4;
+
+		data[data_i    ] = r;
+		data[data_i + 1] = g;
+		data[data_i + 2] = b;
+		data[data_i + 3] = a;
+	}
+	}
+}
+
+void get_data_from_tab(std::vector<unsigned char> &data, const Tab &tab,
+int png_px_scale) {
 	for (int y = 0; y < tab.sz.y; y++) {
 	for (int x = 0; x < tab.sz.x; x++) {
-		int data_i = (tab.sz.x * y + x) * 4;
 		int layer_data_i = tab.sz.x * y + x;
 
 		for (int i = 0; i < (int)tab.layer_order_list.size(); i++) {
@@ -30,10 +49,18 @@ void get_data_from_tab(std::vector<unsigned char> &data, const Tab &tab) {
 				continue;
 			}
 
-			data[data_i    ] = tab.pallete_data[pallete_index * 4    ];
-			data[data_i + 1] = tab.pallete_data[pallete_index * 4 + 1];
-			data[data_i + 2] = tab.pallete_data[pallete_index * 4 + 2];
-			data[data_i + 3] = 255;
+			unsigned char r = tab.pallete_data[pallete_index * 4    ];
+			unsigned char g = tab.pallete_data[pallete_index * 4 + 1];
+			unsigned char b = tab.pallete_data[pallete_index * 4 + 2];
+			unsigned char a = 255;
+
+			fill_block(
+				data,
+				vec2i_new(x, y),
+				tab.sz,
+				r, g, b, a,
+				png_px_scale
+			);
 
 			break;
 		}
@@ -74,15 +101,17 @@ const OpenProjectData &open_project_data) {
 
 }
 
-bool save_png_from_tab(const std::string &path, const Tab &tab) {
+bool save_png_from_tab(const std::string &path, const Tab &tab,
+int png_px_scale) {
 	data.clear();
-	data.resize(tab.sz.x * tab.sz.y * 4, 0);
+	data.resize(tab.sz.x * tab.sz.y * 4 * png_px_scale * png_px_scale, 0);
 
-	get_data_from_tab(data, tab);
+	get_data_from_tab(data, tab, png_px_scale);
 
 	if (
-		stbi_write_png(path.c_str(), tab.sz.x, tab.sz.y,
-		               4, data.data(), 4 * tab.sz.x) == 0
+		stbi_write_png(path.c_str(),
+		               tab.sz.x * png_px_scale, tab.sz.y * png_px_scale,
+		               4, data.data(), 4 * tab.sz.x * png_px_scale) == 0
 	) {
 		std::cout << "failed writing " << path << std::endl;
 		return false;

@@ -119,14 +119,15 @@ void file_picker_close(States &states) {
 }
 
 void file_picker_save_tab_path_assign(const std::string &save_name,
-const std::string &save_path, Tab &tab) {
+const std::string &save_path, Tab &tab, int png_px_scale_index) {
+	int png_px_scale = i_to_px_scale(png_px_scale_index);
 	bool is_save_dot_click = is_dot_click(save_path);
 
 	if (is_save_dot_click) {
 		save_project(save_path, tab);
 	}
 	else {
-		save_png_from_tab(save_path, tab);
+		save_png_from_tab(save_path, tab, png_px_scale);
 	}
 
 	tab.path = save_path;
@@ -152,7 +153,10 @@ GraphicStuff &gs, const Input &input) {
 			file_picker_type_save_file_open(states, file_picker, tab);
 		}
 		else {
-			file_picker_save_tab_path_assign(tab.name, tab.path, tab);
+			std::string tab_name_no_ex = tab.name;
+			rm_extension(tab_name_no_ex);
+			file_picker_save_tab_path_assign(tab_name_no_ex, tab.path, tab,
+				file_picker.png_save_scale_selected_index);
 		}
 	}
 
@@ -187,7 +191,8 @@ GraphicStuff &gs, const Input &input) {
 			dialog_box_set(dialog_box, DIALOG_BOX_OVERRIDE_FILE);
 		}
 		else {
-			file_picker_save_tab_path_assign(save_name, save_path, tab);
+			file_picker_save_tab_path_assign(save_name, save_path, tab,
+				file_picker.png_save_scale_selected_index);
 
 			file_picker_close(states);
 		}

@@ -48,8 +48,10 @@ struct FilePicker {
 
 	TextArea save_name_textarea;
 	Btn save_btn;
-	Btn png_save_btn;
 	Btn project_save_btn;
+	Btn png_save_btn;
+	std::vector<Btn> png_save_scale_btn_list;
+	int png_save_scale_selected_index = 0;
 	#ifdef __EMSCRIPTEN__
 	Btn upload_btn;
 	#endif
@@ -78,6 +80,8 @@ void file_picker_open_file(std::string &file_name, std::string &file_path,
 	const FilePicker &file_picker);
 
 void file_picker_file_btn_list_update(FilePicker &file_picker);
+
+int i_to_px_scale(int i);
 
 #ifdef __EMSCRIPTEN__
 void file_picker_web_file_btn_list_update(FilePicker &file_picker);
