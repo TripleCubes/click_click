@@ -288,7 +288,8 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 
 		FilePickerBtnPair btn_pair;
 
-		const float BTN_0_W = W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 64;
+		const float BTN_0_W = W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x
+		                    - SAVE_FORMAT_BTN_SZ.x * 2 - 36;
 		btn_pair.btn = btn_new(
 			vec2_new(12, 0),
 			vec2_new(BTN_0_W, 12),
@@ -304,12 +305,19 @@ const std::vector<FilePickerFolderFile> &folder_file_list) {
 			"ICON_X"
 		);
 
-		btn_pair.third_btn_used = true;
+		btn_pair.third_fourth_btn_used = true;
 		btn_pair.btn_2 = btn_new(
-			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 56, 0),
-			vec2_new(40, 12),
+			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x - 48, 0),
+			SAVE_FORMAT_BTN_SZ,
 			BTN_TEXTAREA_COLOR,
-			"download"
+			DOT_PNG
+		);
+		btn_pair.btn_3 = btn_new(
+			vec2_new(W - SIDE_PADDING.x - SIDE_BTN_SZ.x
+				- 48 - SAVE_FORMAT_BTN_SZ.x, 0),
+			SAVE_FORMAT_BTN_SZ,
+			BTN_TEXTAREA_COLOR,
+			DOT_CLICK
 		);
 
 		folder_file_btn_list.push_back(btn_pair);
@@ -560,8 +568,9 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 		}
 
 		#ifdef __EMSCRIPTEN__
-		if (btn_pair.third_btn_used) {
+		if (btn_pair.third_fourth_btn_used) {
 			btn_update(btn_pair.btn_2, gs, input, pos_2, show);
+			btn_update(btn_pair.btn_3, gs, input, pos_2, show);
 		}
 		#endif
 
@@ -696,10 +705,6 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 			std::string file_name_dot_click = file_name + DOT_CLICK;
 			std::string file_name_dot_png = file_name + DOT_PNG;
 
-			web_download_file(WEB_DATA_DIR + file_name_dot_click,
-				file_name_dot_click);
-
-
 			OpenProjectData open_project_data;
 			file_to_project_data(open_project_data, WEB_DATA_DIR
 			                                      + file_name_dot_click);
@@ -718,6 +723,10 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 					};
 				});
 			}, WEB_DATA_DIR.c_str(), file_name_dot_png.c_str());
+		}
+		if (btn_pair.btn_3.clicked) {
+			web_download_file(WEB_DATA_DIR + folder_file.name,
+				folder_file.name);
 		}
 		#endif
 	}
@@ -876,9 +885,15 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 		}
 
 		#ifdef __EMSCRIPTEN__
-		if (btn_pair.third_btn_used) {
+		if (btn_pair.third_fourth_btn_used) {
 			btn_draw(
 				btn_pair.btn_2,
+				gs,
+				pos_2,
+				false
+			);
+			btn_draw(
+				btn_pair.btn_3,
 				gs,
 				pos_2,
 				false
@@ -892,7 +907,17 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 			icon,
 			vec2_add(pos_2, vec2_new(3, 3)),
 			1,
-			BTN_TEXTAREA_COLOR,
+			KEY_HINT_COLOR,
+			vec2_new(3, 3),
+			false
+		);
+
+		draw_icon(
+			gs,
+			ICON_DOWNLOAD,
+			vec2_add(pos_2, vec2_new(147, 3)),
+			1,
+			KEY_HINT_COLOR,
 			vec2_new(3, 3),
 			false
 		);

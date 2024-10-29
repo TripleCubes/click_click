@@ -18,8 +18,9 @@ struct FilePickerBtnPair {
 	Btn btn_1;
 
 	#ifdef __EMSCRIPTEN__
-	bool third_btn_used = false;
+	bool third_fourth_btn_used = false;
 	Btn btn_2;
+	Btn btn_3;
 	#endif
 };
 
