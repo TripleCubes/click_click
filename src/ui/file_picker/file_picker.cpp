@@ -52,6 +52,7 @@ const Vec2 SIDE_BTN_SZ = vec2_new(80, 12);
 const Vec2 VIEW_BTN_SZ = vec2_new(28, 12);
 const Vec2 SAVE_FORMAT_BTN_SZ = vec2_new(32, 12);
 const Vec2 PNG_SCALE_BTN_SZ = vec2_new(16, 12);
+const float PNG_SCALE_BTN_PADDING_X = 98;
 const Vec2 SAVE_BTN_SZ = vec2_new(24, 12);
 const Vec2 SIDE_PADDING = vec2_new(4, 4);
 const float W = 320;
@@ -416,13 +417,19 @@ void file_picker_init(FilePicker &file_picker) {
 		Btn btn;
 		file_picker.png_save_scale_btn_list.push_back(btn);
 		file_picker.png_save_scale_btn_list[i] = btn_new(
+			#ifndef __EMSCRIPTEN__
 			vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x
 			                        + SAVE_FORMAT_BTN_SZ.x * 2 + 1
 			                        + PNG_SCALE_BTN_SZ.x * i,
 			         H - SIDE_PADDING.y - 10 - 14),
+			#else
+			vec2_new(SIDE_PADDING.x + SIDE_BTN_SZ.x + 1
+			         + PNG_SCALE_BTN_SZ.x * i + 70 + PNG_SCALE_BTN_PADDING_X,
+				H - SIDE_PADDING.y - 25),
+			#endif
 			PNG_SCALE_BTN_SZ,
 			BTN_TEXTAREA_COLOR,
-			std::to_string(i_to_px_scale(i)) + "x"
+			"x" + std::to_string(i_to_px_scale(i))
 		);
 	}
 
@@ -503,11 +510,20 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 	btn_update(file_picker.png_save_btn, gs, input, pos, show_1);
 	#endif
 
+	#ifndef __EMSCRIPTEN__
 	for (int i = 0; i < (int)file_picker.png_save_scale_btn_list.size(); i++) {
 		Btn &btn = file_picker.png_save_scale_btn_list[i];
 		btn_update(btn, gs, input, pos, show_1
 			&& !file_picker.is_dot_click_save);
 	}
+	#else
+	for (int i = 0; i < (int)file_picker.png_save_scale_btn_list.size(); i++) {
+		Btn &btn = file_picker.png_save_scale_btn_list[i];
+		Vec2 pos_1 = vec2_new(pos.x,
+		                      pos.y - (file_picker.is_save_picker? 12 : 0));
+		btn_update(btn, gs, input, pos_1, show);
+	}
+	#endif
 
 	#ifdef __EMSCRIPTEN__
 	bool show_2 = show && !file_picker.is_save_picker;
@@ -689,7 +705,8 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show) {
 			                                      + file_name_dot_click);
 			web_save_png_from_open_project_data_no_syncfs(
 				WEB_DATA_DIR + file_name_dot_png,
-				open_project_data
+				open_project_data,
+				i_to_px_scale(file_picker.png_save_scale_selected_index)
 			);
 			web_download_bin_file(WEB_DATA_DIR + file_name_dot_png,
 				file_name_dot_png);
@@ -800,6 +817,14 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 	else {
 		btn_draw(file_picker.upload_btn, gs, pos, false);
 	}
+
+	for (int i = 0;i < (int)file_picker.png_save_scale_btn_list.size(); i++) {
+		const Btn &btn = file_picker.png_save_scale_btn_list[i];
+		Vec2 pos_1 = vec2_new(pos.x,
+		                      pos.y - (file_picker.is_save_picker? 12 : 0));
+		btn_draw(btn, gs, pos_1,
+			file_picker.png_save_scale_selected_index == i);
+	}
 	#endif
 
 	Vec2 pos_1 = vec2_add(SIDE_PADDING, pos);
@@ -877,10 +902,9 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 
 	#ifdef __EMSCRIPTEN__
 	if (file_picker.folder_file_btn_list.size() == 0) {
-		std::string str = "um... empty...";
 		draw_text(
 			gs,
-			str,
+			"um... empty...",
 			vec2_new(X + SIDE_PADDING.x + SIDE_BTN_SZ.x + 5,
 			         Y + SIDE_PADDING.y + 13 + 3),
 			W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 8,
@@ -890,6 +914,20 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 			false
 		);
 	}
+
+	draw_text(
+		gs,
+		"png download sz:",
+		vec2_new(X + SIDE_PADDING.x + SIDE_BTN_SZ.x + 6
+		           + PNG_SCALE_BTN_PADDING_X,
+		         Y + H - SIDE_PADDING.y - 25 + 3
+		           - (file_picker.is_save_picker? 12 : 0)),
+		W - SIDE_PADDING.x * 2 - SIDE_BTN_SZ.x - 8 + 4,
+		1,
+		KEY_HINT_COLOR,
+		vec2_new(4, 3),
+		false
+	);
 	#endif
 }
 

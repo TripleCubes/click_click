@@ -11,7 +11,7 @@ bool save_png_from_tab(const std::string &path, const Tab &tab,
 
 #ifdef __EMSCRIPTEN__
 bool web_save_png_from_open_project_data_no_syncfs(const std::string &path,
-	const OpenProjectData &open_project_data);
+	const OpenProjectData &open_project_data, int png_px_scale);
 #endif
 
 #endif
