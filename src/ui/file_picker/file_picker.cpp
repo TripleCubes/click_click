@@ -899,6 +899,16 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 				false
 			);
 		}
+	
+		draw_icon(
+			gs,
+			ICON_DOWNLOAD,
+			vec2_add(pos_2, vec2_new(147, 3)),
+			1,
+			KEY_HINT_COLOR,
+			vec2_new(3, 3),
+			false
+		);
 		#endif
 
 		int icon = folder_file.is_folder? ICON_FOLDER : ICON_FILE;
@@ -907,17 +917,11 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos) {
 			icon,
 			vec2_add(pos_2, vec2_new(3, 3)),
 			1,
+			#ifndef __EMSCRIPTEN__
+			BTN_TEXTAREA_COLOR,
+			#else
 			KEY_HINT_COLOR,
-			vec2_new(3, 3),
-			false
-		);
-
-		draw_icon(
-			gs,
-			ICON_DOWNLOAD,
-			vec2_add(pos_2, vec2_new(147, 3)),
-			1,
-			KEY_HINT_COLOR,
+			#endif
 			vec2_new(3, 3),
 			false
 		);
