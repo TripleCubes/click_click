@@ -231,25 +231,29 @@ const Layer &layer) {
 	}
 }
 
-void history_undo_prepare(History &history) {
+bool history_undo_prepare(History &history) {
 	if (history.time_pos_current <= history.time_pos_min) {
-		return;
+		return false;
 	}
 
 	history.time_pos_current--;
+	return true;
 }
 
-void history_redo_prepare(History &history) {
+bool history_redo_prepare(History &history) {
 	if (history.time_pos_current >= history.time_pos_max) {
-		return;
+		return false;
 	}
 
 	history.time_pos_current++;
+	return true;
 }
 
 void history_undo(History &history, Tab &tab, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, const Settings &settings) {
-	history_undo_prepare(history);
+	if (!history_undo_prepare(history)) {
+		return;
+	}
 
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		Layer &layer = tab.layer_list[i];
@@ -277,7 +281,9 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 
 void history_redo(History &history, Tab &tab, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, const Settings &settings) {
-	history_redo_prepare(history);
+	if (!history_redo_prepare(history)) {
+		return;
+	}
 
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		Layer &layer = tab.layer_list[i];

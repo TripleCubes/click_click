@@ -91,7 +91,8 @@ const GameTime &game_time, const Settings &settings) {
 		tab.layer_order_list_index,
 		0,
 
-		"layer " + std::to_string(tab.num_layer_created)
+		"layer " + std::to_string(tab.num_layer_created),
+		""
 	);
 	int layer_index = tab_commands_do_and_add(
 		tab.tab_commands,
@@ -121,8 +122,39 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		tab.layer_order_list_index,
 		0,
 
-		layer.textarea.text
+		layer.textarea.text,
+		""
 	);
+	tab_commands_do_and_add(
+		tab.tab_commands,
+		command,
+		tab.history,
+		gs,
+		input,
+		game_time,
+		settings,
+		tab
+	);
+}
+
+void layer_name_set_with_history(Tab &tab, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, const Settings &settings) {
+	history_commit_prepare(tab.history, tab.tab_commands);
+
+	const Layer &layer = tab.layer_list[get_layer_index(tab)];
+
+	Command command = command_new(
+		tab.history.time_pos_current,
+		COMMAND_LAYER_RENAME,
+		
+		0,
+		tab.layer_order_list_index,
+		0,
+
+		layer.textarea.text,
+		tab.prev_layer_name
+	);
+	std::cout << layer.textarea.text << " " << tab.prev_layer_name << std::endl;
 	tab_commands_do_and_add(
 		tab.tab_commands,
 		command,
@@ -424,6 +456,9 @@ Vec2 parent_pos, bool show) {
 
 	if (input.left_click || input.key_list[KEY_ENTER].press
 	|| map_press(input, MAP_ESC)) {
+		if (tab.layer_name_editing == true) {
+			layer_name_set_with_history(tab, gs, input, game_time, settings);
+		}
 		tab.layer_name_editing = false;
 	}
 
@@ -434,6 +469,7 @@ Vec2 parent_pos, bool show) {
 		if (layer.textarea.clicked) {
 			if (tab.layer_order_list_index == i) {
 				tab.layer_name_editing = true;
+				tab.prev_layer_name = layer.textarea.text;
 				gs.cursor_icon = CURSOR_TEXT;
 				return;
 			}

@@ -30,6 +30,7 @@ struct Command {
 	int b = 0;
 	int c = 0;
 	std::string str;
+	std::string str_1;
 };
 
 struct TabCommands {
@@ -37,7 +38,7 @@ struct TabCommands {
 };
 
 Command command_new(int time_pos, int type, int a, int b, int c,
-	const std::string &str);
+	const std::string &str, const std::string &str_1);
 
 void tab_commands_init(TabCommands &tab_commands);
 

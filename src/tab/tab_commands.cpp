@@ -53,7 +53,7 @@ int layer_order_list_index) {
 }
 
 Command command_new(int time_pos, int type, int a, int b, int c,
-const std::string &str) {
+const std::string &str, const std::string &str_1) {
 	Command command;
 	
 	command.time_pos = time_pos;
@@ -63,12 +63,13 @@ const std::string &str) {
 	command.b = b;
 	command.c = c;
 	command.str = str;
+	command.str_1 = str_1;
 	
 	return command;
 }
 
 void tab_commands_init(TabCommands &tab_commands) {
-	Command command = command_new(0, COMMAND_NOTHING, 0, 0, 0, "");
+	Command command = command_new(0, COMMAND_NOTHING, 0, 0, 0, "", "");
 	tab_commands.command_list.push_back(command);
 }
 
@@ -99,6 +100,13 @@ Tab& tab) {
 		tab.layer_order_list_index = command.a;
 	}
 
+	// b: layer order list index, str: rename to, str_1: rename from
+	else if (command.type == COMMAND_LAYER_RENAME) {
+		tab.layer_order_list_index = command.b;
+		int layer_index = get_layer_index(tab);
+		tab.layer_list[layer_index].textarea.text = command.str;
+	}
+
 	// a: history layer index, b: layer order list index, str: tab name
 	else if (command.type == COMMAND_LAYER_NEW) {
 		return tab_commands_layer_add(tab, command.str, gs,
@@ -118,6 +126,12 @@ const Input &input, const GameTime &game_time, const Settings &settings,
 Tab& tab) {
 	if (command.type == COMMAND_LAYER_SELECT) {
 		tab.layer_order_list_index = command.b;
+	}
+
+	else if (command.type == COMMAND_LAYER_RENAME) {
+		tab.layer_order_list_index = command.b;
+		int layer_index = get_layer_index(tab);
+		tab.layer_list[layer_index].textarea.text = command.str_1;
 	}
 
 	else if (command.type == COMMAND_LAYER_NEW) {

@@ -65,6 +65,7 @@ struct Tab {
 	std::vector<int> layer_order_list;
 	int layer_order_list_index = 0;
 	bool layer_name_editing = false;
+	std::string prev_layer_name;
 	bool panning = false;
 	bool after_panning_1_frame = false;
 	float panning_left_down_at = 0;

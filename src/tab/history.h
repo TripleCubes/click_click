@@ -55,9 +55,9 @@ void history_commit_prepare(History &history, TabCommands &tab_commands);
 void history_commit_layer(History &history, HistoryLayer &history_layer,
 	const Layer &layer);
 
-void history_undo_prepare(History &history);
+bool history_undo_prepare(History &history);
 
-void history_redo_prepare(History &history);
+bool history_redo_prepare(History &history);
 
 void history_undo(History &history, Tab &tab, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, const Settings &settings);
