@@ -40,4 +40,6 @@ void select_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, bool subtract,
 	int select_type, Vec2 parent_pos);
 
+void selection_release(Selection &selection);
+
 #endif

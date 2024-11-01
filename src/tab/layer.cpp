@@ -25,8 +25,9 @@ int get_blank_index(const std::vector<Layer> &layer_list) {
 
 }
 
-int layer_new(std::vector<Layer> &layer_list, GraphicStuff &gs,
-const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
+int layer_new(std::vector<Layer> &layer_list,
+GraphicStuff &gs, const std::string &name, Vec2i sz,
+const std::vector<unsigned char> &data) {
 	int index = get_blank_index(layer_list);
 	if (index == -1) {
 		Layer new_layer;
@@ -40,6 +41,7 @@ const std::string &name, Vec2i sz, const std::vector<unsigned char> &data) {
 	layer.name = name;
 	layer.sz = sz;
 	layer.data = data;
+
 	layer.texture_index = texture_blank_new_red(gs, sz.x, sz.y);
 	texture_data_red(gs, layer.texture_index, sz, layer.data);
 

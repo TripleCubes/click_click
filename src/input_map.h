@@ -62,6 +62,10 @@ enum MappedKeyIndex: int {
 
 	MAP_APP_MENU,
 
+	MAP_UNDO,
+	MAP_REDO,
+	MAP_REDO_1,
+
 
 	MAP_COUNT,
 };

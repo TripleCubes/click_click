@@ -595,6 +595,8 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.selection_preview_data.resize(sz.x * sz.y, 0);
 	tab.selection_preview_texture_index= texture_blank_new_red(gs, sz.x, sz.y);
 
+	history_init(tab.history);
+
 	tab_layer_new(tab, 0, "bkg", gs);
 
 	tab.running = true;
@@ -657,6 +659,27 @@ Vec2 parent_pos,bool show){
 	color_picker_color_pallete_data_update(tab, gs);
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
+
+
+
+	// TEST
+	if (input.key_list[KEY_I].press) {
+		history_layer_add(tab.history, tab.layer_list[0]);
+	}
+	if (input.key_list[KEY_P].press) {
+		history_commit_prepare(tab.history);
+		history_commit_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0]);
+	}
+	if (map_press(input, MAP_UNDO)) {
+		history_undo_prepare(tab.history);
+		history_roll_back_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0], tab.history.time_pos_current);
+		layer_set_texture_data(tab.layer_list[0], gs);
+	}
+	if (map_press(input, MAP_REDO)) {
+		history_redo_prepare(tab.history);
+		history_roll_back_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0], tab.history.time_pos_current);
+		layer_set_texture_data(tab.layer_list[0], gs);
+	}
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
@@ -786,11 +809,12 @@ const GameTime &game_time, Vec2 parent_pos) {
 	);
 }
 
-void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
-GraphicStuff &gs) {
+void tab_layer_new(Tab &tab, int at,
+const std::string &layer_name, GraphicStuff &gs) {
 	std::vector<unsigned char> data;
 	data.resize(tab.sz.x * tab.sz.y, 0);
-	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
+	int index = layer_new(tab.layer_list, gs, layer_name,
+		tab.sz, data);
 	
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
 	tab.num_layer_created++;
@@ -857,6 +881,9 @@ void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	
 	tab.selection_preview_data.clear();
 	texture_release(gs, tab.selection_preview_texture_index);
+
+	selection_release(tab.selection);
+	history_release(tab.history);
 
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		if (tab.layer_list[i].running) {

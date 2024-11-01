@@ -13,6 +13,7 @@
 #include "../ui/btn.h"
 #include "layer.h"
 #include "select.h"
+#include "history.h"
 
 const float TAB_BTN_W_ADD = 17;
 
@@ -55,6 +56,8 @@ struct Tab {
 	Selection selection;
 	std::vector<unsigned char> selection_preview_data;
 	int selection_preview_texture_index = 0;
+
+	History history;
 
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;

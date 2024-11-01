@@ -157,7 +157,7 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_SAVE_FILE_AS    , KEY_S    , MODIFIER_BOTH_CTRL ,
 	                                     MODIFIER_BOTH_SHIFT);
 
-	set(MAP_NEW_PROJECT     , KEY_N    , MODIFIER_BOTH_CTRL,
+	set(MAP_NEW_PROJECT     , KEY_N    , MODIFIER_BOTH_CTRL ,
 	                                     MODIFIER_BOTH_SHIFT);
 	#ifndef __EMSCRIPTEN__
 	set(MAP_NEW_PROJECT_1   , KEY_N    , MODIFIER_BOTH_CTRL );
@@ -166,6 +166,11 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_RESIZE_CANVAS   , KEY_R    , MODIFIER_BOTH_CTRL );
 
 	set(MAP_APP_MENU        , KEY_ESC                       );
+
+	set(MAP_UNDO            , KEY_Z    , MODIFIER_BOTH_CTRL );
+	set(MAP_REDO            , KEY_Z    , MODIFIER_BOTH_CTRL ,
+	                                     MODIFIER_BOTH_SHIFT);
+	set(MAP_REDO_1          , KEY_Y    , MODIFIER_BOTH_CTRL );
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {

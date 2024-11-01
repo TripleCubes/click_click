@@ -637,3 +637,17 @@ int select_type, Vec2 parent_pos){
 //		}
 //	}
 }
+
+void selection_release(Selection &selection) {
+	selection.draw_preview_list.clear();
+	selection.scan_list.clear();
+
+	selection.full_preview_list.clear();
+	selection.fill_checked_map.clear();
+	
+	selection.map.clear();
+	selection.border_hint_list.clear();
+
+	selection.rect_point_1 = vec2i_new(-1, -1);
+	selection.rect_point_2 = vec2i_new(-1, -1);
+}
