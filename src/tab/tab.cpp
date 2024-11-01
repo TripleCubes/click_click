@@ -69,6 +69,72 @@ void tool_preview_pallete_data_color(Tab &tab, int pallete_index, Color color){
 	tab.tool_preview_pallete_data[index + 3] = color.a * 255;
 }
 
+int get_layer_index(const Tab &tab) {
+	return tab.layer_order_list[tab.layer_order_list_index];
+}
+
+void tab_set_layer_order_list_index_with_history(Tab &tab, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, const Settings &settings,
+int index) {
+	tab.layer_order_list_index = index;
+}
+
+void tab_layer_new_with_history(Tab &tab, GraphicStuff &gs, const Input &input,
+const GameTime &game_time, const Settings &settings) {
+	history_commit_prepare(tab.history, tab.tab_commands);
+
+	Command command = command_new(
+		tab.history.time_pos_current,
+		COMMAND_LAYER_NEW,
+		
+		tab.history.layer_list.size(),
+		tab.layer_order_list_index,
+		0,
+
+		"layer " + std::to_string(tab.num_layer_created)
+	);
+	int layer_index = tab_commands_do_and_add(
+		tab.tab_commands,
+		command,
+		tab.history,
+		gs,
+		input,
+		game_time,
+		settings,
+		tab
+	);
+
+	history_layer_add(tab.history, tab.layer_list[layer_index]);
+}
+
+void tab_layer_delete_with_history(Tab &tab, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, const Settings &settings) {
+	history_commit_prepare(tab.history, tab.tab_commands);
+
+	const Layer &layer = tab.layer_list[get_layer_index(tab)];
+
+	Command command = command_new(
+		tab.history.time_pos_current,
+		COMMAND_LAYER_DELETE,
+		
+		layer.history_layer_index,
+		tab.layer_order_list_index,
+		0,
+
+		layer.textarea.text
+	);
+	tab_commands_do_and_add(
+		tab.tab_commands,
+		command,
+		tab.history,
+		gs,
+		input,
+		game_time,
+		settings,
+		tab
+	);
+}
+
 void layer_texture_draw(const Tab &tab, const GraphicStuff &gs,
 int texture_index, int pallete, Vec2 pos) {
 	Vec2 main_fb_sz_f = to_vec2(fb_get_sz(gs, FB_MAIN));
@@ -120,10 +186,6 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 
 	layer_texture_draw(tab, gs, tab.selection_preview_texture_index,
 		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
-}
-
-int get_layer_index(const Tab &tab) {
-	return tab.layer_order_list[tab.layer_order_list_index];
 }
 
 bool cursor_on_ui(const Tab &tab, const GraphicStuff &gs,
@@ -300,6 +362,15 @@ Vec2 parent_pos) {
 		selection_clear(tab.selection, tab.sz);
 	}
 
+	//
+	if (!tab.clicked_and_hold_on_ui && input.left_release) {
+		history_commit_prepare(tab.history, tab.tab_commands);
+		history_commit_layer(
+			tab.history, tab.history.layer_list[layer.history_layer_index],
+			layer
+		);
+	}
+
 	if (input.left_release) {
 		tab.clicked_and_hold_on_ui = false;
 	}
@@ -329,7 +400,8 @@ void color_picker_color_pallete_data_update(Tab &tab, GraphicStuff &gs) {
 }
 
 void layer_textarea_list_update(Tab &tab, GraphicStuff &gs,
-const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
+const GameTime &game_time, const Input &input, const Settings &settings,
+Vec2 parent_pos, bool show) {
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 bottom_pos = vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
 
@@ -366,7 +438,9 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 				return;
 			}
 
-			tab.layer_order_list_index = i;
+			tab_set_layer_order_list_index_with_history(
+				tab, gs, input, game_time, settings, i
+			);
 			return;
 		}
 
@@ -378,18 +452,7 @@ const GameTime &game_time, const Input &input, Vec2 parent_pos, bool show) {
 
 	if (tab.layer_bar.delete_layer_btn.clicked
 	&& tab.layer_order_list.size() > 1) {
-		layer_release(tab.layer_list, gs, get_layer_index(tab));
-		tab.layer_order_list.erase(
-			tab.layer_order_list.begin() + tab.layer_order_list_index
-		);
-
-		tab.layer_order_list_index = clampi(
-			tab.layer_order_list_index,
-			0,
-			(int)tab.layer_order_list.size() - 1
-		);
-
-		return;
+		tab_layer_delete_with_history(tab, gs, input, game_time, settings);
 	}
 }
 
@@ -596,8 +659,10 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.selection_preview_texture_index= texture_blank_new_red(gs, sz.x, sz.y);
 
 	history_init(tab.history);
+	tab_commands_init(tab.tab_commands);
 
-	tab_layer_new(tab, 0, "bkg", gs);
+	tab_layer_new(tab, 0, "bkg", gs, 0);
+	history_layer_add(tab.history, tab.layer_list[0]);
 
 	tab.running = true;
 
@@ -624,19 +689,15 @@ Vec2 parent_pos,bool show){
 		tool_key_allowed, show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
 
-	layer_textarea_list_update(tab, gs, game_time, input, parent_pos, show);
+	layer_textarea_list_update(tab, gs, game_time, input, settings,
+		parent_pos, show);
 
 	if (!show) {
 		return;
 	}
 
 	if (tab.layer_bar.add_btn.clicked) {
-		tab_layer_new(
-			tab,
-			tab.layer_order_list_index,
-			"layer " + std::to_string(tab.num_layer_created),
-			gs
-		);
+		tab_layer_new_with_history(tab, gs, input, game_time, settings);
 	}
 
 	if (tab.btn_panel.zoom_out_btn.clicked || kb_zoom_out(input)) {
@@ -662,23 +723,11 @@ Vec2 parent_pos,bool show){
 
 
 
-	// TEST
-	if (input.key_list[KEY_I].press) {
-		history_layer_add(tab.history, tab.layer_list[0]);
-	}
-	if (input.key_list[KEY_P].press) {
-		history_commit_prepare(tab.history);
-		history_commit_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0]);
-	}
 	if (map_press(input, MAP_UNDO)) {
-		history_undo_prepare(tab.history);
-		history_roll_back_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0], tab.history.time_pos_current);
-		layer_set_texture_data(tab.layer_list[0], gs);
+		history_undo(tab.history, tab, gs, input, game_time, settings);
 	}
-	if (map_press(input, MAP_REDO)) {
-		history_redo_prepare(tab.history);
-		history_roll_back_layer(tab.history, tab.history.layer_list[0], tab.layer_list[0], tab.history.time_pos_current);
-		layer_set_texture_data(tab.layer_list[0], gs);
+	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)) {
+		history_redo(tab.history, tab, gs, input, game_time, settings);
 	}
 }
 
@@ -809,23 +858,25 @@ const GameTime &game_time, Vec2 parent_pos) {
 	);
 }
 
-void tab_layer_new(Tab &tab, int at,
-const std::string &layer_name, GraphicStuff &gs) {
+int tab_layer_new(Tab &tab, int at,
+const std::string &layer_name, GraphicStuff &gs, int history_layer_index) {
 	std::vector<unsigned char> data;
 	data.resize(tab.sz.x * tab.sz.y, 0);
 	int index = layer_new(tab.layer_list, gs, layer_name,
-		tab.sz, data);
+		tab.sz, data, history_layer_index);
 	
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
-	tab.num_layer_created++;
+
+	return index;
 }
 
 void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 GraphicStuff &gs, const std::vector<unsigned char> &data) {
-	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz, data);
+	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz,
+		data, tab.history.layer_list.size() - 1);
+	history_layer_add(tab.history, tab.layer_list[index]);
 	
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
-	tab.num_layer_created++;
 }
 
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
@@ -884,6 +935,7 @@ void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 
 	selection_release(tab.selection);
 	history_release(tab.history);
+	tab_commands_release(tab.tab_commands);
 
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		if (tab.layer_list[i].running) {

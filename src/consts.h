@@ -12,8 +12,8 @@ const Color WARNING_TEXT_COLOR = color_new(0.85, 0.41, 0.41, 1);
 const float SIDE_BAR_W = 110;
 const float TOP_BAR_H = 12 + 5 + 4;
 
-//const Vec2i DEFL_CANVAS_SZ = vec2i_new(79, 31);
-const Vec2i DEFL_CANVAS_SZ = vec2i_new(10, 12);
+const Vec2i DEFL_CANVAS_SZ = vec2i_new(79, 31);
+//const Vec2i DEFL_CANVAS_SZ = vec2i_new(10, 12);
 
 #ifdef __EMSCRIPTEN__
 const std::string WEB_DATA_DIR = "./data/";

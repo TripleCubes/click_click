@@ -9,6 +9,9 @@
 #include "../types/vec2.h"
 #include "../types/vec2i.h"
 #include "layer.h"
+#include "tab.h"
+#include "tab_commands.h"
+#include "../graphic_types/graphic_types.h"
 
 namespace {
 
@@ -37,9 +40,9 @@ const HistoryPtr &history_ptr, int i_add) {
 		history_ptr.point_to*HISTORY_CHUNK_W*HISTORY_CHUNK_W + i_add];
 }
 
-bool data_equals(History &history, HistoryPtr &history_ptr,
-Layer &layer, Vec2i layer_data_pos) {
-	std::vector<unsigned char> *history_data;
+bool data_equals(const History &history, const HistoryPtr &history_ptr,
+const Layer &layer, Vec2i layer_data_pos) {
+	const std::vector<unsigned char> *history_data;
 	if (history_ptr.at_page == 0) {
 		history_data = &history.data_0;
 	}
@@ -70,7 +73,7 @@ Layer &layer, Vec2i layer_data_pos) {
 	return true;
 }
 
-HistoryPtr add_history_data(History &history, Layer &layer,
+HistoryPtr add_history_data(History &history, const Layer &layer,
 Vec2i layer_data_pos) {
 	int num_chunk_per_page
 		= history.data_0.size() / (HISTORY_CHUNK_W * HISTORY_CHUNK_W);
@@ -149,7 +152,7 @@ void rm_all_forward_histories(History &history, int history_pos) {
 	HistoryLayer &history_layer = history.layer_list[layer_i];
 	for (int y = 0; y < (int)history_layer.ptr_2d_list.size(); y++) {
 	for (int x = 0; x < (int)history_layer.ptr_2d_list[y].size(); x++) {
-	for (int i = (int)history_layer.ptr_2d_list[y][x].size() - 1; i >= 0; i++){
+	for (int i = (int)history_layer.ptr_2d_list[y][x].size() - 1; i >= 0; i--){
 		HistoryPtr &history_ptr = history_layer.ptr_2d_list[y][x][i];
 		if (history_ptr.time_pos <= history_pos) {
 			break;
@@ -197,9 +200,10 @@ void history_init(History &history) {
 	history.data_1.resize(HISTORY_DATA_SZ, 0);
 }
 
-void history_commit_prepare(History &history) {
+void history_commit_prepare(History &history, TabCommands &tab_commands) {
 	if (history.time_pos_current < history.time_pos_max) {
 		rm_all_forward_histories(history, history.time_pos_current);
+		rm_all_forward_commands(tab_commands, history.time_pos_current);
 	}
 
 	history.time_pos_current++;
@@ -207,7 +211,7 @@ void history_commit_prepare(History &history) {
 }
 
 void history_commit_layer(History &history, HistoryLayer &history_layer,
-Layer &layer) {
+const Layer &layer) {
 	Vec2i ptr_2d_list_sz = get_history_ptr_2d_list_sz(layer.sz);
 	for (int y = 0; y < ptr_2d_list_sz.y; y++) {
 	for (int x = 0; x < ptr_2d_list_sz.x; x++) {
@@ -243,12 +247,68 @@ void history_redo_prepare(History &history) {
 	history.time_pos_current++;
 }
 
+void history_undo(History &history, Tab &tab, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, const Settings &settings) {
+	history_undo_prepare(history);
+
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		Layer &layer = tab.layer_list[i];
+
+		if (!layer.running) {
+			continue;
+		}
+
+		history_roll_back_layer(
+			history,
+			history.layer_list[layer.history_layer_index],
+			layer,
+			history.time_pos_current
+		);
+
+		layer_set_texture_data(layer, gs);
+	}
+
+	tab_commands_time_pos_backward_to(
+		tab.tab_commands,
+		gs, input, game_time,
+		settings, tab, history.time_pos_current
+	);
+}
+
+void history_redo(History &history, Tab &tab, GraphicStuff &gs,
+const Input &input, const GameTime &game_time, const Settings &settings) {
+	history_redo_prepare(history);
+
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		Layer &layer = tab.layer_list[i];
+
+		if (!layer.running) {
+			continue;
+		}
+
+		history_roll_back_layer(
+			history,
+			history.layer_list[layer.history_layer_index],
+			layer,
+			history.time_pos_current
+		);
+
+		layer_set_texture_data(layer, gs);
+	}
+
+	tab_commands_time_pos_forward_to(
+		tab.tab_commands,
+		gs, input, game_time,
+		settings, tab, history.time_pos_current);
+}
+
 void history_roll_back_layer(History &history, HistoryLayer &history_layer,
 Layer &layer, int time_pos) {
 	Vec2i ptr_2d_list_sz = get_history_ptr_2d_list_sz(layer.sz);
 	for (int y = 0; y < ptr_2d_list_sz.y; y++) {
 	for (int x = 0; x < ptr_2d_list_sz.x; x++) {
 		HistoryPtr history_ptr;
+
 		for (int i = (int)history_layer.ptr_2d_list[y][x].size() - 1;
 		i >= 0; i--) {
 			const HistoryPtr &v = history_layer.ptr_2d_list[y][x][i];

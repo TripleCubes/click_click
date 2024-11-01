@@ -7,6 +7,12 @@ const int HISTORY_CHUNK_W = 8;
 
 struct Layer;
 struct Vec2i;
+struct Tab;
+struct GraphicStuff;
+struct Input;
+struct GameTime;
+struct Settings;
+struct TabCommands;
 
 struct HistoryPtr {
 	int time_pos = 0;
@@ -44,14 +50,20 @@ void history_layer_add(History &history, Layer &layer);
 
 void history_init(History &history);
 
-void history_commit_prepare(History &history);
+void history_commit_prepare(History &history, TabCommands &tab_commands);
 
 void history_commit_layer(History &history, HistoryLayer &history_layer,
-	Layer &layer);
+	const Layer &layer);
 
 void history_undo_prepare(History &history);
 
 void history_redo_prepare(History &history);
+
+void history_undo(History &history, Tab &tab, GraphicStuff &gs,
+	const Input &input, const GameTime &game_time, const Settings &settings);
+
+void history_redo(History &history, Tab &tab, GraphicStuff &gs,
+	const Input &input, const GameTime &game_time, const Settings &settings);
 
 void history_roll_back_layer(History &history, HistoryLayer &history_layer,
 	Layer &layer, int time_pos);

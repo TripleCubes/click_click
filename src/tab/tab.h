@@ -14,6 +14,7 @@
 #include "layer.h"
 #include "select.h"
 #include "history.h"
+#include "tab_commands.h"
 
 const float TAB_BTN_W_ADD = 17;
 
@@ -58,6 +59,7 @@ struct Tab {
 	int selection_preview_texture_index = 0;
 
 	History history;
+	TabCommands tab_commands;
 
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;
@@ -86,8 +88,8 @@ void tab_canvas_draw(const Tab &tab, GraphicStuff &gs, const Input &input,
 void tab_ui_draw(const Tab &tab, GraphicStuff &gs,
 	const Input &input, const GameTime &game_time, Vec2 parent_pos);
 
-void tab_layer_new(Tab &tab, int at, const std::string &layer_name,
-	GraphicStuff &gs);
+int tab_layer_new(Tab &tab, int at, const std::string &layer_name,
+	GraphicStuff &gs, int history_layer_index);
 
 void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 	GraphicStuff &gs, const std::vector<unsigned char> &data);
