@@ -8,7 +8,7 @@
 #include "../draw_tool/draw_tool_fill.h"
 #include "../pos_convert.h"
 
-void fill_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
+bool fill_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
@@ -19,14 +19,22 @@ const Input &input, Vec2 parent_pos) {
 	Vec2 tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
+	bool px_ed = false;
+
 	if (input.left_click) {
-		draw_tool_fill(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			to_vec2i(tex_draw_mouse_pos),
-			pallete_index
-		);
+		if (
+			draw_tool_fill(
+				layer.data,
+				tab.selection,
+				tab.sz,
+				to_vec2i(tex_draw_mouse_pos),
+				pallete_index
+			)
+		) {
+			px_ed = true;
+		}
 		layer_set_texture_data(layer, gs);
 	}
+
+	return px_ed;
 }

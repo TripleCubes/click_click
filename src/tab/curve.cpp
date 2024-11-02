@@ -46,7 +46,7 @@ const Input &input, Vec2 parent_pos) {
 	}
 }
 
-void curve_tool_update(Tab &tab, int layer_index, int sz, GraphicStuff &gs,
+bool curve_tool_update(Tab &tab, int layer_index, int sz, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 	
@@ -57,13 +57,20 @@ const Input &input, Vec2 parent_pos) {
 	Vec2 tex_draw_mouse_pos
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 
+	bool px_ed = false;
+
 	if (input.left_click) {
 		tab.tex_draw_tag_pos = tex_draw_mouse_pos;
 	}
 
 	if (input.left_release) {
-		draw_tool_line(layer.data, tab.selection, tab.sz, tab.tex_draw_tag_pos,
-			tex_draw_mouse_pos, pallete_index, sz);
+		if (draw_tool_line(layer.data, tab.selection, tab.sz,
+				tab.tex_draw_tag_pos,
+				tex_draw_mouse_pos, pallete_index, sz)) {
+			px_ed = true;
+		}
 		layer_set_texture_data(layer, gs);
 	}
+
+	return px_ed;
 }

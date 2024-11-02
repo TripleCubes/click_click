@@ -25,7 +25,7 @@ Vec2 down(Vec2 pos, Vec2 dir) {
 
 Vec2i draw_loop_left_to_right(std::vector<unsigned char> &data,
 const Selection &selection, Vec2i data_sz,
-Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
+Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz, bool &px_ed_1) {
 	Vec2 diff = vec2_sub(pos_2, pos_1);
 	Vec2 start = down_ceil(pos_1, diff);
 	Vec2 end = down(start, diff);
@@ -36,7 +36,7 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 
 	auto draw = [
 		&data, &selection, data_sz, &first_draw_pos_x, &last_draw_pos_x,
-		&first_draw_pos_set, sz
+		&first_draw_pos_set, sz, &px_ed_1
 	](
 		Vec2i pos,
 		unsigned char pallete_index
@@ -45,7 +45,9 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 			first_draw_pos_set = true;
 			first_draw_pos_x = pos.x;
 		}
-		draw_tool_px(data, selection, data_sz, pos, pallete_index, sz);
+		if (draw_tool_px(data, selection, data_sz, pos, pallete_index, sz)) {
+			px_ed_1 = true;
+		}
 		last_draw_pos_x = pos.x;
 	};
 
@@ -102,7 +104,7 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 
 Vec2i draw_loop_right_to_left(std::vector<unsigned char> &data,
 const Selection &selection, Vec2i data_sz,
-Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
+Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz, bool &px_ed_1) {
 	Vec2 diff = vec2_sub(pos_2, pos_1);
 	Vec2 start = down_ceil(pos_1, diff);
 	Vec2 end = down(start, diff);
@@ -113,7 +115,7 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 
 	auto draw = [
 		&data, &selection, data_sz, &first_draw_pos_x, &last_draw_pos_x,
-		&first_draw_pos_set, sz
+		&first_draw_pos_set, sz, &px_ed_1
 	](
 		Vec2i pos,
 		unsigned char pallete_index
@@ -122,7 +124,9 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 			first_draw_pos_set = true;
 			first_draw_pos_x = pos.x;
 		}
-		draw_tool_px(data, selection, data_sz, pos, pallete_index, sz);
+		if (draw_tool_px(data, selection, data_sz, pos, pallete_index, sz)) {
+			px_ed_1 = true;
+		}
 		last_draw_pos_x = pos.x;
 	};
 
@@ -177,20 +181,25 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 	return vec2i_new(first_draw_pos_x, last_draw_pos_x);
 }
 
-void line_down(std::vector<unsigned char> &data,
+bool line_down(std::vector<unsigned char> &data,
 const Selection &selection, Vec2i data_sz,
 Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 	Vec2i draw_result;
 
+	bool px_ed = false;
+	bool px_ed_1 = false;
 	if (pos_1.x < pos_2.x) {
 		draw_result = draw_loop_left_to_right(
-			data, selection, data_sz, pos_1, pos_2, pallete_index, sz
+			data, selection, data_sz, pos_1, pos_2, pallete_index, sz, px_ed_1
 		);
 	}
 	else {
 		draw_result = draw_loop_right_to_left(
-			data, selection, data_sz, pos_1, pos_2, pallete_index, sz
+			data, selection, data_sz, pos_1, pos_2, pallete_index, sz, px_ed_1
 		);
+	}
+	if (px_ed_1) {
+		px_ed = true;
 	}
 
 	int first_draw_pos_x = draw_result.x;
@@ -198,40 +207,56 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 
 	if (pos_1.x < pos_2.x) {
 		for (int i = std::floor(pos_1.x); i < first_draw_pos_x; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, std::floor(pos_1.y)), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, std::floor(pos_1.y)), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 		for (int i = last_draw_pos_x + 1; i <= std::floor(pos_2.x); i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, std::floor(pos_2.y)), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, std::floor(pos_2.y)), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 	}
 	else {
 		for (int i = first_draw_pos_x + 1; i <= std::floor(pos_1.x); i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, std::floor(pos_1.y)), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, std::floor(pos_1.y)), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 		for (int i = std::floor(pos_2.x); i < last_draw_pos_x; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, std::floor(pos_2.y)), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, std::floor(pos_2.y)), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 	}
 
-	draw_tool_px(data, selection, data_sz, to_vec2i(pos_1), pallete_index, sz);
-	draw_tool_px(data, selection, data_sz, to_vec2i(pos_2), pallete_index, sz);
+	if (draw_tool_px(data, selection, data_sz, to_vec2i(pos_1),
+			pallete_index, sz)) {
+		px_ed = true;
+	}
+	if (draw_tool_px(data, selection, data_sz, to_vec2i(pos_2),
+			pallete_index, sz)) {
+		px_ed = true;
+	}
+
+	return px_ed;
 }
 
 }
 
-void draw_tool_line(std::vector<unsigned char> &data,
+bool draw_tool_line(std::vector<unsigned char> &data,
 const Selection &selection, Vec2i data_sz,
 Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 	Vec2i pos_1_i = to_vec2i(pos_1);
 	Vec2i pos_2_i = to_vec2i(pos_2);
 
 	if (pos_1_i.x == pos_2_i.x && pos_1_i.y == pos_2_i.y) {
-		draw_tool_px(data, selection, data_sz, pos_1_i, pallete_index, sz);
-		return;
+		return draw_tool_px(data, selection, data_sz, pos_1_i,
+			pallete_index, sz);
 	}
 
 	if (pos_1.y > pos_2.y) {
@@ -245,11 +270,14 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 	}
 
 	if (pos_1_i.x == pos_2_i.x) {
+		bool px_ed = false;
 		for (int i = pos_1_i.y; i <= pos_2_i.y; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(pos_1_i.x, i), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(pos_1_i.x, i), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
-		return;
+		return px_ed;
 	}
 
 	if (pos_1_i.y == pos_2_i.y) {
@@ -259,12 +287,15 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 			pos_2_i = swapi;
 		}
 
+		bool px_ed = false;
 		for (int i = pos_1_i.x; i <= pos_2_i.x; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, pos_1_i.y), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, pos_1_i.y), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 
-		return;
+		return px_ed;
 	}
 
 	if (pos_2_i.y - pos_1_i.y == 1) {
@@ -278,9 +309,12 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 			x = pos_2_i.x;
 		}
 
+		bool px_ed = false;
 		for (int i = x; i < separatori.x; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, y), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, y), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 
 		y = pos_2_i.y;
@@ -291,8 +325,10 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 		}
 
 		for (int i = separatori.x + 1; i <= x; i++) {
-			draw_tool_px(data, selection, data_sz,
-				vec2i_new(i, y), pallete_index, sz);
+			if (draw_tool_px(data, selection, data_sz,
+					vec2i_new(i, y), pallete_index, sz)) {
+				px_ed = true;
+			}
 		}
 
 		Vec2i draw_pos;
@@ -314,12 +350,15 @@ Vec2 pos_1, Vec2 pos_2, unsigned char pallete_index, int sz) {
 			}
 		}
 
-		draw_tool_px(data, selection, data_sz, draw_pos, pallete_index, sz);
+		if (draw_tool_px(data, selection, data_sz, draw_pos,
+				pallete_index, sz)) {
+			px_ed = true;
+		}
 
-		return;
+		return px_ed;
 	}
 
-	line_down(
+	return line_down(
 		data,
 		selection,
 		data_sz,

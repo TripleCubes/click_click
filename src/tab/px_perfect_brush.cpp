@@ -24,17 +24,23 @@ bool px_near(Vec2i pos_a, Vec2i pos_b) {
 	return std::abs(pos_a.x - pos_b.x) <= 1 && std::abs(pos_a.y - pos_b.y) <= 1;
 }
 
-void px(Vec2i pos, Vec2i canvas_sz, Tab &tab, Layer &layer,
+bool px(Vec2i pos, Vec2i canvas_sz, Tab &tab, Layer &layer,
 unsigned char pallete_index) {
-	auto draw = [&layer, &tab, pallete_index](Vec2i pos) {
-		draw_tool_px(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			pos,
-			pallete_index,
-			0
-		);
+	bool px_ed = false;
+
+	auto draw = [&layer, &tab, pallete_index, &px_ed](Vec2i pos) {
+		if (
+			draw_tool_px(
+				layer.data,
+				tab.selection,
+				tab.sz,
+				pos,
+				pallete_index,
+				0
+			)
+		) {
+			px_ed = true;
+		}
 	};
 	
 	if (pos.x < 0 || pos.y < 0 || pos.x >= canvas_sz.x || pos.y >= canvas_sz.y){
@@ -42,36 +48,43 @@ unsigned char pallete_index) {
 		draw(prev_prev_point);
 		prev_point = vec2i_new(-1, -1);
 		prev_prev_point = vec2i_new(-1, -1);
-		return;
+		return px_ed;
 	}
 	if (prev_point.x == -1) {
 		prev_point = pos;
-		return;
+		return px_ed;
 	}
 	if (prev_prev_point.x == -1) {
 		prev_prev_point = prev_point;
 		draw(prev_prev_point);
 		prev_point = pos;
-		return;
+		return px_ed;
 	}
 	if (px_near(pos, prev_prev_point)) {
 		prev_point = pos;
-		return;
+		return px_ed;
 	}
 	prev_prev_point = prev_point;
 	draw(prev_prev_point);
 	prev_point = pos;
+
+	return px_ed;
 }
 
-void line(Vec2i pos, Vec2i canvas_sz, Tab &tab, Layer &layer,
+bool line(Vec2i pos, Vec2i canvas_sz, Tab &tab, Layer &layer,
 unsigned char pallete_index) {
+	bool px_ed = false;
+
 	if (prev_point.x == -1) {
-		px(pos, canvas_sz, tab, layer, pallete_index);
-		return;
+		if (px(pos, canvas_sz, tab, layer, pallete_index)) {
+			px_ed = true;
+		}
+		
+		return px_ed;
 	}
 
 	if (vec2i_equals(pos, prev_point)) {
-		return;
+		return px_ed;
 	}
 
 	Vec2 pos_f = vec2_add(to_vec2(pos), vec2_new(0.5, 0.5));
@@ -83,8 +96,15 @@ unsigned char pallete_index) {
 
 	while (vec2_dist_sqr(prev_point_f, current) < dist_sqr) {
 		current = vec2_add(current, add);
-		px(to_vec2i(current), canvas_sz, tab, layer, pallete_index);
+		
+		if (
+			px(to_vec2i(current), canvas_sz, tab, layer, pallete_index)
+		) {
+			px_ed = true;
+		}
 	}
+
+	return px_ed;
 }
 
 }
@@ -134,7 +154,7 @@ const Input &input, Vec2 parent_pos) {
 	);
 }
 
-void px_perfect_brush_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
+bool px_perfect_brush_tool_update(Tab &tab, int layer_index, GraphicStuff &gs,
 const Input &input, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(parent_pos, tab.pos);
 
@@ -146,25 +166,10 @@ const Input &input, Vec2 parent_pos) {
 		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
 	Vec2i px_pos = to_vec2i(tex_draw_mouse_pos);
 
+	bool px_ed = false;
+
 	if (input.left_click) {
-		draw_tool_px(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			px_pos,
-			pallete_index,
-			0
-		);
-		layer_set_texture_data(layer, gs);
-	}
-
-	if (input.left_click || (input.left_down && input.mouse_move)) {
-		line(px_pos, tab.sz, tab, layer, pallete_index);
-		layer_set_texture_data(layer, gs);
-	}
-
-	if (input.left_release) {
-		if (prev_point.x != -1) {
+		if (
 			draw_tool_px(
 				layer.data,
 				tab.selection,
@@ -172,26 +177,66 @@ const Input &input, Vec2 parent_pos) {
 				px_pos,
 				pallete_index,
 				0
-			);
+			)
+		) {
+			px_ed = true;
 		}
-		draw_tool_px(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			prev_point,
-			pallete_index,
-			0
-		);
-		draw_tool_px(
-			layer.data,
-			tab.selection,
-			tab.sz,
-			px_pos,
-			pallete_index,
-			0
-		);
+		layer_set_texture_data(layer, gs);
+	}
+
+	if (input.left_click || (input.left_down && input.mouse_move)) {
+		if (line(px_pos, tab.sz, tab, layer, pallete_index)) {
+			px_ed = true;
+		}
+		layer_set_texture_data(layer, gs);
+	}
+
+	if (input.left_release) {
+		if (prev_point.x != -1) {
+			if (
+				draw_tool_px(
+					layer.data,
+					tab.selection,
+					tab.sz,
+					px_pos,
+					pallete_index,
+					0
+				)
+			) {
+				px_ed = true;
+			}
+		}
+
+		if (
+			draw_tool_px(
+				layer.data,
+				tab.selection,
+				tab.sz,
+				prev_point,
+				pallete_index,
+				0
+			)
+		) {
+			px_ed = true;
+		}
+
+		if (
+			draw_tool_px(
+				layer.data,
+				tab.selection,
+				tab.sz,
+				px_pos,
+				pallete_index,
+				0
+			)
+		) {
+			px_ed = true;
+		}
+
 		layer_set_texture_data(layer, gs);
 		prev_point = vec2i_new(-1, -1);
 		prev_prev_point = vec2i_new(-1, -1);
 	}
+
+	return px_ed;
 }

@@ -335,19 +335,21 @@ Vec2 parent_pos) {
 		tab.clicked_and_hold_on_ui = true;
 	}
 
+	bool px_ed = false;
+
 	if (!tab.clicked_and_hold_on_ui && tab.layer_order_list.size() != 0) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
 			if (settings.use_px_perfect_brush
 			&& tab.tool_picker.brush_selected_index == 0) {
 				px_perfect_brush_tool_preview_update(tab, gs,input,parent_pos);
-				px_perfect_brush_tool_update(tab, get_layer_index(tab), gs,
-					input, parent_pos);
+				px_ed = px_perfect_brush_tool_update(tab, get_layer_index(tab),
+					gs, input, parent_pos);
 			}
 			else {
 				px_tool_preview_update(tab,
 					tab.tool_picker.brush_selected_index,
 					gs, input, true, parent_pos);
-				brush_tool_update(tab, get_layer_index(tab),
+				px_ed = brush_tool_update(tab, get_layer_index(tab),
 					tab.tool_picker.brush_selected_index, gs, input,
 					parent_pos);
 			}
@@ -361,7 +363,7 @@ Vec2 parent_pos) {
 			}
 			curve_tool_preview_update(tab,tab.tool_picker.curve_selected_index,
 				gs, input, parent_pos);
-			curve_tool_update(tab, get_layer_index(tab),
+			px_ed = curve_tool_update(tab, get_layer_index(tab),
 				tab.tool_picker.curve_selected_index, gs, input, parent_pos);
 		}
 
@@ -370,7 +372,8 @@ Vec2 parent_pos) {
 				gs.cursor_icon = CURSOR_FILL;
 			}
 			px_tool_preview_update(tab, 0, gs, input, true, parent_pos);
-			fill_tool_update(tab, get_layer_index(tab), gs, input, parent_pos);
+			px_ed = fill_tool_update(tab, get_layer_index(tab), gs,
+				input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_SELECT) {
@@ -385,6 +388,10 @@ Vec2 parent_pos) {
 		}
 	}
 
+	if (px_ed) {
+		tab.px_change_pending = true;
+	}
+
 	if (map_press(input, MAP_SELECT_ALL)) {
 		selection_all(tab.selection, tab.sz);
 	}
@@ -393,8 +400,9 @@ Vec2 parent_pos) {
 		selection_clear(tab.selection, tab.sz);
 	}
 
-	//
-	if (!tab.clicked_and_hold_on_ui && input.left_release) {
+	if (!tab.clicked_and_hold_on_ui && input.left_release
+	&& tab.px_change_pending) {
+		tab.px_change_pending = false;
 		history_commit_prepare(tab.history, tab.tab_commands);
 		history_commit_layer(
 			tab.history, tab.history.layer_list[layer.history_layer_index],

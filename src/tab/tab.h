@@ -39,6 +39,7 @@ struct Tab {
 	Vec2 tex_draw_tag_pos;
 	int num_layer_created = 0;
 	bool clicked_and_hold_on_ui = false;
+	bool px_change_pending = false;
 
 	ColorPicker color_picker;
 	ColorPallete color_pallete;
