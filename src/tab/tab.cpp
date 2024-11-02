@@ -154,7 +154,6 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		layer.textarea.text,
 		tab.prev_layer_name
 	);
-	std::cout << layer.textarea.text << " " << tab.prev_layer_name << std::endl;
 	tab_commands_do_and_add(
 		tab.tab_commands,
 		command,
@@ -510,24 +509,62 @@ const GameTime &game_time, Vec2 parent_pos) {
 	}
 }
 
-void layer_bar_event_handle(Tab &tab) {
-	if (tab.layer_order_list_index < (int)tab.layer_order_list.size() - 1
-	&& tab.layer_bar.down_btn.clicked) {
-		int swap = tab.layer_order_list[tab.layer_order_list_index + 1];
-		tab.layer_order_list[tab.layer_order_list_index + 1]
-			= tab.layer_order_list[tab.layer_order_list_index];
-		tab.layer_order_list[tab.layer_order_list_index] = swap;
-
-		tab.layer_order_list_index++;
-	}
-	else if (tab.layer_order_list_index > 0
+void layer_bar_event_handle(Tab &tab, GraphicStuff &gs, const Input &input,
+const GameTime &game_time, const Settings &settings) {
+	if (tab.layer_order_list_index > 0
 	&& tab.layer_bar.up_btn.clicked) {
-		int swap = tab.layer_order_list[tab.layer_order_list_index - 1];
-		tab.layer_order_list[tab.layer_order_list_index - 1]
-			= tab.layer_order_list[tab.layer_order_list_index];
-		tab.layer_order_list[tab.layer_order_list_index] = swap;
+		history_commit_prepare(tab.history, tab.tab_commands);
 
-		tab.layer_order_list_index--;
+		Command command = command_new(
+			tab.history.time_pos_current,
+			COMMAND_LAYER_MOVE_UP,
+			
+			0,
+			tab.layer_order_list_index - 1,
+			0,
+
+			"",
+			""
+		);
+
+		tab_commands_do_and_add(
+			tab.tab_commands,
+			command,
+			tab.history,
+			gs,
+			input,
+			game_time,
+			settings,
+			tab
+		);
+	}
+
+	else if (tab.layer_order_list_index < (int)tab.layer_order_list.size() - 1
+	&& tab.layer_bar.down_btn.clicked) {
+		history_commit_prepare(tab.history, tab.tab_commands);
+
+		Command command = command_new(
+			tab.history.time_pos_current,
+			COMMAND_LAYER_MOVE_DOWN,
+			
+			0,
+			tab.layer_order_list_index + 1,
+			0,
+
+			"",
+			""
+		);
+
+		tab_commands_do_and_add(
+			tab.tab_commands,
+			command,
+			tab.history,
+			gs,
+			input,
+			game_time,
+			settings,
+			tab
+		);
 	}
 }
 
@@ -751,7 +788,7 @@ Vec2 parent_pos,bool show){
 		color_pallete_toggle_eraser(tab.color_pallete);
 	}
 
-	layer_bar_event_handle(tab);
+	layer_bar_event_handle(tab, gs, input, game_time, settings);
 	canvas_move_update(tab, gs, input, game_time, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);

@@ -1,7 +1,7 @@
 #include "tab_commands.h"
 
 // TEST
-//#include <iostream>
+#include <iostream>
 
 #include "tab.h"
 #include "../graphic_types/graphic_types.h"
@@ -48,6 +48,42 @@ int layer_order_list_index) {
 		0,
 		(int)tab.layer_order_list.size() - 1
 	);
+}
+
+void layer_swap_up(Tab &tab, int to_layer_order_list_index) {
+	int swap = tab.layer_order_list[to_layer_order_list_index];
+	tab.layer_order_list[to_layer_order_list_index]
+		= tab.layer_order_list[to_layer_order_list_index + 1];
+	tab.layer_order_list[to_layer_order_list_index + 1] = swap;
+
+	tab.layer_order_list_index = to_layer_order_list_index;
+}
+
+void layer_swap_down(Tab &tab, int to_layer_order_list_index) {
+	int swap = tab.layer_order_list[to_layer_order_list_index];
+	tab.layer_order_list[to_layer_order_list_index]
+		= tab.layer_order_list[to_layer_order_list_index - 1];
+	tab.layer_order_list[to_layer_order_list_index - 1] = swap;
+
+	tab.layer_order_list_index = to_layer_order_list_index;
+}
+
+void layer_swap_up_undo(Tab &tab, int to_layer_order_list_index) {
+	int swap = tab.layer_order_list[to_layer_order_list_index];
+	tab.layer_order_list[to_layer_order_list_index]
+		= tab.layer_order_list[to_layer_order_list_index + 1];
+	tab.layer_order_list[to_layer_order_list_index + 1] = swap;
+
+	tab.layer_order_list_index = to_layer_order_list_index + 1;
+}
+
+void layer_swap_down_undo(Tab &tab, int to_layer_order_list_index) {
+	int swap = tab.layer_order_list[to_layer_order_list_index];
+	tab.layer_order_list[to_layer_order_list_index]
+		= tab.layer_order_list[to_layer_order_list_index - 1];
+	tab.layer_order_list[to_layer_order_list_index - 1] = swap;
+
+	tab.layer_order_list_index = to_layer_order_list_index - 1;
 }
 
 }
@@ -118,6 +154,16 @@ Tab& tab) {
 		tab_commands_layer_delete(tab, gs, command.b);
 	}
 
+	// b: layer order list index after move
+	else if (command.type == COMMAND_LAYER_MOVE_UP) {
+		layer_swap_up(tab, command.b);
+	}
+
+	// b: layer order list index after move
+	else if (command.type == COMMAND_LAYER_MOVE_DOWN) {
+		layer_swap_down(tab, command.b);
+	}
+
 	return 0;
 }
 
@@ -141,6 +187,14 @@ Tab& tab) {
 	else if (command.type == COMMAND_LAYER_DELETE) {
 		return tab_commands_layer_add(tab, command.str, gs,
 			command.a, command.b);
+	}
+	
+	else if (command.type == COMMAND_LAYER_MOVE_UP) {
+		layer_swap_up_undo(tab, command.b);
+	}
+
+	else if (command.type == COMMAND_LAYER_MOVE_DOWN) {
+		layer_swap_down_undo(tab, command.b);
 	}
 
 	return 0;
