@@ -89,6 +89,7 @@ void layer_swap_down_undo(Tab &tab, int to_layer_order_list_index) {
 }
 
 Command command_new(int time_pos, int type, int a, int b, int c,
+Vec2i va, Vec2i vb, Vec2i vc, Vec2i vd,
 const std::string &str, const std::string &str_1) {
 	Command command;
 	
@@ -98,6 +99,10 @@ const std::string &str, const std::string &str_1) {
 	command.a = a;
 	command.b = b;
 	command.c = c;
+	command.va = va;
+	command.vb = vb;
+	command.vc = vc;
+	command.vd = vd;
 	command.str = str;
 	command.str_1 = str_1;
 	
@@ -105,7 +110,9 @@ const std::string &str, const std::string &str_1) {
 }
 
 void tab_commands_init(TabCommands &tab_commands) {
-	Command command = command_new(0, COMMAND_NOTHING, 0, 0, 0, "", "");
+	Command command = command_new(0, COMMAND_NOTHING, 0, 0, 0,
+		vec2i_new(0, 0), vec2i_new(0, 0), vec2i_new(0, 0), vec2i_new(0, 0),
+		"", "");
 	tab_commands.command_list.push_back(command);
 }
 
@@ -164,6 +171,22 @@ Tab& tab) {
 		layer_swap_down(tab, command.b);
 	}
 
+	// va: new_pos_anchor, vb: new_sz, vc: prev_pos_anchor, vd: prev_sz
+	else if (command.type == COMMAND_RESIZE) {
+		selection_clear(tab.selection, tab.sz);
+		tab_resize(tab, gs, command.va, command.vb);
+		for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+			Layer &layer = tab.layer_list[i];
+			if (!layer.running) {
+				continue;
+			}
+
+			HistoryLayer &history_layer
+				= tab.history.layer_list[layer.history_layer_index];
+			history_layer_size_up(tab.history, history_layer, command.vb);
+		}
+	}
+
 	return 0;
 }
 
@@ -195,6 +218,11 @@ Tab& tab) {
 
 	else if (command.type == COMMAND_LAYER_MOVE_DOWN) {
 		layer_swap_down_undo(tab, command.b);
+	}
+
+	else if (command.type == COMMAND_RESIZE) {
+		selection_clear(tab.selection, tab.sz);
+		tab_resize(tab, gs, command.vc, command.vd);
 	}
 
 	return 0;

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "../types/vec2i.h"
 
 const int COMMAND_NOTHING         = 0;
 
@@ -29,6 +30,10 @@ struct Command {
 	int a = 0;
 	int b = 0;
 	int c = 0;
+	Vec2i va;
+	Vec2i vb;
+	Vec2i vc;
+	Vec2i vd;
 	std::string str;
 	std::string str_1;
 };
@@ -38,6 +43,7 @@ struct TabCommands {
 };
 
 Command command_new(int time_pos, int type, int a, int b, int c,
+	Vec2i va, Vec2i vb, Vec2i vc, Vec2i vd,
 	const std::string &str, const std::string &str_1);
 
 void tab_commands_init(TabCommands &tab_commands);

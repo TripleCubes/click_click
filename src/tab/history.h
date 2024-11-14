@@ -48,6 +48,9 @@ struct History {
 
 void history_layer_add(History &history, Layer &layer);
 
+void history_layer_size_up(History &history, HistoryLayer &history_layer,
+	Vec2i new_sz);
+
 void history_init(History &history);
 
 void history_commit_prepare(History &history, TabCommands &tab_commands);

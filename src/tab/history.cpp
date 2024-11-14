@@ -82,12 +82,14 @@ Vec2i layer_data_pos) {
 	// of 1 layer, so that a data page always contain more than 1 time pos
 	if (history.at_page == 0 && history.data_0_n == num_chunk_per_page - 1) {
 		history.at_page = 1;
+		history.data_1_n = 0;
 		
 		history.time_pos_min = history.data_1_start_time_pos + 1;
 		history.data_0_start_time_pos = history.time_pos_current;
 	}
 	if (history.at_page == 1 && history.data_1_n == num_chunk_per_page - 1) {
 		history.at_page = 0;
+		history.data_0_n = 1;
 
 		history.time_pos_min = history.data_0_start_time_pos + 1;
 		history.data_1_start_time_pos = history.time_pos_current;
@@ -195,6 +197,26 @@ void history_layer_add(History &history, Layer &layer) {
 	history_commit_layer(history, history_layer, layer);
 }
 
+void history_layer_size_up(History &history, HistoryLayer &history_layer,
+Vec2i new_sz) {
+	Vec2i ptr_2d_list_sz = get_history_ptr_2d_list_sz(new_sz);
+	if ((int)history_layer.ptr_2d_list.size() < ptr_2d_list_sz.y) {
+		history_layer.ptr_2d_list.resize(ptr_2d_list_sz.y);
+	}
+	for (int i = 0; i < ptr_2d_list_sz.y; i++) {
+		if ((int)history_layer.ptr_2d_list[i].size() < ptr_2d_list_sz.x) {
+			history_layer.ptr_2d_list[i].resize(ptr_2d_list_sz.x);
+		}
+		for (int j = 0; j < ptr_2d_list_sz.x; j++) {
+			if (history_layer.ptr_2d_list[i][j].size() == 0) {
+				HistoryPtr history_ptr
+					= history_ptr_new(history.time_pos_current, 0, 0);
+				history_layer.ptr_2d_list[i][j].push_back(history_ptr);
+			}
+		}
+	}
+}
+
 void history_init(History &history) {
 	history.data_0.resize(HISTORY_DATA_SZ, 0);
 	history.data_1.resize(HISTORY_DATA_SZ, 0);
@@ -255,6 +277,12 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		return;
 	}
 
+	tab_commands_time_pos_backward_to(
+		tab.tab_commands,
+		gs, input, game_time,
+		settings, tab, history.time_pos_current
+	);
+
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		Layer &layer = tab.layer_list[i];
 
@@ -271,12 +299,6 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 
 		layer_set_texture_data(layer, gs);
 	}
-
-	tab_commands_time_pos_backward_to(
-		tab.tab_commands,
-		gs, input, game_time,
-		settings, tab, history.time_pos_current
-	);
 }
 
 void history_redo(History &history, Tab &tab, GraphicStuff &gs,
@@ -285,6 +307,12 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		return;
 	}
 
+	tab_commands_time_pos_forward_to(
+		tab.tab_commands,
+		gs, input, game_time,
+		settings, tab, history.time_pos_current
+	);
+
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		Layer &layer = tab.layer_list[i];
 
@@ -301,11 +329,6 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 
 		layer_set_texture_data(layer, gs);
 	}
-
-	tab_commands_time_pos_forward_to(
-		tab.tab_commands,
-		gs, input, game_time,
-		settings, tab, history.time_pos_current);
 }
 
 void history_roll_back_layer(History &history, HistoryLayer &history_layer,

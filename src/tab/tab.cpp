@@ -90,6 +90,10 @@ const GameTime &game_time, const Settings &settings) {
 		tab.history.layer_list.size(),
 		tab.layer_order_list_index,
 		0,
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
 
 		"layer " + std::to_string(tab.num_layer_created),
 		""
@@ -121,6 +125,10 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		layer.history_layer_index,
 		tab.layer_order_list_index,
 		0,
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
 
 		layer.textarea.text,
 		""
@@ -150,6 +158,10 @@ const Input &input, const GameTime &game_time, const Settings &settings) {
 		0,
 		tab.layer_order_list_index,
 		0,
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
+		vec2i_new(0, 0),
 
 		layer.textarea.text,
 		tab.prev_layer_name
@@ -530,6 +542,10 @@ const GameTime &game_time, const Settings &settings) {
 			0,
 			tab.layer_order_list_index - 1,
 			0,
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
 
 			"",
 			""
@@ -558,6 +574,10 @@ const GameTime &game_time, const Settings &settings) {
 			0,
 			tab.layer_order_list_index + 1,
 			0,
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
+			vec2i_new(0, 0),
 
 			"",
 			""

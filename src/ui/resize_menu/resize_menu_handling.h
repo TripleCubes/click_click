@@ -6,12 +6,15 @@ struct ResizeMenu;
 struct Tab;
 struct GraphicStuff;
 struct Input;
+struct GameTime;
+struct Settings;
 
 void resize_menu_open(States &states, ResizeMenu &resize_menu, Tab &tab);
 
 void resize_menu_close(States &states);
 
 void resize_menu_handling(States &states, ResizeMenu &resize_menu,
-	Tab &tab, GraphicStuff &gs, const Input &input);
+	Tab &tab, GraphicStuff &gs, const Input &input, const GameTime &game_time,
+	const Settings &settings);
 
 #endif
