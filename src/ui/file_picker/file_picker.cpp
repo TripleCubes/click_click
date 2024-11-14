@@ -23,9 +23,6 @@
 #include "../../file/file_extension.h"
 #include "../../file/save_png.h"
 
-// TEST
-#include <iostream>
-
 namespace {
 
 const std::vector<std::string> SYSTEM_PATH_LIST = {

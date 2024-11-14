@@ -1,8 +1,5 @@
 #include "tab_commands.h"
 
-// TEST
-#include <iostream>
-
 #include "tab.h"
 #include "../graphic_types/graphic_types.h"
 #include "../input.h"

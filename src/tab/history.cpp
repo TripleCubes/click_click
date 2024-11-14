@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <array>
 
-// TEST
-//#include <iostream>
-
 #include "../types/vec2.h"
 #include "../types/vec2i.h"
 #include "layer.h"

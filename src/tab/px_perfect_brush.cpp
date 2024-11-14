@@ -13,8 +13,6 @@
 #include "../basic_math.h"
 #include "../draw_tool/draw_tool_px.h"
 
-#include <iostream>
-
 namespace {
 
 Vec2i prev_point = vec2i_new(-1, -1);
