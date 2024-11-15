@@ -169,7 +169,7 @@ int main () {
 	graphic_types_release_all(graphic_stuff);
 	glfwDestroyCursor(text_cursor);
 	glfwTerminate();
-	std::cout << "reached end of main" << std::endl;
+	std::cout << "reached end of main()" << std::endl;
 
 	return 0;
 }

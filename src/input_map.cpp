@@ -171,6 +171,11 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_REDO            , KEY_Z    , MODIFIER_BOTH_CTRL ,
 	                                     MODIFIER_BOTH_SHIFT);
 	set(MAP_REDO_1          , KEY_Y    , MODIFIER_BOTH_CTRL );
+
+	set(MAP_DELETE          , KEY_DEL                       );
+	set(MAP_CUT             , KEY_X    , MODIFIER_BOTH_CTRL );
+	set(MAP_COPY            , KEY_C    , MODIFIER_BOTH_CTRL );
+	set(MAP_PASTE           , KEY_V    , MODIFIER_BOTH_CTRL );
 }
 
 bool map_press(const Input &input, MappedKeyIndex index) {

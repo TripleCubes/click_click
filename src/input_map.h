@@ -66,6 +66,11 @@ enum MappedKeyIndex: int {
 	MAP_REDO,
 	MAP_REDO_1,
 
+	MAP_DELETE,
+	MAP_CUT,
+	MAP_COPY,
+	MAP_PASTE,
+
 
 	MAP_COUNT,
 };

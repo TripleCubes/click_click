@@ -31,6 +31,8 @@
 #include "fill.h"
 #include "px_perfect_brush.h"
 
+#include "copypaste.h"
+
 // TEST
 #include <iostream>
 
@@ -694,6 +696,57 @@ Vec2i prev_sz, Vec2i new_pos, Vec2i new_sz) {
 	data = data_1;
 }
 
+void delete_selected_data(Tab &tab, GraphicStuff &gs) {
+	Layer &layer = tab.layer_list[get_layer_index(tab)];
+
+	for (int y = 0; y < tab.sz.y; y++) {
+	for (int x = 0; x < tab.sz.x; x++) {
+		int i = y * tab.sz.x + x;
+
+		if (tab.selection.map[i] == 0) {
+			continue;
+		}
+
+		layer.data[i] = 0;
+	}
+	}
+
+	layer_set_texture_data(layer, gs);
+
+	history_commit_prepare(tab.history, tab.tab_commands);
+	history_commit_layer(
+		tab.history, tab.history.layer_list[layer.history_layer_index],
+		layer
+	);
+}
+
+void delete_whole_layer_data(Tab &tab, GraphicStuff &gs) {
+	Layer &layer = tab.layer_list[get_layer_index(tab)];
+
+	for (int y = 0; y < tab.sz.y; y++) {
+	for (int x = 0; x < tab.sz.x; x++) {
+		layer.data[y * tab.sz.x + x] = 0;
+	}
+	}
+
+	layer_set_texture_data(layer, gs);
+
+	history_commit_prepare(tab.history, tab.tab_commands);
+	history_commit_layer(
+		tab.history, tab.history.layer_list[layer.history_layer_index],
+		layer
+	);
+}
+
+void delete_selected_or_whole_layer_data(Tab &tab, GraphicStuff &gs) {
+	if (tab.selection.full_preview_list.size() != 0) {
+		delete_selected_data(tab, gs);
+	}
+	else {
+		delete_whole_layer_data(tab, gs);
+	}
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -772,7 +825,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 
 void tab_update(Tab &tab, GraphicStuff &gs, const States &states,
 const Input &input, const GameTime &game_time, const Settings &settings,
-Vec2 parent_pos,bool show){
+Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 	bool tool_key_allowed = !tab.layer_name_editing && !input.left_down
 		&& !input.left_release;
 
@@ -822,14 +875,26 @@ Vec2 parent_pos,bool show){
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
 
-
-
 	if (map_press(input, MAP_UNDO)) {
 		history_undo(tab.history, tab, gs, input, game_time, settings);
 	}
 	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)) {
 		history_redo(tab.history, tab, gs, input, game_time, settings);
 	}
+
+	if (map_press(input, MAP_DELETE)) {
+		delete_selected_or_whole_layer_data(tab, gs);
+	}
+	if (map_press(input, MAP_COPY)) {
+		to_clipboard(tab, glfw_window);
+	}
+	if (map_press(input, MAP_CUT)) {
+		to_clipboard(tab, glfw_window);
+		delete_selected_or_whole_layer_data(tab, gs);
+	}
+	// if (map_press(input, MAP_PASTE)) {
+	// 	paste(tab, gs, input, parent_pos, glfw_window);
+	// }
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {

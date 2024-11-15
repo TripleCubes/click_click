@@ -163,7 +163,7 @@ int main() {
 	app_ui_release(app_ui, graphic_stuff);
 	graphic_types_release_all(graphic_stuff);
 	glfwTerminate();
-	std::cout << "reached end of main" << std::endl;
+	std::cout << "reached end of main()" << std::endl;
 
 	return 0;
 }
