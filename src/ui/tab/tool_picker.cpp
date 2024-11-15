@@ -8,6 +8,11 @@
 
 namespace {
 
+void set_selected_index(ToolPicker &tool_picker, int selected_index) {
+	tool_picker.selected_index = selected_index;
+	tool_picker.selection_changed = true;
+}
+
 void main_btns_update(ToolPicker &tool_picker, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 	Vec2 pos = vec2_add(parent_pos, tool_picker.pos);
@@ -29,22 +34,25 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		const Btn &btn = tool_picker.btn_list[i];
 
 		if (btn.clicked) {
-			tool_picker.selected_index = i;
+			set_selected_index(tool_picker, i);
 		}
 	}
 
 	if (tool_key_allowed) {
 		if (map_press(input, MAP_TOOL_BRUSH)) {
-			tool_picker.selected_index = TOOL_BRUSH;
+			set_selected_index(tool_picker, TOOL_BRUSH);
 		}
 		else if (map_press(input, MAP_TOOL_CURVE)) {
-			tool_picker.selected_index = TOOL_CURVE;
+			set_selected_index(tool_picker, TOOL_CURVE);
 		}
 		else if (map_press(input, MAP_TOOL_FILL)) {
-			tool_picker.selected_index = TOOL_FILL;
+			set_selected_index(tool_picker, TOOL_FILL);
 		}
 		else if (map_press(input, MAP_TOOL_SELECT)) {
-			tool_picker.selected_index = TOOL_SELECT;
+			set_selected_index(tool_picker, TOOL_SELECT);
+		}
+		else if (map_press(input, MAP_TOOL_MOVE)) {
+			set_selected_index(tool_picker, TOOL_MOVE);
 		}
 	}
 }
@@ -189,6 +197,7 @@ const Input &input, Vec2 parent_pos) {
 		get_key_str(input, MAP_TOOL_CURVE),
 		get_key_str(input, MAP_TOOL_FILL),
 		get_key_str(input, MAP_TOOL_SELECT),
+		get_key_str(input, MAP_TOOL_MOVE),
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		draw_text(
@@ -291,6 +300,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 
 	std::array<std::string, NUM_BTN> icon_str_list = {
 		"ICON_PEN", "ICON_ERASER", "ICON_CURVE", "ICON_FILL", "ICON_SELECT",
+		"ICON_MOVE",
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		tool_picker.btn_list[i] = btn_new(
@@ -356,6 +366,7 @@ ToolPicker tool_picker_new(Vec2 pos) {
 
 void tool_picker_update(ToolPicker &tool_picker, const GraphicStuff &gs,
 const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
+	tool_picker.selection_changed = false;
 	other_btns_update(tool_picker, gs, input, parent_pos,
 		tool_key_allowed, show);
 	main_btns_update(tool_picker, gs, input, parent_pos,

@@ -14,6 +14,7 @@
 #include "../ui/btn.h"
 #include "layer.h"
 #include "select.h"
+#include "move.h"
 #include "history.h"
 #include "tab_commands.h"
 
@@ -60,6 +61,10 @@ struct Tab {
 	std::vector<unsigned char> selection_preview_data;
 	int selection_preview_texture_index = 0;
 
+	Move move;
+	std::vector<unsigned char> move_preview_data;
+	int move_preview_texture_index = 0;
+
 	History history;
 	TabCommands tab_commands;
 
@@ -100,6 +105,9 @@ void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs);
 
 void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz);
+
+void tab_get_selected_data(Tab &tab, std::vector<unsigned char> &data,
+	Vec2i &pos, Vec2i &sz);
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 

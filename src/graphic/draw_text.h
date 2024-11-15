@@ -43,7 +43,7 @@ const int ICON_ERASER          = 28;
 const int ICON_DOWNLOAD        = 29;
 
 const int ICON_UNLOCKED        = 30;
-const int ICON_DELETE          = 31;
+const int ICON_MOVE            = 31;
 const int ICON_LOCKED          = 32;
 
 const int ICON_TRASH           = 33;

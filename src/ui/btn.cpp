@@ -122,7 +122,7 @@ bool selected, const std::string &replace_text) {
 		"ICON_DOWNLOAD",
 
 		"ICON_UNLOCKED",
-		"ICON_DELETE",
+		"ICON_MOVE",
 		"ICON_LOCKED",
 
 		"ICON_TRASH",

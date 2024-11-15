@@ -45,6 +45,10 @@ const float LAYER_TEXTAREA_LIST_LINE_HEIGHT = 12;
 
 const int ZOOM_MAX = 15;
 
+std::vector<unsigned char> selected_data;
+Vec2i top_left;
+Vec2i bottom_right;
+
 int get_blank_index(const std::vector<Tab> &list) {
 	for (int i = 0; i < (int)list.size(); i++) {
 		if (!list[i].running) {
@@ -231,6 +235,9 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 
 	layer_texture_draw(tab, gs, tab.selection_preview_texture_index,
 		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
+
+	layer_texture_draw(tab, gs, tab.move_preview_texture_index,
+		PALLETE_DRAW, vec2_floor(pos));
 }
 
 bool cursor_on_ui(const Tab &tab, const GraphicStuff &gs,
@@ -399,6 +406,11 @@ Vec2 parent_pos) {
 			select_tool_update(tab, get_layer_index(tab), gs, input,
 				game_time, tab.tool_picker.select_second_selected_index == 1,
 				tab.tool_picker.select_selected_index, parent_pos);
+		}
+
+		else if (tab.tool_picker.selected_index == TOOL_MOVE) {
+			move_tool_preview_update(tab.move, tab, gs, input, parent_pos);
+			move_tool_update(tab.move, tab, gs, input, parent_pos);
 		}
 	}
 
@@ -812,6 +824,9 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.selection_preview_data.resize(sz.x * sz.y, 0);
 	tab.selection_preview_texture_index= texture_blank_new_red(gs, sz.x, sz.y);
 
+	tab.move_preview_data.resize(sz.x * sz.y, 0);
+	tab.move_preview_texture_index = texture_blank_new_red(gs, sz.x, sz.y);
+
 	history_init(tab.history);
 	tab_commands_init(tab.tab_commands);
 
@@ -875,7 +890,45 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
 
+	auto _move_tool_start = [&tab, &gs, &input, parent_pos]() {
+		move_tool_prepare(tab.move);
+		Vec2i pos;
+		tab_get_selected_data(tab, tab.move.data, pos, tab.move.sz);
+		tab.move.pos = to_vec2(pos);
+		move_tool_start(tab.move, tab, gs, input, parent_pos);
+
+		delete_selected_or_whole_layer_data(tab, gs);
+		selection_clear(tab.selection, tab.sz);
+	};
+
+	auto _move_tool_end = [&tab, &gs]() {
+		move_tool_commit(tab.move, tab, gs);
+	};
+
+	if (tab.tool_picker.selection_changed && !tab.move.moving
+	&& tab.tool_picker.selected_index == TOOL_MOVE
+	&& tab.selection.full_preview_list.size() != 0) {
+		_move_tool_start();
+	}
+
+	if (tab.tool_picker.selected_index == TOOL_MOVE && !tab.move.moving
+	&& input.left_click && tab.selection.full_preview_list.size() != 0) {
+		_move_tool_start();
+	}
+
+	if (tab.tool_picker.selection_changed
+	&& tab.tool_picker.selected_index != TOOL_MOVE
+	&& tab.move.moving) {
+		_move_tool_end();
+	}
+
+	if (tab.move.moving && map_press(input, MAP_ENTER)) {
+		_move_tool_end();
+	}
+
+
 	if (map_press(input, MAP_UNDO)) {
+		move_tool_discard(tab.move, tab, gs);
 		history_undo(tab.history, tab, gs, input, game_time, settings);
 	}
 	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)) {
@@ -892,9 +945,26 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 		to_clipboard(tab, glfw_window);
 		delete_selected_or_whole_layer_data(tab, gs);
 	}
-	// if (map_press(input, MAP_PASTE)) {
-	// 	paste(tab, gs, input, parent_pos, glfw_window);
-	// }
+	if (map_press(input, MAP_PASTE)) {
+		if (tab.move.moving) {
+			_move_tool_end();
+		}
+		move_tool_prepare(tab.move);
+		Vec2i pos;
+		bool valid = get_paste_data(
+			tab.move.data,
+			pos,
+			tab.move.sz,
+			glfw_window
+		);
+		tab.move.pos = to_vec2(pos);
+		if (valid) {
+			move_tool_start(tab.move, tab, gs, input, parent_pos);
+
+			selection_clear(tab.selection, tab.sz);
+			tab.tool_picker.selected_index = TOOL_MOVE;
+		}
+	}
 }
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
@@ -1069,6 +1139,10 @@ void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
 	texture_data_red(gs, tab.selection_preview_texture_index, new_sz,
 		tab.selection_preview_data);
 
+	layer_data_resize(tab.move_preview_data, tab.sz, new_pos, new_sz);
+	texture_data_red(gs, tab.move_preview_texture_index, new_sz,
+		tab.move_preview_data);
+
 	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 		Layer &layer = tab.layer_list[i];
 
@@ -1085,6 +1159,58 @@ void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
 	tab.pos = vec2_add(tab.pos, to_vec2(new_pos));
 }
 
+void tab_get_selected_data(Tab &tab, std::vector<unsigned char> &data,
+Vec2i &pos, Vec2i &sz) {
+	selected_data.clear();
+	top_left = vec2i_new(tab.sz.x - 1, tab.sz.y - 1);
+	bottom_right = vec2i_new(0, 0);
+
+	selected_data.resize(tab.sz.x * tab.sz.y, 0);
+
+	int layer_index = tab.layer_order_list[tab.layer_order_list_index];
+	const Layer &layer = tab.layer_list[layer_index];
+	for (int y = 0; y < (int)layer.sz.y; y++) {
+	for (int x = 0; x < (int)layer.sz.x; x++) {
+		int i = y * tab.sz.x + x;
+
+		if (tab.selection.map[i] == 0) {
+			continue;
+		}
+
+		if (x < top_left.x) {
+			top_left.x = x;
+		}
+		if (y < top_left.y) {
+			top_left.y = y;
+		}
+		if (x > bottom_right.x) {
+			bottom_right.x = x;
+		}
+		if (y > bottom_right.y) {
+			bottom_right.y = y;
+		}
+
+		selected_data[i] = layer.data[i];
+	}
+	}
+
+	data.clear();
+	int data_w = bottom_right.x - top_left.x + 1;
+	int data_h = bottom_right.y - top_left.y + 1;
+	data.resize(data_w * data_h, 0);
+	for (int y = top_left.y; y <= bottom_right.y; y++) {
+	for (int x = top_left.x; x <= bottom_right.x; x++) {
+		int selected_data_i = y * tab.sz.x + x;
+		int data_i = (y - top_left.y) * data_w + (x - top_left.x);
+
+		data[data_i] = selected_data[selected_data_i];
+	}
+	}
+
+	pos = top_left;
+	sz = vec2i_new(data_w, data_h);
+}
+
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	Tab &tab = tab_list[index];
 	
@@ -1098,6 +1224,9 @@ void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	
 	tab.selection_preview_data.clear();
 	texture_release(gs, tab.selection_preview_texture_index);
+
+	tab.move_preview_data.clear();
+	texture_release(gs, tab.move_preview_texture_index);
 
 	selection_release(tab.selection);
 	history_release(tab.history);
