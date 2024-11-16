@@ -1209,6 +1209,10 @@ void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
 }
 
 void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
+	if (tab.move.moving) {
+		move_tool_commit(tab.move, tab, gs);
+	}
+
 	layer_data_resize(tab.tool_preview_data, tab.sz, new_pos, new_sz);
 	texture_data_red(gs, tab.tool_preview_texture_index, new_sz,
 		tab.tool_preview_data);

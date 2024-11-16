@@ -170,7 +170,6 @@ Tab& tab) {
 
 	// va: new_pos_anchor, vb: new_sz, vc: prev_pos_anchor, vd: prev_sz
 	else if (command.type == COMMAND_RESIZE) {
-		selection_clear(tab.selection, tab.sz);
 		tab_resize(tab, gs, command.va, command.vb);
 		for (int i = 0; i < (int)tab.layer_list.size(); i++) {
 			Layer &layer = tab.layer_list[i];
@@ -218,7 +217,6 @@ Tab& tab) {
 	}
 
 	else if (command.type == COMMAND_RESIZE) {
-		selection_clear(tab.selection, tab.sz);
 		tab_resize(tab, gs, command.vc, command.vd);
 	}
 
