@@ -8,6 +8,10 @@
 #include "../input.h"
 #include "../pos_convert.h"
 
+#ifdef __EMSCRIPTEN__
+extern std::string clipboard;
+#endif
+
 namespace {
 
 const std::string TYPE_LABEL = "clicklayercopy";
@@ -25,7 +29,11 @@ unsigned char to_pallete_index(char c) {
 	return c - 48;
 }
 
-void to_clipboard_selected(const Tab &tab, GLFWwindow *glfw_window) {
+void to_clipboard_selected(const Tab &tab
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
 	data.clear();
 	top_left = vec2i_new(tab.sz.x - 1, tab.sz.y - 1);
 	bottom_right = vec2i_new(0, 0);
@@ -79,10 +87,18 @@ void to_clipboard_selected(const Tab &tab, GLFWwindow *glfw_window) {
 		}
 	}
 
+	#ifndef __EMSCRIPTEN__
 	glfwSetClipboardString(glfw_window, str.c_str());
+	#else
+	clipboard = str;
+	#endif
 }
 
-void to_clipboard_whole_layer(const Tab &tab, GLFWwindow *glfw_window) {
+void to_clipboard_whole_layer(const Tab &tab
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
 	int layer_index = tab.layer_order_list[tab.layer_order_list_index];
 	const Layer &layer = tab.layer_list[layer_index];
 
@@ -105,7 +121,11 @@ void to_clipboard_whole_layer(const Tab &tab, GLFWwindow *glfw_window) {
 		}
 	}
 
+	#ifndef __EMSCRIPTEN__
 	glfwSetClipboardString(glfw_window, str.c_str());
+	#else
+	clipboard = str;
+	#endif
 }
 
 bool label_check(const std::string &str) {
@@ -146,18 +166,37 @@ void rm_newline(std::string &str) {
 
 }
 
-void to_clipboard(const Tab &tab, GLFWwindow *glfw_window) {
+void to_clipboard(const Tab &tab
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
 	if (tab.selection.full_preview_list.size() != 0) {
-		to_clipboard_selected(tab, glfw_window);
+		to_clipboard_selected(tab
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif	
+		);
 	}
 	else {
-		to_clipboard_whole_layer(tab, glfw_window);
+		to_clipboard_whole_layer(tab
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif	
+		);
 	}
 }
 
-bool get_paste_data(std::vector<unsigned char> &data, Vec2i &pos, Vec2i &sz,
-GLFWwindow *glfw_window) {
+bool get_paste_data(std::vector<unsigned char> &data, Vec2i &pos, Vec2i &sz
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
+	#ifndef __EMSCRIPTEN__
 	std::string paste_str = glfwGetClipboardString(glfw_window);
+	#else
+	std::string paste_str = clipboard;
+	#endif
 	rm_newline(paste_str);
 
 	int x = 0;

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <GLES2/gl2.h>
 #include <GL/glfw.h>
 #include <emscripten/emscripten.h>
@@ -20,6 +21,8 @@
 
 #include "types/vec2i.h"
 #include "types/vec2.h"
+
+std::string clipboard;
 
 namespace {
 

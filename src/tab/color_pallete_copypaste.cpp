@@ -8,6 +8,8 @@
 #include "../graphic_types/texture.h"
 #include "tab.h"
 
+extern std::string clipboard;
+
 namespace {
 
 void rm_whitespace(std::string &str) {
@@ -40,8 +42,11 @@ void pallete_data_color(Tab &tab, int pallete_index, Color color) {
 
 }
 
-void color_pallete_to_clipboard(const ColorPallete &color_pallete,
-GLFWwindow *glfw_window) {
+void color_pallete_to_clipboard(const ColorPallete &color_pallete
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
 	std::string str;
 	for (int i = 0; i < (int)color_pallete.color_list.size(); i++) {
 		Color color = color_pallete.color_list[i];
@@ -53,12 +58,26 @@ GLFWwindow *glfw_window) {
 			str += ' ';
 		}
 	}
+
+	#ifndef __EMSCRIPTEN__
 	glfwSetClipboardString(glfw_window, str.c_str());
+	#else
+	clipboard = str;
+	#endif
 }
 
 void color_pallete_paste(ColorPallete &color_pallete, Tab &tab,
-GraphicStuff &gs, GLFWwindow *glfw_window) {
+GraphicStuff &gs
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
+	#ifndef __EMSCRIPTEN__
 	std::string str = glfwGetClipboardString(glfw_window);
+	#else
+	std::string str = clipboard;
+	#endif
+	
 	rm_whitespace(str);
 
 	if (str.length() != 64*7) {

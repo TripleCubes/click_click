@@ -385,7 +385,11 @@ AppUI &app_ui
 	tab_bar_update(app_ui.tab_bar, gs, input, !menu_opening(states));
 
 	tab_update(tab, gs, states, input, game_time, settings, TAB_OFFSET,
-		!menu_opening(states), glfw_window);
+		!menu_opening(states)
+		#ifndef __EMSCRIPTEN__	
+		,glfw_window
+		#endif
+	);
 
 
 	dialog_box_update(app_ui.dialog_box, gs, input, game_time,

@@ -844,7 +844,11 @@ Vec2 pos, Vec2i sz, int px_scale) {
 
 void tab_update(Tab &tab, GraphicStuff &gs, const States &states,
 const Input &input, const GameTime &game_time, const Settings &settings,
-Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
+Vec2 parent_pos, bool show
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+){
 	bool tool_key_allowed = !tab.layer_name_editing && !input.left_down
 		&& !input.left_release;
 
@@ -892,10 +896,18 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 	}
 
 	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
-		color_pallete_to_clipboard(tab.color_pallete, glfw_window);
+		color_pallete_to_clipboard(tab.color_pallete
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
 	}
 	if (tab.color_pallete_btn_panel.paste_btn.clicked) {
-		color_pallete_paste(tab.color_pallete, tab, gs, glfw_window);
+		color_pallete_paste(tab.color_pallete, tab, gs
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
 	}
 
 	layer_bar_event_handle(tab, gs, input, game_time, settings);
@@ -953,10 +965,18 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 		delete_selected_or_whole_layer_data(tab, gs);
 	}
 	if (map_press(input, MAP_COPY)) {
-		to_clipboard(tab, glfw_window);
+		to_clipboard(tab
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
 	}
 	if (map_press(input, MAP_CUT)) {
-		to_clipboard(tab, glfw_window);
+		to_clipboard(tab
+		#ifndef __EMSCRIPTEN__	
+			,glfw_window
+		#endif
+		);
 		delete_selected_or_whole_layer_data(tab, gs);
 	}
 	if (map_press(input, MAP_PASTE)) {
@@ -968,8 +988,10 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 		bool valid = get_paste_data(
 			tab.move.data,
 			pos,
-			tab.move.sz,
-			glfw_window
+			tab.move.sz
+			#ifndef __EMSCRIPTEN__
+			,glfw_window
+			#endif
 		);
 		tab.move.pos = to_vec2(pos);
 		if (valid) {

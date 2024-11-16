@@ -1,7 +1,10 @@
 #ifndef TAB__TAB_H
 #define TAB__TAB_H
 
+#ifndef __EMSCRIPTEN__
 #include <GLFW/glfw3.h>
+#endif
+
 #include <vector>
 #include <string>
 #include "../types/vec2i.h"
@@ -86,7 +89,11 @@ int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
 
 void tab_update(Tab &tab, GraphicStuff &gs, const States &states,
 	const Input &input, const GameTime &game_time, const Settings &settings,
-	Vec2 parent_pos, bool show, GLFWwindow *glfw_window);
+	Vec2 parent_pos, bool show
+	#ifndef __EMSCRIPTEN__
+	,GLFWwindow *glfw_window
+	#endif
+	);
 
 void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos);
 
