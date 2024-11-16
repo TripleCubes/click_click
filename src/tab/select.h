@@ -29,6 +29,8 @@ struct Selection {
 };
 
 void selection_init(Selection &selection, Vec2i canvas_sz);
+void selection_resize(Selection &selection, Vec2i canvas_sz,
+	Vec2i new_canvas_sz);
 
 void selection_all(Selection &selection, Vec2i sz);
 void selection_clear(Selection &selection, Vec2i sz);

@@ -1233,6 +1233,8 @@ void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz) {
 		layer.sz = new_sz;
 	}
 
+	selection_resize(tab.selection, tab.sz, new_sz);
+
 	tab.sz = new_sz;
 	tab.pos = vec2_add(tab.pos, to_vec2(new_pos));
 }

@@ -580,6 +580,13 @@ void selection_init(Selection &selection, Vec2i canvas_sz) {
 	selection.fill_checked_map.resize(canvas_sz.x * canvas_sz.y, 0);
 }
 
+void selection_resize(Selection &selection, Vec2i canvas_sz,
+Vec2i new_canvas_sz) {
+	selection_clear(selection, canvas_sz);
+	selection.map.resize(new_canvas_sz.x * new_canvas_sz.y, 0);
+	selection.fill_checked_map.resize(new_canvas_sz.x * new_canvas_sz.y, 0);
+}
+
 void selection_all(Selection &selection, Vec2i sz) {
 	std::fill(
 		selection.map.begin(),
