@@ -46,7 +46,7 @@ const int ICON_UNLOCKED        = 30;
 const int ICON_MOVE            = 31;
 const int ICON_LOCKED          = 32;
 
-const int ICON_TRASH           = 33;
+const int ICON_COPY            = 33;
 
 const int ICON_COUNT           = 34;
 

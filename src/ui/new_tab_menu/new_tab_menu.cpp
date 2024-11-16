@@ -103,7 +103,7 @@ void new_tab_menu_init(NewTabMenu &new_tab_menu) {
 		vec2_new(2 + W / 2, MARGIN.y + 23),
 		WH_TA_SZ,
 		BTN_TEXTAREA_COLOR,
-		std::to_string(DEFL_CANVAS_SZ.x),
+		std::to_string(DEFL_CANVAS_SZ.y),
 		true
 	);
 }

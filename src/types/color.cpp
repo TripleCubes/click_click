@@ -91,6 +91,42 @@ Color value_scale(Color hue_sat_rgb, float value) {
 	return color;
 }
 
+char int_to_hex_char(int n) {
+	if (n >= 0 && n <= 9) {
+		return '0' + n;
+	}
+	if (n <= 15) {
+		return 'a' + n - 10;
+	}
+	return ' ';
+}
+
+std::string float_to_hex(float n) {
+	n = n * 255;
+	int n0 = (int)n / 16;
+	int n1 = (int)n % 16;
+	std::string str;
+	str += int_to_hex_char(n0);
+	str += int_to_hex_char(n1);
+	return str;
+}
+
+int hex_char_to_int(char c) {
+	if (c >= '0' && c <= '9') {
+		return c - '0';
+	}
+	if (c >= 'a' && c <= 'f') {
+		return c - 'a' + 10;
+	}
+	return 0;
+}
+
+float hex_to_float(const std::string &hex) {
+	int n0 = hex_char_to_int(hex[0]);
+	int n1 = hex_char_to_int(hex[1]);
+	return (float)(n0 * 16 + n1) / 255;
+}
+
 }
 
 Color color_new(float r, float g, float b, float a) {
@@ -201,4 +237,22 @@ Color rgb_to_hsv(Color rgb) {
 	result = cap(result);
 
 	return result;
+}
+
+std::string color_to_hex(Color color) {
+	std::string hex_str = "#";
+	hex_str += float_to_hex(color.r);
+	hex_str += float_to_hex(color.g);
+	hex_str += float_to_hex(color.b);
+
+	return hex_str;
+}
+
+Color hex_to_color(const std::string &hex) {
+	Color color;
+	color.r = hex_to_float(hex.substr(1, 2));
+	color.g = hex_to_float(hex.substr(3, 2));
+	color.b = hex_to_float(hex.substr(5, 2));
+	color.a = 1;
+	return color;
 }

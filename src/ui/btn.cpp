@@ -125,7 +125,7 @@ bool selected, const std::string &replace_text) {
 		"ICON_MOVE",
 		"ICON_LOCKED",
 
-		"ICON_TRASH",
+		"ICON_COPY",
 	};
 
 	for (int i = 0; i < ICON_COUNT; i++) {

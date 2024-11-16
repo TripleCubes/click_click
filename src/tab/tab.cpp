@@ -32,6 +32,7 @@
 #include "px_perfect_brush.h"
 
 #include "copypaste.h"
+#include "color_pallete_copypaste.h"
 
 // TEST
 #include <iostream>
@@ -801,6 +802,9 @@ Vec2 pos, Vec2i sz, int px_scale) {
 	tab.btn_panel = btn_panel_new(
 		vec2_new(SIDE_BAR_W + 149, TOP_BAR_H + 3)
 	);
+	tab.color_pallete_btn_panel = color_pallete_btn_panel_new(
+		vec2_new(SIDE_BAR_W + 4, TOP_BAR_H + 92)
+	);
 
 	tab.pallete_data.resize(16 * 16, 255);
 	pallete_data_color(tab, 0, color_new(0, 0, 0, 0));
@@ -857,6 +861,9 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
 		tool_key_allowed, show);
 	btn_panel_update(tab.btn_panel, gs, input, parent_pos, show);
+	color_pallete_btn_panel_update(
+		tab.color_pallete_btn_panel, gs, input, parent_pos, show
+	);
 
 	layer_textarea_list_update(tab, gs, game_time, input, settings,
 		parent_pos, show);
@@ -882,6 +889,13 @@ Vec2 parent_pos, bool show, GLFWwindow *glfw_window){
 	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
 	|| (tool_key_allowed && map_press(input, MAP_TOOL_ERASER))) {
 		color_pallete_toggle_eraser(tab.color_pallete);
+	}
+
+	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
+		color_pallete_to_clipboard(tab.color_pallete, glfw_window);
+	}
+	if (tab.color_pallete_btn_panel.paste_btn.clicked) {
+		color_pallete_paste(tab.color_pallete, tab, gs, glfw_window);
 	}
 
 	layer_bar_event_handle(tab, gs, input, game_time, settings);
@@ -1007,6 +1021,11 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 		vec2_sub(tab.btn_panel.pos, vec2_new(1, 1)),
 		vec2_add(BTN_PANEL_SZ, vec2_new(2, 2))
 	);
+
+	draw(
+		vec2_sub(tab.color_pallete_btn_panel.pos, vec2_new(1, 1)),
+		vec2_add(COLOR_PALLETE_BTN_PANEL_SZ, vec2_new(2, 2))
+	);
 }
 
 void tab_bkg_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
@@ -1081,6 +1100,9 @@ const GameTime &game_time, Vec2 parent_pos) {
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);
 	tool_picker_draw(tab.tool_picker, gs, input, parent_pos);
 	btn_panel_draw(tab.btn_panel, gs, input, parent_pos);
+	color_pallete_btn_panel_draw(
+		tab.color_pallete_btn_panel, gs, parent_pos
+	);
 	
 	draw_text(
 		gs,

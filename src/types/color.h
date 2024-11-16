@@ -1,6 +1,8 @@
 #ifndef TYPES__COLOR_H
 #define TYPES__COLOR_H
 
+#include <string>
+
 struct Color {
 	float r = 1;
 	float g = 1;
@@ -14,5 +16,7 @@ Color color_sub(Color color_a, Color color_b);
 Color hue_to_rgb(float hue);
 Color hsv_to_rgb(Color hsv);
 Color rgb_to_hsv(Color rgb);
+std::string color_to_hex(Color color);
+Color hex_to_color(const std::string &hex);
 
 #endif
