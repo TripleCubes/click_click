@@ -4,8 +4,6 @@
 #include "../../graphic_types/graphic_types.h"
 #include "../../input.h"
 
-const Vec2 COLOR_PALLETE_BTN_PANEL_SZ = vec2_new(23, 11);
-
 ColorPalleteBtnPanel color_pallete_btn_panel_new(Vec2 pos) {
 	ColorPalleteBtnPanel panel;
 	panel.pos = pos;
@@ -18,7 +16,7 @@ ColorPalleteBtnPanel color_pallete_btn_panel_new(Vec2 pos) {
 	);
 
 	panel.paste_btn = btn_new(
-		vec2_new(12, 0),
+		vec2_new(0, 12),
 		vec2_new(12, 12),
 		BTN_TEXTAREA_COLOR,
 		"ICON_FILL_ALL"

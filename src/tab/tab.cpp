@@ -803,7 +803,7 @@ Vec2 pos, Vec2i sz, int px_scale) {
 		vec2_new(SIDE_BAR_W + 149, TOP_BAR_H + 3)
 	);
 	tab.color_pallete_btn_panel = color_pallete_btn_panel_new(
-		vec2_new(SIDE_BAR_W + 4, TOP_BAR_H + 92)
+		vec2_new(SIDE_BAR_W + 6, TOP_BAR_H + 62)
 	);
 
 	tab.pallete_data.resize(16 * 16, 255);
@@ -849,6 +849,8 @@ Vec2 parent_pos, bool show
 ,GLFWwindow *glfw_window
 #endif
 ){
+	const Layer &layer = tab.layer_list[get_layer_index(tab)];
+
 	bool tool_key_allowed = !tab.layer_name_editing && !input.left_down
 		&& !input.left_release;
 
@@ -893,6 +895,10 @@ Vec2 parent_pos, bool show
 	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
 	|| (tool_key_allowed && map_press(input, MAP_TOOL_ERASER))) {
 		color_pallete_toggle_eraser(tab.color_pallete);
+	}
+
+	if (layer.show_hide_btn.clicked || layer.lock_btn.clicked) {
+		selection_clear(tab.selection, tab.sz);
 	}
 
 	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
@@ -948,6 +954,11 @@ Vec2 parent_pos, bool show
 		_move_tool_end();
 	}
 
+	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked)
+	&& tab.move.moving) {
+		_move_tool_end();
+	}
+
 	if (tab.move.moving && map_press(input, MAP_ENTER)) {
 		_move_tool_end();
 	}
@@ -979,7 +990,7 @@ Vec2 parent_pos, bool show
 		);
 		delete_selected_or_whole_layer_data(tab, gs);
 	}
-	if (map_press(input, MAP_PASTE)) {
+	if (map_press(input, MAP_PASTE) && !layer.locked && !layer.hidden) {
 		if (tab.move.moving) {
 			_move_tool_end();
 		}
@@ -1042,11 +1053,6 @@ void tab_blur_rects_draw(const Tab &tab, GraphicStuff &gs, Vec2 parent_pos) {
 	draw(
 		vec2_sub(tab.btn_panel.pos, vec2_new(1, 1)),
 		vec2_add(BTN_PANEL_SZ, vec2_new(2, 2))
-	);
-
-	draw(
-		vec2_sub(tab.color_pallete_btn_panel.pos, vec2_new(1, 1)),
-		vec2_add(COLOR_PALLETE_BTN_PANEL_SZ, vec2_new(2, 2))
 	);
 }
 

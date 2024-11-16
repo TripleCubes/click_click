@@ -7,8 +7,6 @@
 struct GraphicStuff;
 struct Input;
 
-extern const Vec2 COLOR_PALLETE_BTN_PANEL_SZ;
-
 struct ColorPalleteBtnPanel {
 	Vec2 pos;
 	Btn copy_btn;
