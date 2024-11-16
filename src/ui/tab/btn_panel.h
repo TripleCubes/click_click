@@ -4,11 +4,13 @@
 #include "../../types/vec2.h"
 #include "../btn.h"
 
-const Vec2 BTN_PANEL_SZ = vec2_new(39, 11);
+extern const Vec2 BTN_PANEL_SZ;
 
 struct BtnPanel {
 	Vec2 pos;
 	
+	Btn undo_btn;
+	Btn redo_btn;
 	Btn zoom_out_btn;
 	Btn zoom_in_btn;
 	Btn zoom_0_btn;

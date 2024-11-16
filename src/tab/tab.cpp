@@ -971,11 +971,13 @@ Vec2 parent_pos, bool show
 	}
 
 
-	if (map_press(input, MAP_UNDO)) {
+	if (map_press(input, MAP_UNDO)
+	|| tab.btn_panel.undo_btn.clicked) {
 		move_tool_discard(tab.move, tab, gs);
 		history_undo(tab.history, tab, gs, input, game_time, settings);
 	}
-	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)) {
+	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)
+	|| tab.btn_panel.redo_btn.clicked) {
 		history_redo(tab.history, tab, gs, input, game_time, settings);
 	}
 
@@ -1163,7 +1165,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 	draw_text(
 		gs,
 		"x" + std::to_string(tab.px_scale),
-		vec2_add(tab.btn_panel.pos, vec2_new(45, 3)),
+		vec2_add(tab.btn_panel.pos, vec2_new(72, 3)),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
