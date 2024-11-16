@@ -20,7 +20,7 @@ void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab) {
 		#ifdef __EMSCRIPTEN__
 		if (dialog_box.dialog_type == DIALOG_BOX_WEB_DELETE_FILE) {
 			EM_ASM({
-				FS.unlink(UFT8ToString($0) + UTF8ToString($1));
+				FS.unlink(UTF8ToString($0) + UTF8ToString($1));
 				FS.syncfs(function(err) {
 					if (err) {
 						console.log(err);

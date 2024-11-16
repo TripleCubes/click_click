@@ -1,6 +1,11 @@
 #include "tab.h"
 
 #include <cmath>
+#include <stdlib.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 #include "../types/color.h"
 
@@ -36,6 +41,8 @@
 
 // TEST
 #include <iostream>
+
+extern std::string clipboard;
 
 namespace {
 
@@ -975,6 +982,27 @@ Vec2 parent_pos, bool show
 	if (map_press(input, MAP_DELETE)) {
 		delete_selected_or_whole_layer_data(tab, gs);
 	}
+
+	#ifdef __EMSCRIPTEN__
+	if (map_press(input, MAP_LOCAL_CLIPBOARD)) {
+		const char *c_ptr = (const char *)EM_ASM_PTR({
+		{
+			let str = prompt('local clipboard:', UTF8ToString($0));
+
+			if (str == null) {
+				return stringToNewUTF8(UTF8ToString($0));
+			}
+			else {
+				return stringToNewUTF8(str);
+			}
+		}
+		}, clipboard.c_str());
+
+		clipboard = c_ptr;
+		free((void*)c_ptr);
+	}
+	#endif
+
 	if (map_press(input, MAP_COPY)) {
 		to_clipboard(tab
 		#ifndef __EMSCRIPTEN__

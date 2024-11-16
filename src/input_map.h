@@ -57,7 +57,9 @@ enum MappedKeyIndex: int {
 	MAP_SAVE_FILE_AS,
 	
 	MAP_NEW_PROJECT,
+	#ifdef __EMSCRIPTEN__
 	MAP_NEW_PROJECT_1,
+	#endif
 
 	MAP_RESIZE_CANVAS,
 
@@ -71,6 +73,9 @@ enum MappedKeyIndex: int {
 	MAP_CUT,
 	MAP_COPY,
 	MAP_PASTE,
+	#ifdef __EMSCRIPTEN__
+	MAP_LOCAL_CLIPBOARD,
+	#endif
 
 
 	MAP_COUNT,
