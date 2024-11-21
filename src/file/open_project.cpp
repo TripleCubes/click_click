@@ -198,7 +198,7 @@ bool update_layer_data(std::vector<std::string> &layer_data,
 const std::vector<Word> &word_list, int word_list_index) {
 	int count = 0;
 
-	for (int i = word_list_index + 3; i < (int)word_list.size(); i++) {
+	for (int i = word_list_index + 7; i < (int)word_list.size(); i++) {
 		const Word &word = word_list[i];
 
 		if (word.type == FIELD) {
@@ -335,7 +335,7 @@ const std::vector<Word> &word_list) {
 		}
 
 		if (i + 1 >= (int)word_list.size()) {
-			err("word_list_to_data(): i + 1 < word_list.size()");
+			err("word_list_to_data(): i + 1 >= word_list.size()");
 			return false;
 		}
 
@@ -343,6 +343,8 @@ const std::vector<Word> &word_list) {
 		data.layer_list.push_back(new_op_layer_data);
 		OpenProjectLayerData &op_layer_data = data.layer_list.back();
 		op_layer_data.layer_name = word_list[i + 1].str;
+		op_layer_data.hidden = word_list[i + 4].str == "1";
+		op_layer_data.locked = word_list[i + 6].str == "1";
 		op_layer_data.data.resize(data.sz.x * data.sz.y, 0);
 
 		if (!update_layer_data(layer_data, word_list, i)) {

@@ -28,7 +28,8 @@ struct Layer {
 
 int layer_new(std::vector<Layer> &layer_list, GraphicStuff &gs,
 	const std::string &name, Vec2i sz,
-	const std::vector<unsigned char> &data, int history_layer_index);
+	const std::vector<unsigned char> &data, bool hidden, bool locked,
+	int history_layer_index);
 
 void layer_textarea_update(Layer &layer, const GraphicStuff &gs,
 	const GameTime &game_time, const Input &input, Vec2 parent_pos,

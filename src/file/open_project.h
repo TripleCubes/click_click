@@ -11,6 +11,8 @@
 
 struct OpenProjectLayerData {
 	std::string layer_name;
+	bool hidden = false;
+	bool locked = false;
 	std::vector<unsigned char> data;
 };
 

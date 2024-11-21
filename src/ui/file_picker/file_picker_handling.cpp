@@ -67,6 +67,8 @@ const std::string &file_name, const std::string &file_path) {
 			tab,
 			tab.layer_order_list.size(),
 			layer_data.layer_name,
+			layer_data.hidden,
+			layer_data.locked,
 			gs,
 			layer_data.data
 		);
@@ -198,7 +200,7 @@ GraphicStuff &gs, const Input &input) {
 		}
 	}
 
-	if (states.file_picker_opening) {
+	if (states.file_picker_opening && !file_picker.is_save_picker) {
 		std::string file_name;
 		std::string file_path;
 		file_picker_open_file(file_name, file_path, file_picker);

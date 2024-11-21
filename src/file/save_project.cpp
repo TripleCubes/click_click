@@ -60,15 +60,15 @@ std::string left_pad(const std::string &s, int n) {
 void save_project(const std::string &path, const Tab &tab) {
 	std::string result;
 
-	result += "VER 0\n\n";
+	result += "VER 0\n";
 
 	result += "SZ " + std::to_string(tab.sz.x)
-	          + " " + std::to_string(tab.sz.y) + "\n\n";
+	          + " " + std::to_string(tab.sz.y) + "\n";
 
 	result += "POS " + std::to_string((int)tab.pos.x)
-              + " " + std::to_string((int)tab.pos.y) + "\n\n";
+              + " " + std::to_string((int)tab.pos.y) + "\n";
 
-	result += "PXSCALE " + std::to_string(tab.px_scale) + "\n\n";
+	result += "PXSCALE " + std::to_string(tab.px_scale) + "\n";
 
 	result += "PALLETE\n";
 	for (int i = 0; i < (int)tab.pallete_data.size(); i++) {
@@ -96,7 +96,10 @@ void save_project(const std::string &path, const Tab &tab) {
 		const Layer &layer = tab.layer_list[layer_index];
 
 		result += "LAYER \"" + layer.name + "\" "
-			+ std::to_string(i) + "\n";
+			+ std::to_string(i)
+			+ " hidden " + (layer.hidden? "1" : "0")
+			+ " locked " + (layer.locked? "1" : "0")
+			+ "\n";
 
 		for (int y = 0; y < div_1(tab.sz.y, 8); y++) {
 		for (int x = 0; x < div_1(tab.sz.x, 8); x++) {

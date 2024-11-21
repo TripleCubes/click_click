@@ -109,6 +109,7 @@ int tab_layer_new(Tab &tab, int at, const std::string &layer_name,
 	GraphicStuff &gs, int history_layer_index);
 
 void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+	bool hidden, bool locked,
 	GraphicStuff &gs, const std::vector<unsigned char> &data);
 
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs);

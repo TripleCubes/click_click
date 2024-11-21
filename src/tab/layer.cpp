@@ -27,7 +27,8 @@ int get_blank_index(const std::vector<Layer> &layer_list) {
 
 int layer_new(std::vector<Layer> &layer_list,
 GraphicStuff &gs, const std::string &name, Vec2i sz,
-const std::vector<unsigned char> &data, int history_layer_index) {
+const std::vector<unsigned char> &data, bool hidden, bool locked,
+int history_layer_index) {
 	int index = get_blank_index(layer_list);
 	if (index == -1) {
 		Layer new_layer;
@@ -41,6 +42,8 @@ const std::vector<unsigned char> &data, int history_layer_index) {
 	layer.name = name;
 	layer.sz = sz;
 	layer.data = data;
+	layer.hidden = hidden;
+	layer.locked = locked;
 
 	layer.texture_index = texture_blank_new_red(gs, sz.x, sz.y);
 	texture_data_red(gs, layer.texture_index, sz, layer.data);
@@ -57,13 +60,13 @@ const std::vector<unsigned char> &data, int history_layer_index) {
 		vec2_new(TEXTAREA_SZ.x, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
-		"ICON_UP"
+		hidden? "ICON_MINUS" : "ICON_UP"
 	);
 	layer.lock_btn = btn_new(
 		vec2_new(TEXTAREA_SZ.x + 12, 0),
 		DELETE_BTN_SZ,
 		TEXTAREA_COLOR,
-		"ICON_UNLOCKED"
+		locked? "ICON_LOCKED" : "ICON_UNLOCKED"
 	);
 
 	layer.running = true;

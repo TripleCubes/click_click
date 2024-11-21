@@ -1186,7 +1186,7 @@ const std::string &layer_name, GraphicStuff &gs, int history_layer_index) {
 	std::vector<unsigned char> data;
 	data.resize(tab.sz.x * tab.sz.y, 0);
 	int index = layer_new(tab.layer_list, gs, layer_name,
-		tab.sz, data, history_layer_index);
+		tab.sz, data, false, false, history_layer_index);
 	
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
 
@@ -1194,11 +1194,12 @@ const std::string &layer_name, GraphicStuff &gs, int history_layer_index) {
 }
 
 void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+bool hidden, bool locked,
 GraphicStuff &gs, const std::vector<unsigned char> &data) {
 	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz,
-		data, tab.history.layer_list.size() - 1);
+		data, hidden, locked, tab.history.layer_list.size() - 1);
 	history_layer_add(tab.history, tab.layer_list[index]);
-	
+
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
 }
 
