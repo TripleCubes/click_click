@@ -135,6 +135,8 @@ Tab& tab) {
 int tab_commands_do_command(const Command &command, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, const Settings &settings,
 Tab& tab) {
+	tab_set_name(tab);
+
 	// a: index, b: prev index
 	if (command.type == COMMAND_LAYER_SELECT) {
 		tab.layer_order_list_index = command.a;
@@ -189,6 +191,8 @@ Tab& tab) {
 int tab_commands_undo_command(const Command &command, GraphicStuff &gs,
 const Input &input, const GameTime &game_time, const Settings &settings,
 Tab& tab) {
+	tab_set_name(tab);
+
 	if (command.type == COMMAND_LAYER_SELECT) {
 		tab.layer_order_list_index = command.b;
 	}

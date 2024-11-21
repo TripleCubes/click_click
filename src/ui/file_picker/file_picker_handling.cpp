@@ -137,6 +137,8 @@ const std::string &save_path, Tab &tab, int png_px_scale_index) {
 	tab.btn.text = tab.name;
 	tab.btn.sz.x = tab.name.length() * 4 + TAB_BTN_W_ADD;
 	tab.close_btn.pos.x = tab.btn.sz.x;
+
+	tab.time_pos_last_save = tab.history.time_pos_current;
 }
 
 void file_picker_handling(States &states, FilePicker &file_picker,

@@ -445,6 +445,7 @@ Vec2 parent_pos) {
 			tab.history, tab.history.layer_list[layer.history_layer_index],
 			layer
 		);
+		tab_set_name(tab);
 	}
 
 	if (input.left_release) {
@@ -770,6 +771,156 @@ void delete_selected_or_whole_layer_data(Tab &tab, GraphicStuff &gs) {
 	}
 }
 
+void history_and_move_tool_handling(Tab &tab, const Layer &layer,
+GraphicStuff &gs, const Input &input, const GameTime &game_time,
+const Settings &settings, Vec2 parent_pos
+#ifndef __EMSCRIPTEN__
+,GLFWwindow *glfw_window
+#endif
+) {
+	auto _move_tool_start = [&tab, &gs, &input, parent_pos]() {
+		move_tool_prepare(tab.move);
+		Vec2i pos;
+		tab_get_selected_data(tab, tab.move.data, pos, tab.move.sz);
+		tab.move.pos = to_vec2(pos);
+		move_tool_start(tab.move, tab, gs, input, parent_pos);
+
+		delete_selected_or_whole_layer_data(tab, gs);
+		selection_clear(tab.selection, tab.sz);
+	};
+
+	auto _move_tool_end = [&tab, &gs]() {
+		move_tool_commit(tab.move, tab, gs);
+	};
+
+	if (tab.tool_picker.selection_changed && !tab.move.moving
+	&& tab.tool_picker.selected_index == TOOL_MOVE
+	&& tab.selection.full_preview_list.size() != 0) {
+		_move_tool_start();
+	}
+
+	if (tab.tool_picker.selected_index == TOOL_MOVE && !tab.move.moving
+	&& input.left_click && tab.selection.full_preview_list.size() != 0) {
+		_move_tool_start();
+	}
+
+	if (tab.tool_picker.selection_changed
+	&& tab.tool_picker.selected_index != TOOL_MOVE
+	&& tab.move.moving) {
+		_move_tool_end();
+	}
+
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		const Layer &layer = tab.layer_list[i];
+		if (!layer.running) {
+			continue;
+		}
+		if (layer.textarea.clicked) {
+			_move_tool_end();
+		}
+	}
+
+	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked
+	|| layer.textarea.clicked)
+	&& tab.move.moving) {
+		_move_tool_end();
+	}
+
+	if (tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
+	|| tab.layer_bar.down_btn.clicked
+	|| tab.layer_bar.delete_layer_btn.clicked) {
+		_move_tool_end();
+	}
+
+	if (tab.move.moving && map_press(input, MAP_ENTER)) {
+		_move_tool_end();
+	}
+
+
+	if (map_press(input, MAP_UNDO)
+	|| tab.btn_panel.undo_btn.clicked) {
+		move_tool_discard(tab.move, tab, gs);
+		history_undo(tab.history, tab, gs, input, game_time, settings);
+		tab_set_name(tab);
+	}
+	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)
+	|| tab.btn_panel.redo_btn.clicked) {
+		history_redo(tab.history, tab, gs, input, game_time, settings);
+		tab_set_name(tab);
+	}
+
+	if (map_press(input, MAP_DELETE)) {
+		delete_selected_or_whole_layer_data(tab, gs);
+	}
+
+	#ifdef __EMSCRIPTEN__
+	if (map_press(input, MAP_LOCAL_CLIPBOARD)) {
+		const char *c_ptr = (const char *)EM_ASM_PTR({
+		{
+			let str = prompt('local clipboard:', UTF8ToString($0));
+
+			if (str == null) {
+				return stringToNewUTF8(UTF8ToString($0));
+			}
+			else {
+				return stringToNewUTF8(str);
+			}
+		}
+		}, clipboard.c_str());
+
+		clipboard = c_ptr;
+		free((void*)c_ptr);
+	}
+	#endif
+
+	if (map_press(input, MAP_COPY)) {
+		to_clipboard(tab, false
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
+	}
+	if (map_press(input, MAP_COPY_DATA_ONLY)) {
+		to_clipboard(tab, true
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
+	}
+	if (map_press(input, MAP_CUT)) {
+		to_clipboard(tab, false
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
+		delete_selected_or_whole_layer_data(tab, gs);
+	}
+	if (map_press(input, MAP_PASTE) && !layer.locked && !layer.hidden) {
+		if (tab.move.moving) {
+			_move_tool_end();
+		}
+		move_tool_prepare(tab.move);
+		Vec2i pos;
+		bool valid = get_paste_data(
+			tab.move.data,
+			pos,
+			tab.move.sz
+			#ifndef __EMSCRIPTEN__
+			,glfw_window
+			#endif
+		);
+		tab.move.pos = to_vec2(pos);
+		if (valid) {
+			move_tool_start(tab.move, tab, gs, input, parent_pos);
+
+			selection_clear(tab.selection, tab.sz);
+			tab.tool_picker.selected_index = TOOL_MOVE;
+		}
+	}
+
+
+}
+
 }
 
 int tab_new(std::vector<Tab> &tab_list, GraphicStuff &gs,
@@ -894,144 +1045,12 @@ Vec2 parent_pos, bool show
 	tool_update(tab, gs, states, input, game_time, settings, parent_pos);
 	select_tool_preview_update(tab, gs, game_time);
 
-	auto _move_tool_start = [&tab, &gs, &input, parent_pos]() {
-		move_tool_prepare(tab.move);
-		Vec2i pos;
-		tab_get_selected_data(tab, tab.move.data, pos, tab.move.sz);
-		tab.move.pos = to_vec2(pos);
-		move_tool_start(tab.move, tab, gs, input, parent_pos);
-
-		delete_selected_or_whole_layer_data(tab, gs);
-		selection_clear(tab.selection, tab.sz);
-	};
-
-	auto _move_tool_end = [&tab, &gs]() {
-		move_tool_commit(tab.move, tab, gs);
-	};
-
-	if (tab.tool_picker.selection_changed && !tab.move.moving
-	&& tab.tool_picker.selected_index == TOOL_MOVE
-	&& tab.selection.full_preview_list.size() != 0) {
-		_move_tool_start();
-	}
-
-	if (tab.tool_picker.selected_index == TOOL_MOVE && !tab.move.moving
-	&& input.left_click && tab.selection.full_preview_list.size() != 0) {
-		_move_tool_start();
-	}
-
-	if (tab.tool_picker.selection_changed
-	&& tab.tool_picker.selected_index != TOOL_MOVE
-	&& tab.move.moving) {
-		_move_tool_end();
-	}
-
-	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
-		const Layer &layer = tab.layer_list[i];
-		if (!layer.running) {
-			continue;
-		}
-		if (layer.textarea.clicked) {
-			_move_tool_end();
-		}
-	}
-
-	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked
-	|| layer.textarea.clicked)
-	&& tab.move.moving) {
-		_move_tool_end();
-	}
-
-	if (tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
-	|| tab.layer_bar.down_btn.clicked
-	|| tab.layer_bar.delete_layer_btn.clicked) {
-		_move_tool_end();
-	}
-
-	if (tab.move.moving && map_press(input, MAP_ENTER)) {
-		_move_tool_end();
-	}
-
-
-	if (map_press(input, MAP_UNDO)
-	|| tab.btn_panel.undo_btn.clicked) {
-		move_tool_discard(tab.move, tab, gs);
-		history_undo(tab.history, tab, gs, input, game_time, settings);
-	}
-	if (map_press(input, MAP_REDO) || map_press(input, MAP_REDO_1)
-	|| tab.btn_panel.redo_btn.clicked) {
-		history_redo(tab.history, tab, gs, input, game_time, settings);
-	}
-
-	if (map_press(input, MAP_DELETE)) {
-		delete_selected_or_whole_layer_data(tab, gs);
-	}
-
-	#ifdef __EMSCRIPTEN__
-	if (map_press(input, MAP_LOCAL_CLIPBOARD)) {
-		const char *c_ptr = (const char *)EM_ASM_PTR({
-		{
-			let str = prompt('local clipboard:', UTF8ToString($0));
-
-			if (str == null) {
-				return stringToNewUTF8(UTF8ToString($0));
-			}
-			else {
-				return stringToNewUTF8(str);
-			}
-		}
-		}, clipboard.c_str());
-
-		clipboard = c_ptr;
-		free((void*)c_ptr);
-	}
-	#endif
-
-	if (map_press(input, MAP_COPY)) {
-		to_clipboard(tab, false
+	history_and_move_tool_handling(tab, layer, gs, input, game_time, settings,
+		parent_pos
 		#ifndef __EMSCRIPTEN__
-			,glfw_window
+		,glfw_window
 		#endif
-		);
-	}
-	if (map_press(input, MAP_COPY_DATA_ONLY)) {
-		to_clipboard(tab, true
-		#ifndef __EMSCRIPTEN__
-			,glfw_window
-		#endif
-		);
-	}
-	if (map_press(input, MAP_CUT)) {
-		to_clipboard(tab, false
-		#ifndef __EMSCRIPTEN__
-			,glfw_window
-		#endif
-		);
-		delete_selected_or_whole_layer_data(tab, gs);
-	}
-	if (map_press(input, MAP_PASTE) && !layer.locked && !layer.hidden) {
-		if (tab.move.moving) {
-			_move_tool_end();
-		}
-		move_tool_prepare(tab.move);
-		Vec2i pos;
-		bool valid = get_paste_data(
-			tab.move.data,
-			pos,
-			tab.move.sz
-			#ifndef __EMSCRIPTEN__
-			,glfw_window
-			#endif
-		);
-		tab.move.pos = to_vec2(pos);
-		if (valid) {
-			move_tool_start(tab.move, tab, gs, input, parent_pos);
-
-			selection_clear(tab.selection, tab.sz);
-			tab.tool_picker.selected_index = TOOL_MOVE;
-		}
-	}
-
+	);
 
 	if (tab.layer_bar.add_btn.clicked) {
 		tab_layer_new_with_history(tab, gs, input, game_time, settings);
@@ -1324,6 +1343,15 @@ Vec2i &pos, Vec2i &sz) {
 
 	pos = top_left;
 	sz = vec2i_new(data_w, data_h);
+}
+
+void tab_set_name(Tab &tab) {
+	if (tab.history.time_pos_current != tab.time_pos_last_save) {
+		tab.btn.text = tab.name + " *";
+	}
+	else {
+		tab.btn.text = tab.name;
+	}
 }
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {

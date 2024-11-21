@@ -72,6 +72,7 @@ struct Tab {
 
 	History history;
 	TabCommands tab_commands;
+	int time_pos_last_save = 0;
 
 	std::vector<Layer> layer_list;
 	std::vector<int> layer_order_list;
@@ -118,6 +119,8 @@ void tab_resize(Tab &tab, GraphicStuff &gs, Vec2i new_pos, Vec2i new_sz);
 
 void tab_get_selected_data(Tab &tab, std::vector<unsigned char> &data,
 	Vec2i &pos, Vec2i &sz);
+
+void tab_set_name(Tab &tab);
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index);
 
