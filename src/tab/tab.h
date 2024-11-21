@@ -44,6 +44,7 @@ struct Tab {
 
 	Vec2 tex_draw_tag_pos;
 	int num_layer_created = 0;
+	int history_id = 0;
 	bool clicked_and_hold_on_ui = false;
 	bool px_change_pending = false;
 
@@ -109,9 +110,10 @@ void tab_ui_draw(const Tab &tab, GraphicStuff &gs,
 int tab_layer_new(Tab &tab, int at, const std::string &layer_name,
 	GraphicStuff &gs, int history_layer_index);
 
-void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+int tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 	bool hidden, bool locked,
-	GraphicStuff &gs, const std::vector<unsigned char> &data);
+	GraphicStuff &gs, const std::vector<unsigned char> &data,
+	int history_layer_index);
 
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs);
 

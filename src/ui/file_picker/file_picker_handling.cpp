@@ -63,16 +63,26 @@ const std::string &file_name, const std::string &file_path) {
 	for (int i = 0; i < (int)data.layer_list.size(); i++) {
 		const OpenProjectLayerData &layer_data = data.layer_list[i];
 
-		tab_layer_new_data(
+		tab.history_id++;
+		tab.num_layer_created++;
+		int index = tab_layer_new_data(
 			tab,
 			tab.layer_order_list.size(),
 			layer_data.layer_name,
 			layer_data.hidden,
 			layer_data.locked,
 			gs,
-			layer_data.data
+			layer_data.data,
+			tab.history_id
+		);
+		history_layer_add(tab.history, tab.layer_list[index]);
+		history_commit_layer(
+			tab.history,
+			tab.history.layer_list[tab.layer_list[index].history_layer_index],
+			tab.layer_list[index]
 		);
 	}
+	tab.num_layer_created--;
 
 	int pallete_index = tab.color_pallete.selected_index;
 	Color color = tab.color_pallete.color_list[pallete_index];
