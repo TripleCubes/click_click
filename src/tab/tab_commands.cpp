@@ -147,6 +147,7 @@ Tab& tab) {
 		tab.layer_order_list_index = command.b;
 		int layer_index = get_layer_index(tab);
 		tab.layer_list[layer_index].textarea.text = command.str;
+		tab.layer_list[layer_index].name = command.str;
 	}
 
 	// a: history layer index, b: layer order list index, str: tab name
@@ -201,6 +202,7 @@ Tab& tab) {
 		tab.layer_order_list_index = command.b;
 		int layer_index = get_layer_index(tab);
 		tab.layer_list[layer_index].textarea.text = command.str_1;
+		tab.layer_list[layer_index].name = command.str_1;
 	}
 
 	else if (command.type == COMMAND_LAYER_NEW) {

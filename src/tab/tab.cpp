@@ -1239,6 +1239,11 @@ GraphicStuff &gs, const std::vector<unsigned char> &data) {
 	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz,
 		data, hidden, locked, tab.history.layer_list.size() - 1);
 	history_layer_add(tab.history, tab.layer_list[index]);
+	history_commit_layer(
+		tab.history,
+		tab.history.layer_list[tab.layer_list[index].history_layer_index],
+		tab.layer_list[index]
+	);
 
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
 }
