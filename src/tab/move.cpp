@@ -1,5 +1,6 @@
 #include "move.h"
 
+#include <cmath>
 #include "../graphic_types/graphic_types.h"
 #include "../graphic_types/texture.h"
 #include "../input.h"
@@ -20,14 +21,17 @@ void draw_move_border(Move &move, Tab &tab, unsigned char pallete_index) {
 		tab.tool_preview_data[i] = pallete_index;
 	};
 
-	for (int x = move.pos.x - 1; x <= move.pos.x + move.sz.x; x++) {
-		draw(x, move.pos.y - 1);
-		draw(x, move.pos.y + move.sz.y);
+	int move_pos_x = std::floor(move.pos.x);
+	int move_pos_y = std::floor(move.pos.y);
+
+	for (int x = move_pos_x - 1; x <= move_pos_x + move.sz.x; x++) {
+		draw(x, move_pos_y - 1);
+		draw(x, move_pos_y + move.sz.y);
 	}
 
-	for (int y = move.pos.y - 1; y <= move.pos.y + move.sz.y; y++) {
-		draw(move.pos.x - 1, y);
-		draw(move.pos.x + move.sz.x, y);
+	for (int y = move_pos_y - 1; y <= move_pos_y + move.sz.y; y++) {
+		draw(move_pos_x - 1, y);
+		draw(move_pos_x + move.sz.x, y);
 	}
 }
 

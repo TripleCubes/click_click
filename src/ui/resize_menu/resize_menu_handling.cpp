@@ -15,6 +15,8 @@ void resize_menu_open(States &states, ResizeMenu &resize_menu, Tab &tab) {
 	resize_menu.ta_active = RESIZE_MENU_TA_ACTIVE_W;
 	resize_menu.w_ta.text = std::to_string(tab.sz.x);
 	resize_menu.h_ta.text = std::to_string(tab.sz.y);
+	resize_menu.w_ta.cursor_at = (int)resize_menu.w_ta.text.length();
+	resize_menu.h_ta.cursor_at = (int)resize_menu.h_ta.text.length();
 }
 
 void resize_menu_close(States &states) {

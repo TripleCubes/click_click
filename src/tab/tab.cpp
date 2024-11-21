@@ -234,8 +234,14 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 		if (layer.hidden) {
 			continue;
 		}
+
 		layer_texture_draw(tab, gs, layer.texture_index, PALLETE_DRAW,
 			vec2_floor(pos));
+
+		if (i == tab.layer_order_list_index) {
+			layer_texture_draw(tab, gs, tab.move_preview_texture_index,
+				PALLETE_DRAW, vec2_floor(pos));
+		}
 	}
 
 	layer_texture_draw(tab, gs, tab.tool_preview_texture_index,
@@ -243,9 +249,6 @@ void layer_list_draw(const Tab &tab, GraphicStuff &gs, Vec2 pos) {
 
 	layer_texture_draw(tab, gs, tab.selection_preview_texture_index,
 		PALLETE_TOOL_PREVIEW, vec2_floor(pos));
-
-	layer_texture_draw(tab, gs, tab.move_preview_texture_index,
-		PALLETE_DRAW, vec2_floor(pos));
 }
 
 bool cursor_on_ui(const Tab &tab, const GraphicStuff &gs,
@@ -885,44 +888,6 @@ Vec2 parent_pos, bool show
 		return;
 	}
 
-	if (tab.layer_bar.add_btn.clicked) {
-		tab_layer_new_with_history(tab, gs, input, game_time, settings);
-	}
-
-	if (tab.btn_panel.zoom_out_btn.clicked || kb_zoom_out(input)) {
-		canvas_zoom_out(tab);
-	}
-	else if (tab.btn_panel.zoom_in_btn.clicked || kb_zoom_in(input)) {
-		canvas_zoom_in(tab);
-	}
-	else if (tab.btn_panel.zoom_0_btn.clicked || kb_zoom_0(input)) {
-		tab_center_canvas(tab, gs);
-	}
-
-	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
-	|| (tool_key_allowed && map_press(input, MAP_TOOL_ERASER))) {
-		color_pallete_toggle_eraser(tab.color_pallete);
-	}
-
-	if (layer.show_hide_btn.clicked || layer.lock_btn.clicked) {
-		selection_clear(tab.selection, tab.sz);
-	}
-
-	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
-		color_pallete_to_clipboard(tab.color_pallete
-		#ifndef __EMSCRIPTEN__
-			,glfw_window
-		#endif
-		);
-	}
-	if (tab.color_pallete_btn_panel.paste_btn.clicked) {
-		color_pallete_paste(tab.color_pallete, tab, gs
-		#ifndef __EMSCRIPTEN__
-			,glfw_window
-		#endif
-		);
-	}
-
 	layer_bar_event_handle(tab, gs, input, game_time, settings);
 	canvas_move_update(tab, gs, input, game_time, parent_pos);
 	color_picker_color_pallete_data_update(tab, gs);
@@ -961,8 +926,25 @@ Vec2 parent_pos, bool show
 		_move_tool_end();
 	}
 
-	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked)
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		const Layer &layer = tab.layer_list[i];
+		if (!layer.running) {
+			continue;
+		}
+		if (layer.textarea.clicked) {
+			_move_tool_end();
+		}
+	}
+
+	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked
+	|| layer.textarea.clicked)
 	&& tab.move.moving) {
+		_move_tool_end();
+	}
+
+	if (tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
+	|| tab.layer_bar.down_btn.clicked
+	|| tab.layer_bar.delete_layer_btn.clicked) {
 		_move_tool_end();
 	}
 
@@ -1048,6 +1030,45 @@ Vec2 parent_pos, bool show
 			selection_clear(tab.selection, tab.sz);
 			tab.tool_picker.selected_index = TOOL_MOVE;
 		}
+	}
+
+
+	if (tab.layer_bar.add_btn.clicked) {
+		tab_layer_new_with_history(tab, gs, input, game_time, settings);
+	}
+
+	if (tab.btn_panel.zoom_out_btn.clicked || kb_zoom_out(input)) {
+		canvas_zoom_out(tab);
+	}
+	else if (tab.btn_panel.zoom_in_btn.clicked || kb_zoom_in(input)) {
+		canvas_zoom_in(tab);
+	}
+	else if (tab.btn_panel.zoom_0_btn.clicked || kb_zoom_0(input)) {
+		tab_center_canvas(tab, gs);
+	}
+
+	if (tab.tool_picker.btn_list[TOOL_ERASER].clicked
+	|| (tool_key_allowed && map_press(input, MAP_TOOL_ERASER))) {
+		color_pallete_toggle_eraser(tab.color_pallete);
+	}
+
+	if (layer.show_hide_btn.clicked || layer.lock_btn.clicked) {
+		selection_clear(tab.selection, tab.sz);
+	}
+
+	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
+		color_pallete_to_clipboard(tab.color_pallete
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
+	}
+	if (tab.color_pallete_btn_panel.paste_btn.clicked) {
+		color_pallete_paste(tab.color_pallete, tab, gs
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
 	}
 }
 
