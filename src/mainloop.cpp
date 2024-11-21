@@ -243,12 +243,31 @@ const GameTime &game_time
 		"X: " + std::to_string(mouse_pos_i.x)
 			+ " Y: " + std::to_string(mouse_pos_i.y),
 		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10),
-		50,
+		100,
 		1,
 		BTN_TEXTAREA_COLOR,
 		vec2_new(4, 3),
 		false
 	);
+
+	if (tab.selection.rect_point_1.x != -1) {
+		std::string selection_wh_str;
+		Vec2i selection_wh
+			= vec2i_sub(tab.selection.rect_point_2,tab.selection.rect_point_1);
+		selection_wh_str += std::to_string(std::abs(selection_wh.x) + 1);
+		selection_wh_str += "x";
+		selection_wh_str += std::to_string(std::abs(selection_wh.y) + 1);
+		draw_text(
+			gs,
+			selection_wh_str,
+			vec2_new(SIDE_BAR_W + 144, main_fb_sz.y - 10),
+			100,
+			1,
+			BTN_TEXTAREA_COLOR,
+			vec2_new(4, 3),
+			false
+		);
+	}
 
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
