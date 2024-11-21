@@ -60,6 +60,8 @@ std::string left_pad(const std::string &s, int n) {
 void save_project(const std::string &path, const Tab &tab) {
 	std::string result;
 
+	result += "VER 0\n\n";
+
 	result += "SZ " + std::to_string(tab.sz.x)
 	          + " " + std::to_string(tab.sz.y) + "\n\n";
 
