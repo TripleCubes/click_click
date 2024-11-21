@@ -233,6 +233,17 @@ const GameTime &game_time
 		true
 	);
 
+	draw_text(
+		gs,
+		std::to_string(tab.sz.x)
+			+ "x" + std::to_string(tab.sz.y),
+		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10 - 12),
+		100,
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(4, 3),
+		false
+	);
 	Vec2 pos = vec2_add(TAB_OFFSET, tab.pos);
 	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
 	Vec2 tex_draw_mouse_pos
@@ -240,8 +251,8 @@ const GameTime &game_time
 	Vec2i mouse_pos_i = to_vec2i(tex_draw_mouse_pos);
 	draw_text(
 		gs,
-		"X: " + std::to_string(mouse_pos_i.x)
-			+ " Y: " + std::to_string(mouse_pos_i.y),
+		std::to_string(mouse_pos_i.x)
+			+ " " + std::to_string(mouse_pos_i.y),
 		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10),
 		100,
 		1,
@@ -260,7 +271,7 @@ const GameTime &game_time
 		draw_text(
 			gs,
 			selection_wh_str,
-			vec2_new(SIDE_BAR_W + 144, main_fb_sz.y - 10),
+			vec2_new(SIDE_BAR_W + 120, main_fb_sz.y - 10),
 			100,
 			1,
 			BTN_TEXTAREA_COLOR,
