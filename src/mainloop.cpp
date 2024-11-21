@@ -233,6 +233,23 @@ const GameTime &game_time
 		true
 	);
 
+	Vec2 pos = vec2_add(TAB_OFFSET, tab.pos);
+	Vec2 main_fb_mouse_pos = get_main_fb_mouse_pos(gs, input.mouse_pos);
+	Vec2 tex_draw_mouse_pos
+		= get_tex_draw_mouse_pos(tab, pos, main_fb_mouse_pos);
+	Vec2i mouse_pos_i = to_vec2i(tex_draw_mouse_pos);
+	draw_text(
+		gs,
+		"X: " + std::to_string(mouse_pos_i.x)
+			+ " Y: " + std::to_string(mouse_pos_i.y),
+		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10),
+		50,
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(4, 3),
+		false
+	);
+
 	use_shader(gs, SHADER_BASIC_DRAW);
 	set_uniform_texture(gs, SHADER_BASIC_DRAW, "u_texture", 0,
 		texture_get_id(gs, TEXTURE_FONT));

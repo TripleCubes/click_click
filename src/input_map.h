@@ -70,6 +70,7 @@ enum MappedKeyIndex: int {
 	MAP_DELETE,
 	MAP_CUT,
 	MAP_COPY,
+	MAP_COPY_DATA_ONLY,
 	MAP_PASTE,
 	#ifdef __EMSCRIPTEN__
 	MAP_LOCAL_CLIPBOARD,

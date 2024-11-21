@@ -29,7 +29,7 @@ unsigned char to_pallete_index(char c) {
 	return c - 48;
 }
 
-void to_clipboard_selected(const Tab &tab
+void to_clipboard_selected(const Tab &tab, bool data_only
 #ifndef __EMSCRIPTEN__
 ,GLFWwindow *glfw_window
 #endif
@@ -68,21 +68,34 @@ void to_clipboard_selected(const Tab &tab
 	}
 	}
 
-	str += "type=" + TYPE_LABEL
-		+ ";x=" + std::to_string(top_left.x)
-		+ ";y=" + std::to_string(top_left.y)
-		+ ";w=" + std::to_string(bottom_right.x - top_left.x + 1)
-		+ ";h=" + std::to_string(bottom_right.y - top_left.y + 1)
-		+ ";data=\n";
+	if (!data_only) {
+		str += "type=" + TYPE_LABEL
+			+ ";x=" + std::to_string(top_left.x)
+			+ ";y=" + std::to_string(top_left.y)
+			+ ";w=" + std::to_string(bottom_right.x - top_left.x + 1)
+			+ ";h=" + std::to_string(bottom_right.y - top_left.y + 1)
+			+ ";data=\n";
+	}
 	for (int y = top_left.y; y <= bottom_right.y; y++) {
+		if (data_only) {
+			str += "\"";
+		}
 		for (int x = top_left.x; x <= bottom_right.x; x++) {
 			int i = y * tab.sz.x + x;
 			str += to_char(data[i]);
 		}
 		if (y == bottom_right.y) {
-			str += ";";
+			if (!data_only) {
+				str += ";";
+			}
+			else {
+				str += "\"";
+			}
 		}
 		else {
+			if (data_only) {
+				str += "\"";
+			}
 			str += "\n";
 		}
 	}
@@ -94,7 +107,7 @@ void to_clipboard_selected(const Tab &tab
 	#endif
 }
 
-void to_clipboard_whole_layer(const Tab &tab
+void to_clipboard_whole_layer(const Tab &tab, bool data_only
 #ifndef __EMSCRIPTEN__
 ,GLFWwindow *glfw_window
 #endif
@@ -102,21 +115,34 @@ void to_clipboard_whole_layer(const Tab &tab
 	int layer_index = tab.layer_order_list[tab.layer_order_list_index];
 	const Layer &layer = tab.layer_list[layer_index];
 
-	str += "type=" + TYPE_LABEL
-		+ ";x=0"
-		+ ";y=0"
-		+ ";w=" + std::to_string(tab.sz.x)
-		+ ";h=" + std::to_string(tab.sz.y)
-		+ ";data=\n";
+	if (!data_only) {
+		str += "type=" + TYPE_LABEL
+			+ ";x=0"
+			+ ";y=0"
+			+ ";w=" + std::to_string(tab.sz.x)
+			+ ";h=" + std::to_string(tab.sz.y)
+			+ ";data=\n";
+	}
 	for (int y = 0; y < tab.sz.y; y++) {
+		if (data_only) {
+			str += "\"";
+		}
 		for (int x = 0; x < tab.sz.x; x++) {
 			int i = y * tab.sz.x + x;
 			str += to_char(layer.data[i]);
 		}
 		if (y == tab.sz.y - 1) {
-			str += ";";
+			if (!data_only) {
+				str += ";";
+			}
+			else {
+				str += "\"";
+			}
 		}
 		else {
+			if (data_only) {
+				str += "\"";
+			}
 			str += "\n";
 		}
 	}
@@ -166,23 +192,23 @@ void rm_newline(std::string &str) {
 
 }
 
-void to_clipboard(const Tab &tab
+void to_clipboard(const Tab &tab, bool data_only
 #ifndef __EMSCRIPTEN__
 ,GLFWwindow *glfw_window
 #endif
 ) {
 	if (tab.selection.full_preview_list.size() != 0) {
-		to_clipboard_selected(tab
+		to_clipboard_selected(tab, data_only
 		#ifndef __EMSCRIPTEN__
 			,glfw_window
-		#endif	
+		#endif
 		);
 	}
 	else {
-		to_clipboard_whole_layer(tab
+		to_clipboard_whole_layer(tab, data_only
 		#ifndef __EMSCRIPTEN__
 			,glfw_window
-		#endif	
+		#endif
 		);
 	}
 }

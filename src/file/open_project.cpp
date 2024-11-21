@@ -262,7 +262,7 @@ int in_x, int in_y, int w, int h, int canvas_w) {
 
 bool word_list_to_data(OpenProjectData &data,
 const std::vector<Word> &word_list) {
-	const int BEFORE_PALLETE_DATA = 9;
+	const int BEFORE_PALLETE_DATA = 11;
 
 	if (word_list.size() < BEFORE_PALLETE_DATA + 64*3) {
 		err("file too short");
@@ -270,30 +270,35 @@ const std::vector<Word> &word_list) {
 	}
 
 	if (word_list[1].type != NUM) {
+		err("field VER is not number");
+		return false;
+	}
+	if (word_list[3].type != NUM) {
 		err("field SZ x is not number");
 		return false;
 	}
-	if (word_list[2].type != NUM) {
+	if (word_list[4].type != NUM) {
 		err("field SZ y is not number");
 		return false;
 	}
-	if (word_list[4].type != NUM) {
+	if (word_list[6].type != NUM) {
 		err("field POS x is not number");
 		return false;
 	}
-	if (word_list[5].type != NUM) {
+	if (word_list[7].type != NUM) {
 		err("field POS y is not number");
 		return false;
 	}
-	if (word_list[7].type != NUM) {
+	if (word_list[9].type != NUM) {
 		err("field PXSCALE is not number");
 		return false;
 	}
-	data.sz.x = std::stoi(word_list[1].str);
-	data.sz.y = std::stoi(word_list[2].str);
-	data.pos.x = std::stof(word_list[4].str);
-	data.pos.y = std::stof(word_list[5].str);
-	data.px_scale = std::stoi(word_list[7].str);
+	data.ver = std::stoi(word_list[1].str);
+	data.sz.x = std::stoi(word_list[3].str);
+	data.sz.y = std::stoi(word_list[4].str);
+	data.pos.x = std::stof(word_list[6].str);
+	data.pos.y = std::stof(word_list[7].str);
+	data.px_scale = std::stoi(word_list[9].str);
 
 	int pallete_data_i = 0;
 	for (int i = BEFORE_PALLETE_DATA; i < BEFORE_PALLETE_DATA + 64*3; i += 3) {

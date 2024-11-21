@@ -1006,15 +1006,22 @@ Vec2 parent_pos, bool show
 	#endif
 
 	if (map_press(input, MAP_COPY)) {
-		to_clipboard(tab
+		to_clipboard(tab, false
+		#ifndef __EMSCRIPTEN__
+			,glfw_window
+		#endif
+		);
+	}
+	if (map_press(input, MAP_COPY_DATA_ONLY)) {
+		to_clipboard(tab, true
 		#ifndef __EMSCRIPTEN__
 			,glfw_window
 		#endif
 		);
 	}
 	if (map_press(input, MAP_CUT)) {
-		to_clipboard(tab
-		#ifndef __EMSCRIPTEN__	
+		to_clipboard(tab, false
+		#ifndef __EMSCRIPTEN__
 			,glfw_window
 		#endif
 		);

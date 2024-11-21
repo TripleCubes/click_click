@@ -15,6 +15,7 @@ struct OpenProjectLayerData {
 };
 
 struct OpenProjectData {
+	int ver = 0;
 	Vec2i sz;
 	Vec2 pos;
 	int px_scale;

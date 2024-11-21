@@ -12,7 +12,7 @@ struct Input;
 struct Vec2;
 struct Vec2i;
 
-void to_clipboard(const Tab &tab
+void to_clipboard(const Tab &tab, bool data_only
 	#ifndef __EMSCRIPTEN__
 	,GLFWwindow *glfw_window
 	#endif
