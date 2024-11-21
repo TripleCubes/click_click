@@ -97,13 +97,11 @@ void tab_layer_new_with_history(Tab &tab, GraphicStuff &gs, const Input &input,
 const GameTime &game_time, const Settings &settings) {
 	history_commit_prepare(tab.history, tab.tab_commands);
 
-	tab.history_id++;
-
 	Command command = command_new(
 		tab.history.time_pos_current,
 		COMMAND_LAYER_NEW,
 		
-		tab.history_id,
+		tab.history.layer_list.size(),
 		tab.layer_order_list_index,
 		0,
 		vec2i_new(0, 0),
@@ -1235,16 +1233,14 @@ const std::string &layer_name, GraphicStuff &gs, int history_layer_index) {
 	return index;
 }
 
-int tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
+void tab_layer_new_data(Tab &tab, int at, const std::string &layer_name,
 bool hidden, bool locked,
-GraphicStuff &gs, const std::vector<unsigned char> &data,
-int history_layer_index) {
+GraphicStuff &gs, const std::vector<unsigned char> &data) {
 	int index = layer_new(tab.layer_list, gs, layer_name, tab.sz,
-		data, hidden, locked, history_layer_index);
+		data, hidden, locked, tab.history.layer_list.size() - 1);
+	history_layer_add(tab.history, tab.layer_list[index]);
 
 	tab.layer_order_list.insert(tab.layer_order_list.begin() + at, index);
-
-	return index;
 }
 
 void tab_center_canvas(Tab &tab, const GraphicStuff &gs) {
