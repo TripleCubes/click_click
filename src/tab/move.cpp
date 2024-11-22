@@ -24,14 +24,14 @@ void draw_move_border(Move &move, Tab &tab, unsigned char pallete_index) {
 	int move_pos_x = std::floor(move.pos.x);
 	int move_pos_y = std::floor(move.pos.y);
 
-	for (int x = move_pos_x - 1; x <= move_pos_x + move.sz.x; x++) {
-		draw(x, move_pos_y - 1);
-		draw(x, move_pos_y + move.sz.y);
+	for (int x = move_pos_x; x < move_pos_x + move.sz.x; x++) {
+		draw(x, move_pos_y);
+		draw(x, move_pos_y + move.sz.y - 1);
 	}
 
-	for (int y = move_pos_y - 1; y <= move_pos_y + move.sz.y; y++) {
-		draw(move_pos_x - 1, y);
-		draw(move_pos_x + move.sz.x, y);
+	for (int y = move_pos_y; y < move_pos_y + move.sz.y; y++) {
+		draw(move_pos_x, y);
+		draw(move_pos_x + move.sz.x - 1, y);
 	}
 }
 

@@ -810,13 +810,15 @@ const Settings &settings, Vec2 parent_pos
 		_move_tool_end();
 	}
 
-	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
-		const Layer &layer = tab.layer_list[i];
-		if (!layer.running) {
-			continue;
-		}
-		if (layer.textarea.clicked) {
-			_move_tool_end();
+	if (tab.move.moving) {
+		for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+			const Layer &layer = tab.layer_list[i];
+			if (!layer.running) {
+				continue;
+			}
+			if (layer.textarea.clicked) {
+				_move_tool_end();
+			}
 		}
 	}
 
