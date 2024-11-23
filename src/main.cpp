@@ -37,7 +37,7 @@ GLFWwindow * init() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow *glfw_window
-		= glfwCreateWindow(INIT_W, INIT_H, "click click", NULL, NULL);
+		= glfwCreateWindow(INIT_W, INIT_H, "click click test", NULL, NULL);
 	if (glfw_window == NULL) {
 		std::cout << "failed to create window" << std::endl;
 		glfwTerminate();

@@ -260,7 +260,7 @@ void makefilegen_native(std::string &result) {
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
-	native_config.output_name = "clickclick";
+	native_config.output_name = "clickclicktest";
 	native_config.lib_path = "./build/glfw/bin/glfw.a ./build/glad/bin/glad.a";
 	native_config.is_cpp = true;
 	native_config.is_lib = false;
@@ -286,7 +286,7 @@ void makefilegen_linklib(std::string &result) {
 	native_config.obj_path = "./build/native/obj/";
 	native_config.bin_path = "./build/native/bin/";
 	native_config.src_path = SRC_PATH;
-	native_config.output_name = "clickclick";
+	native_config.output_name = "clickclicktest";
 	native_config.lib_path = "./build/glfw/bin/glfw.a ./build/glad/bin/glad.a";
 	native_config.is_cpp = true;
 	native_config.is_lib = false;
