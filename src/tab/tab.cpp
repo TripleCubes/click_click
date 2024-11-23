@@ -499,7 +499,7 @@ Vec2 parent_pos, bool show) {
 		);
 	}
 
-	if (input.left_click || input.key_list[KEY_ENTER].press
+	if (input.left_click || map_press(input, MAP_ENTER)
 	|| map_press(input, MAP_ESC)) {
 		if (tab.layer_name_editing == true) {
 			layer_name_set_with_history(tab, gs, input, game_time, settings);
@@ -1015,13 +1015,13 @@ Vec2 parent_pos, bool show
 	const Layer &layer = tab.layer_list[get_layer_index(tab)];
 
 	bool tool_key_allowed = !tab.layer_name_editing && !input.left_down
-		&& !input.left_release;
+		&& !input.left_release && !tab.color_picker.hex_ta_editing;
 
 	Vec2i main_fb_sz = fb_get_sz(gs, FB_MAIN);
 	Vec2 bottom_pos
 		= vec2_add(parent_pos, vec2_new(0, main_fb_sz.y));
 
-	color_picker_update(tab.color_picker, gs, input, bottom_pos,
+	color_picker_update(tab.color_picker, gs, game_time, input, bottom_pos,
 		show && (tab.color_pallete.at_page != 0
 		         || tab.color_pallete.selected_index != 0));
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos,
@@ -1201,7 +1201,7 @@ const GameTime &game_time, Vec2 parent_pos) {
 	
 	if (tab.color_pallete.at_page != 0
 	|| tab.color_pallete.selected_index != 0) {
-		color_picker_draw(tab.color_picker, gs, bottom_pos);
+		color_picker_draw(tab.color_picker, gs, game_time, bottom_pos);
 	}
 	color_pallete_draw(tab.color_pallete, gs, input, parent_pos);
 	layer_bar_draw(tab.layer_bar, gs, bottom_pos);

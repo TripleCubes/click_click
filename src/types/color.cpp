@@ -248,6 +248,24 @@ std::string color_to_hex(Color color) {
 	return hex_str;
 }
 
+bool is_valid_hex(const std::string &hex) {
+	if (hex.length() != 7) {
+		return false;
+	}
+	if (hex[0] != '#') {
+		return false;
+	}
+
+	for (int i = 1; i < (int)hex.length(); i++) {
+		char c = hex[i];
+		if ((c < '0' || c > '9') && (c < 'a' || c > 'f')) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 Color hex_to_color(const std::string &hex) {
 	Color color;
 	color.r = hex_to_float(hex.substr(1, 2));

@@ -233,11 +233,15 @@ const GameTime &game_time
 		true
 	);
 
+	float x_add = 0;
+	if (tab.color_pallete.selected_index == 0) {
+		x_add = -76;
+	}
 	draw_text(
 		gs,
 		std::to_string(tab.sz.x)
 			+ "x" + std::to_string(tab.sz.y),
-		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10 - 12),
+		vec2_new(SIDE_BAR_W + 80 + x_add, main_fb_sz.y - 10),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -253,7 +257,7 @@ const GameTime &game_time
 		gs,
 		std::to_string(mouse_pos_i.x)
 			+ " " + std::to_string(mouse_pos_i.y),
-		vec2_new(SIDE_BAR_W + 80, main_fb_sz.y - 10),
+		vec2_new(SIDE_BAR_W + 120 + x_add, main_fb_sz.y - 10),
 		100,
 		1,
 		BTN_TEXTAREA_COLOR,
@@ -271,7 +275,7 @@ const GameTime &game_time
 		draw_text(
 			gs,
 			selection_wh_str,
-			vec2_new(SIDE_BAR_W + 120, main_fb_sz.y - 10),
+			vec2_new(SIDE_BAR_W + 160 + x_add, main_fb_sz.y - 10),
 			100,
 			1,
 			BTN_TEXTAREA_COLOR,

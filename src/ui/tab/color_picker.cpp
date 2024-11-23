@@ -7,7 +7,10 @@
 #include "../../graphic_types/mesh.h"
 #include "../../graphic_types/framebuffer.h"
 #include "../../graphic/graphic.h"
+#include "../../graphic/draw_text.h"
 #include "../../input.h"
+#include "../../consts.h"
+#include "../../game_time.h"
 
 namespace {
 
@@ -100,14 +103,24 @@ ColorPicker color_picker_new(Vec2 pos) {
 		vec2_new(64, 10)
 	);
 
+	color_picker.hex_ta = textarea_new(
+		vec2_new(6, -18),
+		vec2_new(36, 12),
+		BTN_TEXTAREA_COLOR,
+		"ffffff"
+	);
+
 	return color_picker;
 }
 
 void color_picker_update(ColorPicker &color_picker,
-const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
+GraphicStuff &gs, const GameTime &game_time, const Input &input,
+Vec2 parent_pos, bool show) {
 	Vec2 pos = vec2_add(color_picker.pos, parent_pos);
 	pos_select_update(color_picker.pos_select, gs, input, pos, show);
 	hue_slider_update(color_picker.hue_slider, gs, input, pos, show);
+	textarea_update(color_picker.hex_ta, gs, game_time, input, pos,
+		color_picker.hex_ta_editing, show);
 
 	color_picker.color_changed = false;
 
@@ -117,20 +130,54 @@ const GraphicStuff &gs, const Input &input, Vec2 parent_pos, bool show) {
 
 	if (color_picker.pos_select.selected) {
 		color_picker.color_changed = true;
+		Color rgb = color_picker_get_rgb(color_picker);
+		color_picker.hex_ta.text = color_to_hex(rgb).substr(1, 6);
 	}
 	if (color_picker.hue_slider.sliding) {
 		color_picker.color_changed = true;
+		Color rgb = color_picker_get_rgb(color_picker);
+		color_picker.hex_ta.text = color_to_hex(rgb).substr(1, 6);
+	}
+	if (color_picker.hex_ta.hovered) {
+		gs.cursor_icon = CURSOR_TEXT;
+	}
+	if (input.left_click || map_press(input, MAP_ENTER)
+	|| map_press(input, MAP_ESC)) {
+		color_picker.hex_ta_editing = false;
+	}
+	if (color_picker.hex_ta.clicked) {
+		color_picker.hex_ta_editing = true;
+	}
+	
+	if (color_picker.hex_ta_editing && input.key_event) {
+		if (is_valid_hex("#" + color_picker.hex_ta.text)) {
+			Color color = hex_to_color("#" + color_picker.hex_ta.text);
+			color_picker_set_rgb(color_picker, color);
+			color_picker.color_changed = true;
+		}
 	}
 }
 
 void color_picker_draw(const ColorPicker &color_picker,
-GraphicStuff &gs, Vec2 parent_pos) {
+GraphicStuff &gs, const GameTime &game_time, Vec2 parent_pos) {
 	Vec2 pos = vec2_add(color_picker.pos, parent_pos);
 	draw_pos_select_bkg(color_picker, gs, pos);
 	draw_hue_slider_bkg(color_picker, gs, pos);
 
 	pos_select_draw(color_picker.pos_select, gs, pos);
 	hue_slider_draw(color_picker.hue_slider, gs, pos);
+	textarea_draw(color_picker.hex_ta, gs, game_time, pos,
+		color_picker.hex_ta_editing, true);
+
+	draw_icon(
+		gs,
+		ICON_HASH,
+		vec2_add(pos, vec2_new(-2, -15)),
+		1,
+		BTN_TEXTAREA_COLOR,
+		vec2_new(4, 3),
+		false
+	);
 }
 
 Color color_picker_get_hsv(const ColorPicker &color_picker) {
@@ -158,6 +205,8 @@ void color_picker_set_rgb(ColorPicker &color_picker, Color rgb) {
 		= hsv.g * color_picker.pos_select.sz.x;
 	color_picker.pos_select.selected_pos.y
 		= (1 - hsv.b) * color_picker.pos_select.sz.y;
+
+	color_picker.hex_ta.text = color_to_hex(rgb).substr(1, 6);
 }
 
 Vec2 color_picker_get_sz(const ColorPicker &color_picker) {

@@ -17,6 +17,7 @@ Color hue_to_rgb(float hue);
 Color hsv_to_rgb(Color hsv);
 Color rgb_to_hsv(Color rgb);
 std::string color_to_hex(Color color);
+bool is_valid_hex(const std::string &hex);
 Color hex_to_color(const std::string &hex);
 
 #endif
