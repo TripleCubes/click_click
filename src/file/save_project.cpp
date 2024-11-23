@@ -3,10 +3,18 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
+
 #include "file.h"
 #include "../tab/tab.h"
 
 namespace {
+
+int max(int a, int b) {
+	if (a > b) {
+		return a;
+	}
+	return b;
+}
 
 char to_ascii(unsigned char pallete_index) {
 	return (char)pallete_index + 48;
@@ -65,8 +73,8 @@ void save_project(const std::string &path, const Tab &tab) {
 	result += "SZ " + std::to_string(tab.sz.x)
 	          + " " + std::to_string(tab.sz.y) + "\n";
 
-	result += "POS " + std::to_string((int)tab.pos.x)
-              + " " + std::to_string((int)tab.pos.y) + "\n";
+	result += "POS " + std::to_string(max(tab.pos.x, 0))
+              + " " + std::to_string(max(tab.pos.y, 0)) + "\n";
 
 	result += "PXSCALE " + std::to_string(tab.px_scale) + "\n";
 

@@ -1075,6 +1075,16 @@ Vec2 parent_pos, bool show
 		selection_clear(tab.selection, tab.sz);
 	}
 
+	for (int i = 0; i < (int)tab.layer_list.size(); i++) {
+		const Layer &layer = tab.layer_list[i];
+		if (!layer.running) {
+			continue;
+		}
+		if (layer.textarea.clicked && (layer.hidden || layer.locked)) {
+			selection_clear(tab.selection, tab.sz);
+		}
+	}
+
 	if (tab.color_pallete_btn_panel.copy_btn.clicked) {
 		color_pallete_to_clipboard(tab.color_pallete
 		#ifndef __EMSCRIPTEN__
