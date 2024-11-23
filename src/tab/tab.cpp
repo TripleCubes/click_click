@@ -371,20 +371,18 @@ Vec2 parent_pos) {
 
 	if (!tab.clicked_and_hold_on_ui && tab.layer_order_list.size() != 0) {
 		if (tab.tool_picker.selected_index == TOOL_BRUSH) {
-			if (settings.use_px_perfect_brush
-			&& tab.tool_picker.brush_selected_index == 0) {
-				px_perfect_brush_tool_preview_update(tab, gs,input,parent_pos);
-				px_ed = px_perfect_brush_tool_update(tab, get_layer_index(tab),
-					gs, input, parent_pos);
-			}
-			else {
-				px_tool_preview_update(tab,
-					tab.tool_picker.brush_selected_index,
-					gs, input, true, parent_pos);
-				px_ed = brush_tool_update(tab, get_layer_index(tab),
-					tab.tool_picker.brush_selected_index, gs, input,
-					parent_pos);
-			}
+			px_tool_preview_update(tab,
+				tab.tool_picker.brush_selected_index,
+				gs, input, true, parent_pos);
+			px_ed = brush_tool_update(tab, get_layer_index(tab),
+				tab.tool_picker.brush_selected_index, gs, input,
+				parent_pos);
+		}
+
+		else if (tab.tool_picker.selected_index == TOOL_PX_PERFECT) {
+			px_perfect_brush_tool_preview_update(tab, gs,input,parent_pos);
+			px_ed = px_perfect_brush_tool_update(tab, get_layer_index(tab),
+				gs, input, parent_pos);
 		}
 
 		else if (tab.tool_picker.selected_index == TOOL_CURVE) {

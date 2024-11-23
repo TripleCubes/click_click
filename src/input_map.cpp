@@ -127,6 +127,7 @@ void input_map_init(InputMap &input_map) {
 	set(MAP_ZOOM_OUT        , KEY_MINUS, MODIFIER_BOTH_CTRL );
 	set(MAP_ZOOM_0          , KEY_0    , MODIFIER_BOTH_CTRL );
 
+	set(MAP_TOOL_PX_PERFECT , KEY_P                         );
 	set(MAP_TOOL_BRUSH      , KEY_B                         );
 	set(MAP_TOOL_CURVE      , KEY_C                         );
 	set(MAP_TOOL_FILL       , KEY_F                         );

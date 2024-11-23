@@ -127,6 +127,7 @@ bool selected, const std::string &replace_text) {
 
 		"ICON_COPY",
 		"ICON_HASH",
+		"ICON_PX_PERFECT",
 	};
 
 	for (int i = 0; i < ICON_COUNT; i++) {

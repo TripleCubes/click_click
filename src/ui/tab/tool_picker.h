@@ -6,15 +6,16 @@
 #include <array>
 
 const int TOOL_BRUSH = 0;
-const int TOOL_ERASER = 1;
-const int TOOL_CURVE = 2;
-const int TOOL_FILL = 3;
-const int TOOL_SELECT = 4;
-const int TOOL_MOVE = 5;
+const int TOOL_PX_PERFECT = 1;
+const int TOOL_ERASER = 2;
+const int TOOL_CURVE = 3;
+const int TOOL_FILL = 4;
+const int TOOL_SELECT = 5;
+const int TOOL_MOVE = 6;
 
 const Vec2 TOOL_PICKER_SZ = vec2_new(12*7, 33);
 
-const int NUM_BTN = 6;
+const int NUM_BTN = 7;
 
 const int NUM_SZ_BTN = 6;
 const int NUM_FILL_BTN = 2;

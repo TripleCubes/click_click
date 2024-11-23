@@ -42,6 +42,9 @@ const Input &input, Vec2 parent_pos, bool tool_key_allowed, bool show) {
 		if (map_press(input, MAP_TOOL_BRUSH)) {
 			set_selected_index(tool_picker, TOOL_BRUSH);
 		}
+		else if (map_press(input, MAP_TOOL_PX_PERFECT)) {
+			set_selected_index(tool_picker, TOOL_PX_PERFECT);
+		}
 		else if (map_press(input, MAP_TOOL_CURVE)) {
 			set_selected_index(tool_picker, TOOL_CURVE);
 		}
@@ -193,6 +196,7 @@ const Input &input, Vec2 parent_pos) {
 
 	std::array<std::string, NUM_BTN> tool_key_list = {
 		get_key_str(input, MAP_TOOL_BRUSH),
+		get_key_str(input, MAP_TOOL_PX_PERFECT),
 		get_key_str(input, MAP_TOOL_ERASER),
 		get_key_str(input, MAP_TOOL_CURVE),
 		get_key_str(input, MAP_TOOL_FILL),
@@ -257,6 +261,9 @@ const Input &input, Vec2 parent_pos) {
 	if (tool_picker.selected_index == TOOL_BRUSH) {
 		tool_key_str = get_key_str(input, MAP_TOOL_BRUSH);
 	}
+	if (tool_picker.selected_index == TOOL_PX_PERFECT) {
+		tool_key_str = "PX PERFECT";
+	}
 	else if (tool_picker.selected_index == TOOL_CURVE) {
 		tool_key_str = get_key_str(input, MAP_TOOL_CURVE);
 	}
@@ -266,11 +273,14 @@ const Input &input, Vec2 parent_pos) {
 	else if (tool_picker.selected_index == TOOL_SELECT) {
 		tool_key_str = get_key_str(input, MAP_TOOL_SELECT);
 	}
+	else if (tool_picker.selected_index == TOOL_MOVE) {
+		tool_key_str = "MOVE";
+	}
 	draw_text(
 		gs,
 		tool_key_str,
 		vec2_add(pos, vec2_new(4, 12 * 2 + 1)),
-		12,
+		60,
 		1,
 		KEY_HINT_COLOR,
 		vec2_new(0, 0),
@@ -299,8 +309,8 @@ ToolPicker tool_picker_new(Vec2 pos) {
 	tool_picker.pos = pos;
 
 	std::array<std::string, NUM_BTN> icon_str_list = {
-		"ICON_PEN", "ICON_ERASER", "ICON_CURVE", "ICON_FILL", "ICON_SELECT",
-		"ICON_MOVE",
+		"ICON_PEN", "ICON_PX_PERFECT", "ICON_ERASER", "ICON_CURVE",
+		"ICON_FILL", "ICON_SELECT", "ICON_MOVE",
 	};
 	for (int i = 0; i < NUM_BTN; i++) {
 		tool_picker.btn_list[i] = btn_new(

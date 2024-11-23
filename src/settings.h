@@ -3,7 +3,6 @@
 
 struct Settings {
 	bool use_hardware_cursor = true;
-	bool use_px_perfect_brush = false;
 };
 
 #endif

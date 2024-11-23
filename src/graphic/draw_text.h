@@ -48,8 +48,9 @@ const int ICON_LOCKED          = 32;
 
 const int ICON_COPY            = 33;
 const int ICON_HASH            = 34;
+const int ICON_PX_PERFECT      = 35;
 
-const int ICON_COUNT           = 35;
+const int ICON_COUNT           = 36;
 
 const int CHAR_W = 4;
 const int REAL_CHAR_H = 6;
