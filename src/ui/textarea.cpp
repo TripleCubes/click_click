@@ -51,7 +51,7 @@ const Input &input) {
 		const int TEXT_W_CHAR
 			= std::floor(textarea.sz.x / (1 * CHAR_W)) - 3;
 
-		if (textarea.cursor_at < TEXT_W_CHAR) {
+		if ((int)textarea.text.length() < TEXT_W_CHAR) {
 			if (textarea.cursor_at == (int)textarea.text.length()) {
 				textarea.text += add;
 			}

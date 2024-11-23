@@ -292,6 +292,11 @@ const Input &input, Vec2 parent_pos) {
 			vec2_sub(color_picker_pos, vec2_new(4, 4)),
 			vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
 		);
+		on_ui = check(
+			mouse_pos,
+			vec2_sub(color_picker_pos, vec2_new(4, 20)),
+			vec2_new(47, 16)
+		);
 		if (on_ui) { return true; }
 	}
 
