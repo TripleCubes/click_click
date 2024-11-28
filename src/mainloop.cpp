@@ -234,7 +234,8 @@ const GameTime &game_time
 	);
 
 	float x_add = 0;
-	if (tab.color_pallete.selected_index == 0) {
+	if (tab.color_pallete.selected_index == 0
+	&& tab.color_pallete.at_page != 0) {
 		x_add = -76;
 	}
 	draw_text(

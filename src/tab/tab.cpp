@@ -1028,7 +1028,7 @@ Vec2 parent_pos, bool show
 		show && (tab.color_pallete.at_page != 0
 		         || tab.color_pallete.selected_index != 0));
 	color_pallete_update(tab.color_pallete, gs, input, parent_pos,
-		!tab.layer_name_editing, show);
+		tool_key_allowed, show);
 	layer_bar_update(tab.layer_bar, gs, input, bottom_pos, show);
 	tool_picker_update(tab.tool_picker, gs, input, parent_pos,
 		tool_key_allowed, show);

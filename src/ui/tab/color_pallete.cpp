@@ -91,7 +91,7 @@ void kb_update(ColorPallete &color_pallete, const Input &input, bool show) {
 
 	for (int i = MAP_COLOR_1; i <= MAP_COLOR_8; i++) {
 		if (map_press(input, (MappedKeyIndex)i)) {
-			int next_index = i - MAP_COLOR_1;
+			int next_index = i - MAP_COLOR_1 + color_pallete.at_page * 16;
 			if (next_index == color_pallete.selected_index) {
 				page_index_set(color_pallete, color_pallete.at_page,
 					next_index + 8);
