@@ -292,6 +292,7 @@ const Input &input, Vec2 parent_pos) {
 			vec2_sub(color_picker_pos, vec2_new(4, 4)),
 			vec2_add(color_picker_get_sz(tab.color_picker), vec2_new(8, 8))
 		);
+		if (on_ui) { return true; }
 		on_ui = check(
 			mouse_pos,
 			vec2_sub(color_picker_pos, vec2_new(4, 20)),
@@ -819,16 +820,11 @@ const Settings &settings, Vec2 parent_pos
 			if (!layer.running) {
 				continue;
 			}
-			if (layer.textarea.clicked) {
+			if (layer.textarea.clicked || layer.show_hide_btn.clicked
+			|| layer.lock_btn.clicked) {
 				_move_tool_end();
 			}
 		}
-	}
-
-	if ((layer.show_hide_btn.clicked || layer.lock_btn.clicked
-	|| layer.textarea.clicked)
-	&& tab.move.moving) {
-		_move_tool_end();
 	}
 
 	if (tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
