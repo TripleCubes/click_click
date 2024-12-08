@@ -1053,7 +1053,7 @@ Vec2 parent_pos, bool show
 		#endif
 	);
 
-	if (tab.layer_bar.add_btn.clicked) {
+	if (tab.layer_bar.add_btn.clicked && tab.layer_order_list.size() < 9) {
 		tab_layer_new_with_history(tab, gs, input, game_time, settings);
 	}
 

@@ -25,6 +25,9 @@ Run make
 mingw32-make
 ```
 
+A `clickclick.js` will appear in `build/web/bin/`. you will need a index.html to
+run it tho, which you can find in the `html/` folder
+
 ## Web
 You will need emscripten installed
 
