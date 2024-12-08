@@ -117,6 +117,7 @@ int main () {
 		graphic_stuff.draw_thirdlayer_ui = false;
 		graphic_stuff.cursor_icon = CURSOR_POINTER;
 		graphic_resize(graphic_stuff, vec2i_new(window_w, window_h));
+		graphic_stuff.resize_requested = false;
 	
 		//glfwWaitEventsTimeout(REDRAW_REQUEST_WAIT);
 		glfwPollEvents();

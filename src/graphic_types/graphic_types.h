@@ -43,6 +43,7 @@ struct GraphicStuff {
 	int px_scale = 1;
 	bool just_resized = false;
 	bool redraw_requested = false;
+	bool resize_requested = false;
 	bool draw_secondlayer_ui = false;
 	bool draw_thirdlayer_ui = false;
 	int cursor_icon = CURSOR_POINTER;

@@ -125,7 +125,8 @@ bool graphic_init(GraphicStuff &graphic_stuff) {
 }
 
 void graphic_resize(GraphicStuff &graphic_stuff, Vec2i sz) {
-	if (vec2i_equals(graphic_stuff.current_window_sz, sz)) {
+	if (vec2i_equals(graphic_stuff.current_window_sz, sz)
+	&& !graphic_stuff.resize_requested) {
 		return;
 	}
 

@@ -29,6 +29,7 @@ struct AppMenu {
 	Btn resize_btn;
 
 	Btn use_hardware_cursor_toggle;
+	Btn px_scale_btn;
 
 	int selected_menu = 0;
 };

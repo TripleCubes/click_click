@@ -24,7 +24,8 @@ const Vec2 MARGIN = vec2_new(4, 4);
 const Vec2 SIDE_BTN_SZ = vec2_new(50, 12);
 const Vec2 TOGGLE_SZ = vec2_new(20, 12);
 
-void per_settings_menu_handling(AppMenu &app_menu, Settings &settings
+void per_settings_menu_handling(AppMenu &app_menu, Settings &settings,
+GraphicStuff &gs
 #ifndef __EMSCRIPTEN__
 ,GLFWwindow *glfw_window
 #endif
@@ -51,6 +52,13 @@ void per_settings_menu_handling(AppMenu &app_menu, Settings &settings
 			);
 		}
 		#endif
+	}
+	if (app_menu.px_scale_btn.clicked) {
+		gs.px_scale++;
+		if (gs.px_scale > 4) {
+			gs.px_scale = 1;
+		}
+		gs.resize_requested = true;
 	}
 }
 
@@ -116,6 +124,13 @@ void app_menu_init(AppMenu &app_menu) {
 		BTN_TEXTAREA_COLOR,
 		"_"
 	);
+
+	app_menu.px_scale_btn = btn_new(
+		vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 1, MARGIN.y + 13 * 4),
+		TOGGLE_SZ,
+		BTN_TEXTAREA_COLOR,
+		"_"
+	);
 }
 
 void app_menu_update(AppMenu &app_menu, Settings &settings, GraphicStuff &gs,
@@ -145,6 +160,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show
 		= show && app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED;
 	btn_update(app_menu.use_hardware_cursor_toggle, gs, input, pos,
 		b_ui_settings_menu);
+	btn_update(app_menu.px_scale_btn, gs, input, pos, b_ui_settings_menu);
 
 	if (!show) {
 		return;
@@ -157,7 +173,7 @@ const Input &input, const GameTime &game_time, Vec2 parent_pos, bool show
 		app_menu.selected_menu = APP_MENU_UI_SETTINGS_MENU_SELECTED;
 	}
 
-	per_settings_menu_handling(app_menu, settings
+	per_settings_menu_handling(app_menu, settings, gs
 	#ifndef __EMSCRIPTEN__
 	,glfw_window
 	#endif
@@ -190,6 +206,8 @@ Vec2 parent_pos) {
 	else if (app_menu.selected_menu == APP_MENU_UI_SETTINGS_MENU_SELECTED) {
 		btn_draw(app_menu.use_hardware_cursor_toggle, gs, pos, false,
 			settings.use_hardware_cursor? "on" : "off");
+		btn_draw(app_menu.px_scale_btn, gs, pos, false, 
+			std::to_string(gs.px_scale));
 	}
 
 	auto text = [&gs, pos](const std::string &text, Vec2 in_pos,
@@ -216,6 +234,10 @@ Vec2 parent_pos) {
 		text(
 			"> use hardware cursor",
 			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 1 + 3)
+		);
+		text(
+			"> px scale",
+			vec2_new(MARGIN.x + SIDE_BTN_SZ.x + 5, MARGIN.y + 13 * 3 + 3)
 		);
 	}
 }
