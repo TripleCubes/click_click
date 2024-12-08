@@ -152,9 +152,9 @@ void dialog_box_set(DialogBox &dialog_box, int dialog_type) {
 						  "lost may happen. so "
 		                  "use the app at your own risk";
 		                  
-		dialog_box.text_1="the app is available under the MIT license. link "
-		                  "to the app's license and third party license files "
-		                  "can be found in the app menu in the top left corner";
+		dialog_box.text_1 = "the app is available under the MIT license. "
+		                    "source code available at "
+		                    "https://github.com/triplecubes/click_click_test";
 	
 		ok_btn_text = "okay";
 	}
