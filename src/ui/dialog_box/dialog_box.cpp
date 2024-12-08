@@ -149,9 +149,10 @@ void dialog_box_set(DialogBox &dialog_box, int dialog_type) {
 		dialog_box.title_text = "IMPORTANT";
 		dialog_box.text = "this app is very experimental. I haven't tested "
 		                  "this app much at all. there will be bugs, and data "
-						  "lost may happen. so "
+		                  "lost may happen. browsers can also delete all datas "
+		                  "of this app at any time. so "
 		                  "use the app at your own risk";
-		                  
+
 		dialog_box.text_1 = "the app is available under the MIT license. "
 		                    "source code available at "
 		                    "https://github.com/triplecubes/click_click_test";
