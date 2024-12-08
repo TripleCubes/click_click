@@ -141,6 +141,13 @@ int main() {
 		return 0;
 	}
 
+	int first_ran_notice_okayed = EM_ASM_INT({
+		return first_ran_notice_okayed();
+	});
+	if (!first_ran_notice_okayed) {
+		states.dialog_box_opening = true;
+	}
+
 	game_start_time = glfwGetTime();
 	frame_start_time = game_start_time;
 

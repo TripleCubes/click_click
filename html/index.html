@@ -65,6 +65,25 @@
 				}
 			});
 		});
+
+
+		const KEY_FIRST_RAN_NOTICE_OKAYED = "first_ran_notice_okayed"
+		if (localStorage.getItem(KEY_FIRST_RAN_NOTICE_OKAYED) == null) {
+			localStorage.setItem(KEY_FIRST_RAN_NOTICE_OKAYED, "0");
+		}
+
+		function set_first_ran_notice_okay() {
+			localStorage.setItem(KEY_FIRST_RAN_NOTICE_OKAYED, "1");
+		}
+
+		function first_ran_notice_okayed() {
+			if (localStorage.getItem(KEY_FIRST_RAN_NOTICE_OKAYED) == "1") {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
 	</script>
 
 	<script src="clickclick.js"></script>

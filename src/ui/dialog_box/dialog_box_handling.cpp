@@ -30,6 +30,12 @@ void dialog_box_handling(AppUI &app_ui, States &states, Tab &tab) {
 			
 			file_picker_web_file_btn_list_update(file_picker);
 		}
+
+		if (dialog_box.dialog_type == DIALOG_BOX_WEB_FIRST_RAN_NOTICE) {
+			EM_ASM(
+				set_first_ran_notice_okay();
+			);
+		}
 		#endif
 
 		if (dialog_box.dialog_type == DIALOG_BOX_OVERRIDE_FILE) {

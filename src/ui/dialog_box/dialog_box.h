@@ -5,8 +5,9 @@
 #include "../../types/vec2.h"
 #include "../btn.h"
 
-const int DIALOG_BOX_WEB_DELETE_FILE = 0;
-const int DIALOG_BOX_OVERRIDE_FILE = 1;
+const int DIALOG_BOX_WEB_FIRST_RAN_NOTICE = 0;
+const int DIALOG_BOX_WEB_DELETE_FILE = 1;
+const int DIALOG_BOX_OVERRIDE_FILE = 2;
 
 struct GraphicStuff;
 struct Input;
@@ -17,12 +18,13 @@ struct DialogBox {
 
 	std::string title_text;
 	std::string text;
+	std::string text_1;
 
 	Btn ok_btn;
 	bool show_cancel_btn = true;
 	Btn cancel_btn;
 
-	int dialog_type = DIALOG_BOX_WEB_DELETE_FILE;
+	int dialog_type = 0;
 
 	#ifdef __EMSCRIPTEN__
 	std::string web_delete_file_name;
