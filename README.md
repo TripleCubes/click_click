@@ -1,5 +1,48 @@
+> IMPORTANT \
+> this app is very experimental. I haven't tested this app much at all. there
+will be bugs, and data lost may happen. so use the app at your own risk
+
+# How to build
+
+## Windows
+You will need mingw-w64 installed
+
+Build the makefile generator
+
+```
+g++ makefilegen.cpp -o makefilegen
+```
+
+Run the makefile generator
+
+```
+makefilegen
+```
+
+Run make
+
+```
+mingw32-make
+```
+
+## Web
+You will need emscripten installed
+
+The same as building for windows, but replace
+
+```
+makefilegen
+```
+
+with
+
+```
+makefilegen web
+```
+
+
 # LICENSE
-Click click is under the MIT license. The license file can be found at [LICENSE](LICENSE)
+Click click test is under the MIT license. The license file can be found at [LICENSE](LICENSE)
 
 # THIRD PARTY LICENSES
 ## GLFW
