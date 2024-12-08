@@ -827,9 +827,9 @@ const Settings &settings, Vec2 parent_pos
 		}
 	}
 
-	if (tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
+	if ((tab.layer_bar.add_btn.clicked || tab.layer_bar.up_btn.clicked
 	|| tab.layer_bar.down_btn.clicked
-	|| tab.layer_bar.delete_layer_btn.clicked) {
+	|| tab.layer_bar.delete_layer_btn.clicked) && tab.move.moving) {
 		_move_tool_end();
 	}
 
