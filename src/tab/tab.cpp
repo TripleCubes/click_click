@@ -1372,6 +1372,9 @@ void tab_set_name(Tab &tab) {
 
 void tab_close(std::vector<Tab> &tab_list, GraphicStuff &gs, int index) {
 	Tab &tab = tab_list[index];
+
+	tab.name = "";
+	tab.path = "";
 	
 	tab.pallete_data.clear();
 	texture_release(gs, tab.pallete_texture_index);
